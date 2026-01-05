@@ -45,8 +45,7 @@
         .hero img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; will-change: transform; }
         .hero-overlay { 
             position: absolute; bottom: 0; left: 0; width: 100%; height: 60%;
-            /* NOCH TIEFER: Padding bottom auf 0 fast */
-            padding: 0 30px 20px 30px; 
+            padding: 0 30px 10px 30px; 
             background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 60%, transparent 100%); 
             color: white; 
             display: flex; flex-direction: column; align-items: flex-start;
@@ -59,38 +58,39 @@
         }
         @keyframes pulseDown { 0% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(10px); opacity: 1; } 100% { transform: translateY(0); opacity: 0.5; } }
 
-        /* --- ARTIST STYLE --- */
+        /* --- ARTIST STYLE (INTERACTIVE) --- */
         .artist-section { padding: 80px 20px; display: flex; align-items: center; justify-content: center; gap: 50px; flex-wrap: wrap; }
         
-        .artist-avatar { width: 400px; height: 400px; border-radius: 50%; object-fit: cover; border: 8px solid white; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .artist-circle-wrapper {
+            position: relative; width: 400px; height: 400px; border-radius: 50%;
+            border: 8px solid white; box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            overflow: hidden; cursor: pointer;
+            -webkit-mask-image: -webkit-radial-gradient(white, black);
+        }
+        .artist-avatar { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 2; transition: opacity 0.3s; }
+        .artist-video { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; opacity: 0; transition: opacity 0.1s; }
+        .flash-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 10; pointer-events: none; opacity: 0; transition: opacity 0.1s; }
+        .play-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 3rem; opacity: 0; z-index: 5; text-shadow: 0 5px 15px rgba(0,0,0,0.3); pointer-events: none; transition: 0.3s; }
+        .artist-circle-wrapper:hover .play-hint { opacity: 0.8; }
+        .artist-circle-wrapper.playing .play-hint { opacity: 0 !important; }
+
         .artist-bubble { background: #EAEAE8; padding: 40px; border-radius: 30px; border-bottom-left-radius: 0; position: relative; max-width: 400px; }
         .artist-name { font-weight: 700; font-size: 1.2rem; margin-bottom: 10px; color: #D96C4A; }
 
-        /* --- GALLERY (HYBRID SCROLL) --- */
+        /* --- GALLERY --- */
         .gallery-wrap { padding: 40px 0; overflow: hidden; background: white; }
-        .gallery-track { 
-            display: flex; gap: 30px; 
-            /* WICHTIG: Native Scroll erlauben */
-            overflow-x: auto; 
-            /* Scrollbar verstecken */
-            -ms-overflow-style: none; scrollbar-width: none;
-            /* Animation entfernt, wird durch JS gesteuert */
-            cursor: grab;
-        }
+        .gallery-track { display: flex; gap: 30px; overflow-x: auto; -ms-overflow-style: none; scrollbar-width: none; cursor: grab; }
         .gallery-track::-webkit-scrollbar { display: none; }
         .gallery-track:active { cursor: grabbing; }
-
-        .gallery-item { 
-            width: 600px; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); flex-shrink: 0; 
-        }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; object-position: top; pointer-events: none; /* Verhindert Bild-Drag, erlaubt Swipe */ }
+        .gallery-item { width: 600px; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); flex-shrink: 0; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; object-position: top; pointer-events: none; }
 
         /* --- SOCIAL PROOF --- */
         .social-proof { padding: 60px 20px; text-align: center; }
         .google-box { display: inline-flex; align-items: center; gap: 15px; background: white; padding: 15px 30px; border-radius: 50px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 40px; }
         .stars { color: #F4B400; font-size: 1.2rem; }
-        .logo-row { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; opacity: 0.4; font-weight: 700; font-size: 1.2rem; }
+        .logo-row { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; opacity: 0.5; font-weight: 700; font-size: 1rem; max-width: 900px; margin: 0 auto; line-height: 1.8; }
+        .logo-row span { white-space: nowrap; }
 
         /* --- INVESTITION --- */
         .pricing-section {
@@ -114,7 +114,6 @@
         }
         .pkg-card:hover .pkg-shine-wrap::after { left: 150%; transition: 0.7s ease-in-out; }
         .pkg-card:hover { transform: translateY(-8px); }
-
         .pkg-card.featured { border: 2px solid var(--accent-warm); transform: scale(1.03); z-index: 2; }
         .pkg-card.featured::before { 
             content: 'Empfehlung'; position: absolute; top: -16px; left: 50%; transform: translateX(-50%); 
@@ -122,7 +121,6 @@
             font-size: 0.75rem; font-weight: 700; text-transform: uppercase; z-index: 10;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
-        
         .pkg-price { font-size: 2.5rem; font-weight: 700; font-family: var(--font-head); margin: 15px 0; color: #111; }
         .pkg-features { margin: 30px 0; list-style: none; }
         .pkg-features li { padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.08); display: flex; gap: 10px; color: #444; }
@@ -137,17 +135,8 @@
         .btn-b2b { display: inline-block; background: #111; color: white; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; align-self: start; }
         
         /* --- FAQ GRID --- */
-        .faq-wrap { 
-            padding: 80px 20px 20px 20px; 
-            display: grid; 
-            grid-template-columns: 1fr 2fr;
-            gap: 40px; 
-        }
-        .faq-img { 
-            width: 100%; border-radius: 20px; 
-            height: 100%; min-height: 550px;
-            object-fit: cover; 
-        }
+        .faq-wrap { padding: 80px 20px 20px 20px; display: grid; grid-template-columns: 1fr 2fr; gap: 40px; }
+        .faq-img { width: 100%; border-radius: 20px; height: 100%; min-height: 550px; object-fit: cover; }
         .faq-item { background: white; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05); }
         .faq-question { padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
         .faq-icon { transition: transform 0.3s; }
@@ -156,25 +145,25 @@
         .faq-item.active .faq-answer { max-height: 200px; padding-bottom: 20px; }
 
         /* --- KONTAKT --- */
-        .contact-wrap { 
-            margin: 20px 20px 80px 20px; 
-            padding: 60px 40px; background: white; border-radius: var(--radius); 
-        }
+        .contact-wrap { margin: 20px 20px 80px 20px; padding: 60px 40px; background: white; border-radius: var(--radius); }
         .contact-info-block { display: flex; gap: 50px; align-items: center; margin-bottom: 60px; flex-wrap: wrap; justify-content: center; }
         .contact-avatar-xxl { width: 450px; height: 450px; border-radius: 50%; object-fit: cover; border: 10px solid #F4F4F2; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
         .contact-text { max-width: 400px; font-size: 1.1rem; line-height: 1.8; }
         .map-separate { width: 100%; height: 400px; border-radius: 24px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         .map-separate iframe { width: 100%; height: 100%; border: 0; filter: grayscale(100%) sepia(10%); }
 
-        /* --- BOTTOM TEXT --- */
-        .bottom-impact { 
-            padding: 40px 20px 80px 20px; text-align: center; 
-            display: flex; justify-content: center;
-        }
-        .bottom-bubble {
+        /* --- BOTTOM ABOUT --- */
+        .bottom-about { padding: 40px 20px 80px 20px; display: flex; justify-content: center; }
+        .about-bubble {
             background: #EAEAE8; padding: 60px; border-radius: 40px; 
-            max-width: 800px; width: 100%;
+            max-width: 700px; width: 100%;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: left; /* Text linksbündig für besseren Lesefluss */
+        }
+        .about-img {
+            width: 100%; height: 400px; object-fit: cover; object-position: top;
+            border-radius: 20px; margin-top: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
         /* --- FOOTER & UP BTN --- */
@@ -194,12 +183,10 @@
         @media(max-width: 900px) {
             .faq-wrap { grid-template-columns: 1fr; }
             .hero h1 { font-size: 3rem; }
-            .artist-avatar, .contact-avatar-xxl { width: 340px; height: 340px; }
-            
-            /* LAUFBAND GRÖSSER +30% -> ca 500px */
+            .artist-circle-wrapper, .contact-avatar-xxl { width: 340px; height: 340px; }
             .gallery-item { width: 500px; }
-            
             .faq-img { height: 200px; min-height: 200px; }
+            .about-img { height: 300px; }
             .wrapper { width: 100%; margin: 0; box-shadow: none; }
         }
 
@@ -232,9 +219,17 @@
         </div>
     </div>
 
-    <!-- ARTIST -->
+    <!-- ARTIST (INTERACTIVE VIDEO) -->
     <section class="artist-section reveal">
-        <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-i-kreis.png" class="artist-avatar" alt="Irene">
+        <div class="artist-circle-wrapper" id="artistCircle">
+            <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-i-kreis.png" class="artist-avatar" alt="Irene" id="artistImg">
+            <video class="artist-video" id="artistVideo" muted playsinline>
+                <source src="https://denkenfeld.github.io/pix/irene-fotoshooting-scene1.MP4" type="video/mp4">
+            </video>
+            <div class="flash-overlay" id="flashOverlay"></div>
+            <i class="fa-solid fa-play play-hint"></i>
+        </div>
+
         <div class="artist-bubble">
             <div class="artist-name">Hi, ich bin Irene.</div>
             <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Ich leite Sie an.</h3>
@@ -242,18 +237,15 @@
         </div>
     </section>
 
-    <!-- GALLERY (HYBRID JS LOOP) -->
+    <!-- GALLERY -->
     <div class="gallery-wrap reveal">
         <h3 style="padding-left: 20px; margin-bottom: 20px; font-family: var(--font-head);">Selected Works</h3>
         <div class="gallery-track" id="galleryTrack">
-            <!-- ORIGINAL SET (1-5) -->
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-bewerbung-1.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-2.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-4.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s3.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s1.jpg"></div>
-            
-            <!-- DUPLICATE SET (1-5) FOR INFINITE LOOP -->
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-bewerbung-1.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-2.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-4.jpg"></div>
@@ -262,7 +254,7 @@
         </div>
     </div>
 
-    <!-- SOCIAL PROOF -->
+    <!-- SOCIAL PROOF (NEUE LOGOS) -->
     <div class="social-proof reveal">
         <div class="google-box">
             <span class="stars">★★★★★</span>
@@ -271,7 +263,8 @@
         </div>
         <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 15px;">Vertraut von Teams bei</div>
         <div class="logo-row">
-            <span>SPARKASSE</span> <span>INTERSPORT</span> <span>EDEKA</span> <span>VOLKSBANK</span>
+            <span>EDEKA</span> <span>FOKUS</span> <span>TOOM</span> <span>ALNATURA</span> 
+            <span>ALLIANZ</span> <span>MEY GENERALBAU</span> <span>WELT DER FRAU</span> <span>UNIVERSITÄT TÜBINGEN</span>
         </div>
     </div>
 
@@ -294,7 +287,6 @@
                 </ul>
                 <a href="#kontakt" class="btn-card">Anfragen</a>
             </div>
-            
             <div class="pkg-card featured">
                 <div class="pkg-shine-wrap"></div>
                 <h3>Karriere</h3>
@@ -307,7 +299,6 @@
                 </ul>
                 <a href="#kontakt" class="btn-card">Anfragen</a>
             </div>
-            
             <div class="pkg-card">
                 <div class="pkg-shine-wrap"></div>
                 <h3>Executive</h3>
@@ -405,15 +396,16 @@
         </div>
     </section>
 
-    <!-- BOTTOM TEXT -->
-    <div class="bottom-impact reveal">
-        <div class="bottom-bubble">
-            <div class="artist-name">Business Impact</div>
-            <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Der erste Eindruck zählt.</h3>
+    <!-- BOTTOM ÜBER MICH (NEW) -->
+    <div class="bottom-about reveal">
+        <div class="about-bubble">
+            <div class="artist-name">Über mich</div>
+            <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Irene Ilter</h3>
             <p style="color: #444; line-height: 1.6;">
-                Studien zeigen: Wir beurteilen Kompetenz innerhalb von Millisekunden anhand eines Fotos. 
-                Lassen Sie uns sicherstellen, dass dieser Moment für Sie arbeitet.
+                Seit über 15 Jahren spezialisiere ich mich darauf, Persönlichkeit und Präsenz in den Fokus zu rücken. In meinem Studio in Balingen-Frommern verbinde ich modernste Technik mit einer entspannten Atmosphäre, um Bewerbungsfotos und Business-Porträts zu schaffen, die wirklich hängen bleiben. Mein Ziel: Bilder, die nicht nur professionell aussehen, sondern Ihre individuelle Geschichte erzählen.
             </p>
+            <!-- Bild im Container -->
+            <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-i-ich.jpg" class="about-img" alt="Irene Ilter Portrait">
         </div>
     </div>
 
@@ -471,38 +463,45 @@
         }
     });
 
-    /* --- HYBRID AUTO SCROLL LOGIC --- */
+    // Hybrid Auto Scroll
     const track = document.getElementById('galleryTrack');
-    let scrollSpeed = 0.8; // px per tick
     let autoScrollActive = true;
     let scrollInterval;
-
     function startAutoScroll() {
         if (!autoScrollActive) return;
         clearInterval(scrollInterval);
         scrollInterval = setInterval(() => {
-            if (track.scrollLeft >= (track.scrollWidth / 2)) {
-                // Silent Loop Jump Back
-                track.scrollLeft = 0; 
-            } else {
-                track.scrollLeft += 1;
-            }
-        }, 20); // 50fps
+            if (track.scrollLeft >= (track.scrollWidth / 2)) { track.scrollLeft = 0; } else { track.scrollLeft += 1; }
+        }, 20); 
     }
-
-    // Stop on Interaction
-    const stopScroll = () => { 
-        autoScrollActive = false; 
-        clearInterval(scrollInterval); 
-    };
-
+    const stopScroll = () => { autoScrollActive = false; clearInterval(scrollInterval); };
     track.addEventListener('touchstart', stopScroll);
     track.addEventListener('mousedown', stopScroll);
     track.addEventListener('wheel', stopScroll);
-
-    // Start
     startAutoScroll();
 
+    // Click to Video
+    const circle = document.getElementById('artistCircle');
+    const vid = document.getElementById('artistVideo');
+    const img = document.getElementById('artistImg');
+    const flash = document.getElementById('flashOverlay');
+    let isPlaying = false;
+
+    circle.addEventListener('click', () => {
+        if(isPlaying) return; 
+        isPlaying = true;
+        circle.classList.add('playing');
+        vid.style.opacity = '1'; img.style.opacity = '0';
+        vid.play();
+        vid.onended = () => {
+            flash.style.opacity = '1';
+            setTimeout(() => {
+                vid.style.opacity = '0'; img.style.opacity = '1';
+                vid.currentTime = 0; circle.classList.remove('playing'); isPlaying = false;
+                setTimeout(() => { flash.style.opacity = '0'; }, 100);
+            }, 150);
+        };
+    });
 </script>
 </body>
 </html>
