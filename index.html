@@ -12,17 +12,16 @@
         :root {
             --bg-paper: #F4F4F2;
             --text: #111;
-            --accent-warm: #C6A87C; /* Gold-Beige Akzent */
+            --accent-warm: #C6A87C;
             --radius: 24px;
             --font-head: 'Clash Display', sans-serif;
             --font-body: 'General Sans', sans-serif;
-            
-            /* NEUE FARBPALETTE INVESTITION */
-            --invest-bg: #4A4036; /* Dark Mocca */
-            --card-bg-start: #FFFCF7; /* Cream */
-            --card-bg-end: #F0EBE0; /* Warm Grey/Beige */
+            --invest-bg: #4A4036;
+            --card-bg-start: #FFFCF7;
+            --card-bg-end: #F0EBE0;
         }
 
+        html { scroll-behavior: smooth; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
@@ -35,33 +34,51 @@
 
         .wrapper {
             width: 100%; max-width: 1200px; background: var(--bg-paper); min-height: 100vh;
-            box-shadow: 0 0 100px rgba(0,0,0,0.2); position: relative; padding-bottom: 100px;
+            box-shadow: 0 0 100px rgba(0,0,0,0.2); position: relative; padding-bottom: 50px;
         }
 
-        /* --- GLOBAL REVEAL --- */
         .reveal { opacity: 0; transform: translateY(60px) scale(0.98); transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.1); }
         .reveal.active { opacity: 1; transform: translateY(0) scale(1); }
 
-        /* --- HERO (PARALLAX ONLY HERE) --- */
+        /* --- HERO --- */
         .hero { position: relative; height: 85vh; background: black; border-radius: 0 0 40px 40px; overflow: hidden; margin-bottom: 60px; z-index: 1; }
-        .hero img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; will-change: transform; } /* Nur hier Parallax */
-        .hero-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 30px 60px 30px; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); color: white; display: flex; flex-direction: column; }
+        .hero img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; will-change: transform; }
+        .hero-overlay { 
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; /* Overlay deckt untere 60% ab */
+            padding: 0 30px 40px 30px; /* Padding oben 0, unten 40 */
+            /* Gradient stärker unten */
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 60%, transparent 100%); 
+            color: white; 
+            display: flex; flex-direction: column; align-items: flex-start;
+            justify-content: flex-end; /* DRÜCKT DEN INHALT NACH UNTEN */
+        }
         .hero h1 { font-size: clamp(3rem, 8vw, 4.5rem); line-height: 0.95; margin-bottom: 10px; }
-        .scroll-indicator { align-self: center; margin-top: 30px; font-size: 2rem; color: rgba(255,255,255,0.7); animation: pulseDown 2s infinite; }
+        .scroll-indicator { 
+            margin-top: 20px; font-size: 2rem; color: rgba(255,255,255,0.7); 
+            animation: pulseDown 2s infinite; align-self: flex-start; margin-left: 20px; 
+        }
         @keyframes pulseDown { 0% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(10px); opacity: 1; } 100% { transform: translateY(0); opacity: 0.5; } }
 
-        /* --- ARTIST (XXXL) --- */
+        /* --- ARTIST STYLE --- */
         .artist-section { padding: 80px 20px; display: flex; align-items: center; justify-content: center; gap: 50px; flex-wrap: wrap; }
+        
         .artist-avatar { width: 400px; height: 400px; border-radius: 50%; object-fit: cover; border: 8px solid white; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
         .artist-bubble { background: #EAEAE8; padding: 40px; border-radius: 30px; border-bottom-left-radius: 0; position: relative; max-width: 400px; }
         .artist-name { font-weight: 700; font-size: 1.2rem; margin-bottom: 10px; color: #D96C4A; }
 
         /* --- GALLERY --- */
         .gallery-wrap { padding: 40px 0; overflow: hidden; background: white; }
-        .gallery-track { display: flex; gap: 30px; width: max-content; animation: scroll 60s linear infinite; }
-        .gallery-track:hover { animation-play-state: paused; }
+        .gallery-track { 
+            display: flex; gap: 30px; overflow-x: auto; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; padding-bottom: 20px; 
+        }
+        .gallery-track::-webkit-scrollbar { display: none; }
         .gallery-item { width: 600px; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); flex-shrink: 0; }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+
+        @media (min-width: 1025px) {
+            .gallery-track { overflow-x: hidden; width: max-content; animation: scroll 60s linear infinite; }
+            .gallery-track:hover { animation-play-state: paused; }
+        }
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
         /* --- SOCIAL PROOF --- */
@@ -70,76 +87,116 @@
         .stars { color: #F4B400; font-size: 1.2rem; }
         .logo-row { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; opacity: 0.4; font-weight: 700; font-size: 1.2rem; }
 
-        /* --- INVESTITION (WARM BEIGE) --- */
+        /* --- INVESTITION --- */
         .pricing-section {
-            background: var(--invest-bg); /* Dark Mocca */
-            color: #FDFBF7; /* Cream White Text */
+            background: var(--invest-bg); color: #FDFBF7;
             padding: 80px 20px; border-radius: 40px; margin: 40px 20px; position: relative; z-index: 2;
         }
         .pkg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        
         .pkg-card {
-            /* Creamy Gradient */
             background: linear-gradient(to bottom right, var(--card-bg-start), var(--card-bg-end));
-            border-radius: var(--radius); padding: 40px;
-            color: #111; /* Dark Text on Light Card */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            position: relative; overflow: hidden; transition: transform 0.4s;
-            border: none;
+            border-radius: var(--radius); padding: 40px; color: #111;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; 
+            transition: transform 0.4s; overflow: visible; 
         }
-        /* Soft Shine */
-        .pkg-card::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.8), transparent); transform: skewX(-25deg); transition: 0.5s; pointer-events: none; }
-        .pkg-card:hover::after { left: 150%; transition: 0.7s ease-in-out; }
+        .pkg-shine-wrap {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: var(--radius); overflow: hidden; pointer-events: none;
+        }
+        .pkg-shine-wrap::after { 
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; 
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.8), transparent); 
+            transform: skewX(-25deg); transition: 0.5s; 
+        }
+        .pkg-card:hover .pkg-shine-wrap::after { left: 150%; transition: 0.7s ease-in-out; }
         .pkg-card:hover { transform: translateY(-8px); }
-        
-        /* Highlight Stroke */
-        .pkg-card.featured { border: 2px solid var(--accent-warm); transform: scale(1.03); z-index: 2; }
-        .pkg-card.featured::before {
-            content: 'Empfehlung'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-            background: var(--accent-warm); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
-        }
 
+        .pkg-card.featured { border: 2px solid var(--accent-warm); transform: scale(1.03); z-index: 2; }
+        .pkg-card.featured::before { 
+            content: 'Empfehlung'; position: absolute; top: -16px; left: 50%; transform: translateX(-50%); 
+            background: var(--accent-warm); color: white; padding: 6px 16px; border-radius: 20px; 
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase; z-index: 10;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
         .pkg-price { font-size: 2.5rem; font-weight: 700; font-family: var(--font-head); margin: 15px 0; color: #111; }
         .pkg-features { margin: 30px 0; list-style: none; }
         .pkg-features li { padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.08); display: flex; gap: 10px; color: #444; }
-        .pkg-features li i { color: var(--accent-warm); } /* Gold Checkmarks */
-
-        /* Button in Beige Context */
-        .btn-card {
-            display: block; width: 100%; padding: 15px; text-align: center;
-            background: #222; color: white; text-decoration: none; border-radius: 12px; font-weight: 700; margin-top: 20px;
-        }
+        .pkg-features li i { color: var(--accent-warm); }
+        .btn-card { display: block; width: 100%; padding: 15px; text-align: center; background: #222; color: white; text-decoration: none; border-radius: 12px; font-weight: 700; margin-top: 20px; }
         .pkg-card.featured .btn-card { background: var(--accent-warm); }
 
-        /* --- B2B & FAQ --- */
+        /* --- B2B SECTIONS --- */
         .b2b-section { margin: 80px 20px; background: #EAE8E4; border-radius: var(--radius); overflow: hidden; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
         .b2b-content { padding: 60px 40px; display: flex; flex-direction: column; justify-content: center; }
         .b2b-img { width: 100%; height: 100%; min-height: 400px; object-fit: cover; }
         .btn-b2b { display: inline-block; background: #111; color: white; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; align-self: start; }
         
-        .faq-wrap { padding: 80px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; }
-        .faq-img { width: 100%; border-radius: 20px; height: 100%; min-height: 400px; object-fit: cover; }
+        /* --- FAQ GRID --- */
+        .faq-wrap { 
+            /* ABSTAND REDUZIERT (padding-bottom von 80 auf 20) */
+            padding: 80px 20px 20px 20px; 
+            display: grid; 
+            grid-template-columns: 1fr 2fr;
+            gap: 40px; 
+        }
+        .faq-img { 
+            width: 100%; border-radius: 20px; 
+            height: 100%; min-height: 550px;
+            object-fit: cover; 
+        }
         .faq-item { background: white; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05); }
         .faq-question { padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
-        .faq-icon { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .faq-icon { transition: transform 0.3s; }
         .faq-item.active .faq-icon { transform: rotate(180deg); }
         .faq-answer { max-height: 0; overflow: hidden; transition: 0.3s; padding: 0 20px; color: #555; }
         .faq-item.active .faq-answer { max-height: 200px; padding-bottom: 20px; }
 
-        /* --- KONTAKT (XXL) --- */
-        .contact-wrap { margin: 80px 20px; padding: 60px 40px; background: white; border-radius: var(--radius); }
+        /* --- KONTAKT --- */
+        .contact-wrap { 
+            /* ABSTAND OBEN REDUZIERT (margin-top von 80 auf 20) */
+            margin: 20px 20px 80px 20px; 
+            padding: 60px 40px; background: white; border-radius: var(--radius); 
+        }
         .contact-info-block { display: flex; gap: 50px; align-items: center; margin-bottom: 60px; flex-wrap: wrap; justify-content: center; }
         .contact-avatar-xxl { width: 450px; height: 450px; border-radius: 50%; object-fit: cover; border: 10px solid #F4F4F2; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
         .contact-text { max-width: 400px; font-size: 1.1rem; line-height: 1.8; }
-        .map-separate { width: 100%; height: 400px; border-radius: 24px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.05); filter: grayscale(100%) sepia(20%) contrast(90%); }
-        .map-separate img { width: 100%; height: 100%; object-fit: cover; }
+        .map-separate { width: 100%; height: 400px; border-radius: 24px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        .map-separate iframe { width: 100%; height: 100%; border: 0; filter: grayscale(100%) sepia(10%); }
 
+        /* --- BOTTOM TEXT --- */
+        .bottom-impact { 
+            padding: 40px 20px 80px 20px; text-align: center; 
+            display: flex; justify-content: center;
+        }
+        .bottom-bubble {
+            background: #EAEAE8; padding: 60px; border-radius: 40px; 
+            max-width: 800px; width: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        /* --- FOOTER & UP BTN --- */
+        .footer-container { padding: 40px 20px; text-align: center; color: #999; }
+        .back-to-top {
+            display: inline-flex; width: 50px; height: 50px; border: 1px solid #ccc;
+            border-radius: 50%; align-items: center; justify-content: center;
+            color: #555; text-decoration: none; margin-bottom: 30px;
+            transition: 0.3s;
+        }
+        .back-to-top:hover { background: #111; border-color: #111; color: white; transform: translateY(-5px); }
+        .footer-links { font-size: 0.8rem; line-height: 2; }
+        .footer-links a { color: #777; text-decoration: none; margin: 0 10px; transition: 0.3s; }
+        .footer-links a:hover { color: #000; }
+
+        /* --- MOBILE TWEAKS --- */
         @media(max-width: 900px) {
             .faq-wrap { grid-template-columns: 1fr; }
             .hero h1 { font-size: 3rem; }
-            .artist-avatar { width: 280px; height: 280px; }
-            .contact-avatar-xxl { width: 280px; height: 280px; }
-            .contact-info-block { text-align: center; gap: 30px; }
+            
+            /* GRÖSSERE KREISFOTOS AUF HANDY (340px) */
+            .artist-avatar, .contact-avatar-xxl { width: 340px; height: 340px; }
+            
+            .gallery-item { width: 300px; }
+            .faq-img { height: 200px; min-height: 200px; }
             .wrapper { width: 100%; margin: 0; box-shadow: none; }
         }
 
@@ -160,10 +217,10 @@
 </head>
 <body>
 
-<div class="wrapper">
-    <!-- HERO (PARALLAX HERE) -->
+<div class="wrapper" id="top">
+    <!-- HERO (Justify End) -->
     <div class="hero reveal active">
-        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1500" alt="Hero" id="heroImg">
+        <img src="https://denkenfeld.github.io/pix/start1.jpeg" alt="Hero" id="heroImg">
         <div class="hero-overlay">
             <div style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; margin-bottom: 15px; opacity: 0.8;">Pix Fotostudio Balingen</div>
             <h1>Your Face.<br>Your Future.</h1>
@@ -172,9 +229,9 @@
         </div>
     </div>
 
-    <!-- ARTIST SECTION XXL -->
+    <!-- ARTIST -->
     <section class="artist-section reveal">
-        <img src="https://images.unsplash.com/photo-1554048612-387768052bf7?q=80&w=800" class="artist-avatar" alt="Irene">
+        <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-i-kreis.png" class="artist-avatar" alt="Irene">
         <div class="artist-bubble">
             <div class="artist-name">Hi, ich bin Irene.</div>
             <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Ich leite Sie an.</h3>
@@ -186,11 +243,12 @@
     <div class="gallery-wrap reveal">
         <h3 style="padding-left: 20px; margin-bottom: 20px; font-family: var(--font-head);">Selected Works</h3>
         <div class="gallery-track">
-            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1200"></div>
-            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1200"></div>
-            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1200"></div>
-            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=1200"></div>
-            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1200"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-bewerbung-1.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-2.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-4.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s3.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s1.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-bewerbung-1.jpg"></div>
         </div>
     </div>
 
@@ -207,15 +265,15 @@
         </div>
     </div>
 
-    <!-- INVESTITION (DARK BEIGE / CREAM CARDS) -->
+    <!-- INVESTITION -->
     <section class="pricing-section reveal" id="investition">
         <div style="text-align: center; max-width: 600px; margin: 0 auto 60px auto;">
             <h2>Investition</h2>
             <p style="opacity: 0.8;">Business-Portraits für LinkedIn & Website. Wählen Sie Ihr Paket.</p>
         </div>
-        
         <div class="pkg-grid">
             <div class="pkg-card">
+                <div class="pkg-shine-wrap"></div>
                 <h3>Basis</h3>
                 <div class="pkg-price">89€</div>
                 <ul class="pkg-features">
@@ -226,8 +284,9 @@
                 </ul>
                 <a href="#kontakt" class="btn-card">Anfragen</a>
             </div>
-
+            
             <div class="pkg-card featured">
+                <div class="pkg-shine-wrap"></div>
                 <h3>Karriere</h3>
                 <div class="pkg-price">199€</div>
                 <ul class="pkg-features">
@@ -238,8 +297,9 @@
                 </ul>
                 <a href="#kontakt" class="btn-card">Anfragen</a>
             </div>
-
+            
             <div class="pkg-card">
+                <div class="pkg-shine-wrap"></div>
                 <h3>Executive</h3>
                 <div class="pkg-price">349€</div>
                 <ul class="pkg-features">
@@ -253,9 +313,9 @@
         </div>
     </section>
 
-    <!-- B2B HEAVY -->
+    <!-- TEAM ALS MARKE -->
     <section class="b2b-section reveal">
-        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800" class="b2b-img" alt="Corporate Team">
+        <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s4.jpg" class="b2b-img" alt="Corporate Team">
         <div class="b2b-content">
             <span style="color: #D96C4A; font-weight: 700; letter-spacing: 1px; margin-bottom: 10px;">B2B SPECIAL</span>
             <h2>Ihr Team als Marke.</h2>
@@ -269,11 +329,27 @@
         </div>
     </section>
 
+    <!-- INDIVIDUELL -->
+    <section class="b2b-section reveal">
+        <div class="b2b-content">
+            <span style="color: #D96C4A; font-weight: 700; letter-spacing: 1px; margin-bottom: 10px;">KREATIV & INDIVIDUELL</span>
+            <h2>Individuelle Fotoshootings.</h2>
+            <p style="margin-bottom: 20px; color: #555;">Sie brauchen mehr als Standard? Wir entwickeln gemeinsam Bildkonzepte, die Ihre Persönlichkeit oder Marke einzigartig inszenieren.</p>
+            <ul style="list-style: none; margin-bottom: 30px; font-weight: 500; color: #333;">
+                <li style="margin-bottom: 10px;">✓ Ausführliche Vorbesprechung & Moodboards</li>
+                <li style="margin-bottom: 10px;">✓ Spezielles Licht-Setup & Styling</li>
+                <li>✓ High-End Retusche für Magazin-Look</li>
+            </ul>
+            <a href="#kontakt" class="btn-b2b">Konzept besprechen &rarr;</a>
+        </div>
+        <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-individuell-1.jpg" class="b2b-img" alt="Individual Shooting">
+    </section>
+
     <!-- FAQ -->
     <section class="faq-wrap reveal">
         <div>
             <h2>Häufige Fragen</h2>
-            <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800" class="faq-img" alt="Studio Detail" style="margin-top:20px;">
+            <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-studio3.jpg" class="faq-img" alt="Studio Detail" style="margin-top:20px;">
         </div>
         <div style="padding-top: 20px;">
             <div class="faq-item">
@@ -299,10 +375,10 @@
         </div>
     </section>
 
-    <!-- KONTAKT NEU (XXXL IMAGE) -->
+    <!-- KONTAKT (Tight Spacing) -->
     <section class="contact-wrap reveal" id="kontakt">
         <div class="contact-info-block">
-            <img src="https://images.unsplash.com/photo-1554048612-387768052bf7?q=80&w=800" class="contact-avatar-xxl" alt="Irene">
+            <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-i-kontakt.jpg" class="contact-avatar-xxl" alt="Irene">
             <div class="contact-text">
                 <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Kommen Sie vorbei.</h3>
                 <p>
@@ -315,11 +391,36 @@
             </div>
         </div>
         <div class="map-separate">
-            <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1500" alt="Map Balingen">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2639.8130836511584!2d8.8527773!3d48.2730556!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x479a099c12345678%3A0xabcdef1234567890!2sOdenwaldstra%C3%9Fe%2019%2C%2072336%20Balingen!5e0!3m2!1sde!2sde!4v1700000000000!5m2!1sde!2sde" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="width:100%;height:100%;border:0;filter:grayscale(100%) sepia(10%);"></iframe>
         </div>
     </section>
 
-    <footer style="text-align: center; padding: 40px; color: #999; font-size: 0.8rem;">PIX Fotostudio Balingen © 2026</footer>
+    <!-- BOTTOM TEXT -->
+    <div class="bottom-impact reveal">
+        <div class="bottom-bubble">
+            <div class="artist-name">Business Impact</div>
+            <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Der erste Eindruck zählt.</h3>
+            <p style="color: #444; line-height: 1.6;">
+                Studien zeigen: Wir beurteilen Kompetenz innerhalb von Millisekunden anhand eines Fotos. 
+                Lassen Sie uns sicherstellen, dass dieser Moment für Sie arbeitet.
+            </p>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer-container">
+        <a href="#top" class="back-to-top">
+            <i class="fa-solid fa-chevron-up"></i>
+        </a>
+        <div class="footer-links">
+            <p>PIX Fotostudio Balingen © 2026</p>
+            <p>
+                <a href="#">Impressum</a> • 
+                <a href="#">Datenschutz</a> • 
+                <a href="#">AGB</a>
+            </p>
+        </div>
+    </div>
 </div>
 
 <!-- BUTTON -->
@@ -350,14 +451,11 @@
         entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    
-    // Parallax Hero Only
+    // Parallax
     const heroImg = document.getElementById('heroImg');
     window.addEventListener('scroll', () => {
         const scrolled = window.pageYOffset;
-        if(scrolled < 1000) { // Limit for performance
-            heroImg.style.transform = `translateY(${scrolled * 0.3}px)`;
-        }
+        if(scrolled < 1000) heroImg.style.transform = `translateY(${scrolled * 0.3}px)`;
     });
 </script>
 </body>
