@@ -1,1 +1,317 @@
-test
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PIX Fotostudio | Visual Excellence</title>
+    
+    <!-- Modern Fonts & Icons -->
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* --- CORE VARIABLES --- */
+        :root {
+            --bg: #F4F4F2; /* Stone */
+            --surface: #FFFFFF;
+            --text: #111;
+            --accent: #D96C4A; /* Terrakotta */
+            --glass: rgba(255, 255, 255, 0.8);
+            --blur: 12px;
+            --radius: 24px;
+            --font-head: 'Clash Display', sans-serif;
+            --font-body: 'General Sans', sans-serif;
+            --shadow: 0 10px 40px rgba(0,0,0,0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background-color: var(--bg); color: var(--text);
+            font-family: var(--font-body); overflow-x: hidden; padding-bottom: 100px;
+        }
+
+        /* --- 1. SMART SCROLL BUTTON --- */
+        .call-fab {
+            position: fixed; bottom: 30px; right: 30px; z-index: 1000;
+            background: #111; color: white;
+            height: 60px; border-radius: 30px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none; overflow: hidden;
+            padding: 0 25px; /* Default expanded padding */
+            width: auto;     /* Default auto width */
+        }
+
+        /* Status: Collapsed (Beim Runterscrollen) */
+        .call-fab.collapsed {
+            width: 60px; padding: 0; /* Kreisform */
+        }
+        
+        .fab-content {
+            display: flex; align-items: center; white-space: nowrap;
+            transition: 0.3s;
+        }
+        
+        /* Text ausblenden wenn collapsed */
+        .call-fab.collapsed .fab-text {
+            width: 0; opacity: 0; margin: 0;
+        }
+
+        .fab-text {
+            margin-right: 15px; font-weight: 600; font-size: 0.95rem;
+            display: flex; flex-direction: column; line-height: 1.1;
+            transition: 0.3s; overflow: hidden; width: 110px; opacity: 1;
+        }
+        
+        .status-dot {
+            width: 8px; height: 8px; background: #4CAF50; border-radius: 50%;
+            display: inline-block; margin-right: 5px; box-shadow: 0 0 8px #4CAF50;
+        }
+
+        .fab-icon { font-size: 1.2rem; }
+
+        /* --- 2. HERO SECTION --- */
+        .hero {
+            position: relative; height: 90vh; background: black;
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+            overflow: hidden;
+        }
+        .hero img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+        .hero-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            padding: 40px 20px 80px 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); color: white;
+        }
+        .hero h1 { font-size: clamp(3rem, 10vw, 4.5rem); line-height: 0.95; margin-bottom: 20px; }
+        
+        /* --- 3. SWIPEABLE GALLERY (INTERACTIVE) --- */
+        .gallery-wrap {
+            padding: 60px 0; overflow: visible;
+        }
+        .gallery-title { padding-left: 20px; margin-bottom: 20px; font-size: 1.5rem; }
+        
+        .gallery-track {
+            display: flex; gap: 15px; overflow-x: auto; 
+            padding: 0 20px 40px 20px; /* Padding rechts für Scroll-Ende */
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch; /* Smooth scroll iOS */
+        }
+        
+        /* Hide Scrollbar */
+        .gallery-track::-webkit-scrollbar { display: none; }
+        
+        .gallery-item {
+            min-width: 280px; height: 400px;
+            border-radius: 20px; overflow: hidden; position: relative;
+            scroll-snap-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .gallery-item:active { transform: scale(0.98); } /* Touch Feedback */
+        
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+        .gallery-label {
+            position: absolute; bottom: 15px; left: 15px;
+            background: rgba(255,255,255,0.9); padding: 5px 15px;
+            border-radius: 20px; font-size: 0.8rem; font-weight: 700;
+        }
+
+        /* --- 4. PREISE (GLASS CARDS) --- */
+        .pricing { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+        
+        .pkg-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;
+        }
+        
+        .pkg-card {
+            background: rgba(255,255,255,0.6); /* Glass Base */
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: 40px; border-radius: var(--radius);
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: var(--shadow);
+            transition: 0.3s; position: relative;
+        }
+        
+        /* Highlight Card */
+        .pkg-card.featured {
+            background: white; border: 2px solid var(--accent);
+            transform: scale(1.02); z-index: 2;
+        }
+        .pkg-card.featured::before {
+            content: 'Empfehlung'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+            background: var(--accent); color: white; padding: 4px 12px;
+            border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+        }
+
+        .pkg-head h3 { font-size: 1.5rem; margin-bottom: 5px; }
+        .pkg-price { font-size: 2.5rem; font-weight: 700; font-family: var(--font-head); color: var(--text); }
+        .pkg-price span { font-size: 1rem; color: #888; font-weight: 400; }
+
+        .pkg-features { margin: 30px 0; list-style: none; }
+        .pkg-features li {
+            padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex; align-items: center; gap: 10px; color: #444; font-size: 0.95rem;
+        }
+        .pkg-features li:last-child { border-bottom: none; }
+        .check { color: var(--accent); }
+
+        .btn-full {
+            display: block; width: 100%; padding: 18px; text-align: center;
+            background: #1A1A1A; color: white; text-decoration: none;
+            border-radius: 16px; font-weight: 600; transition: 0.3s;
+        }
+        .pkg-card.featured .btn-full { background: var(--accent); box-shadow: 0 10px 20px rgba(217, 108, 74, 0.3); }
+        .btn-full:active { transform: scale(0.98); }
+
+        /* --- STUDIO LOCATION --- */
+        .studio-sec { padding: 40px 20px; text-align: center; margin-bottom: 50px; }
+        .studio-img-large {
+            width: 100%; height: 300px; object-fit: cover; border-radius: var(--radius);
+            margin-top: 30px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 1. SMART SCROLL BUTTON -->
+    <a href="tel:07433123456" class="call-fab" id="smartBtn">
+        <div class="fab-content">
+            <div class="fab-text">
+                <span style="font-size: 0.7rem; opacity: 0.7;">Mo-Sa 8-20h</span>
+                <span><span class="status-dot"></span>Jetzt anrufen</span>
+            </div>
+            <i class="fa-solid fa-phone fab-icon"></i>
+        </div>
+    </a>
+
+    <!-- 2. HERO -->
+    <div class="hero">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1800" alt="Hero">
+        <div class="hero-overlay">
+            <div style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; margin-bottom: 15px; opacity: 0.8;">Pix Fotostudio Balingen</div>
+            <h1>Your Face.<br>Your Future.</h1>
+            <p style="opacity: 0.9; margin-bottom: 20px;">Professionelle Business-Portraits, die Kompetenz ausstrahlen.</p>
+            <a href="#preise" style="color: white; font-weight: 600; text-decoration: underline;">Angebote ansehen &darr;</a>
+        </div>
+    </div>
+
+    <!-- 3. SWIPEABLE GALLERY (Interaktiv) -->
+    <div class="gallery-wrap">
+        <h3 class="gallery-title">Selected Works <span style="font-size:0.8rem; color:#888; font-weight:400;">(Swipe &rarr;)</span></h3>
+        <div class="gallery-track">
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600" loading="lazy">
+                <span class="gallery-label">Business</span>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=600" loading="lazy">
+                <span class="gallery-label">Karriere</span>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=600" loading="lazy">
+                <span class="gallery-label">Executive</span>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=600" loading="lazy">
+                <span class="gallery-label">Corporate Team</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. GLASS PRICING CARDS -->
+    <section class="pricing" id="preise">
+        <h2 style="font-size: 2.5rem; margin-bottom: 40px; text-align: center;">Investition</h2>
+        
+        <div class="pkg-grid">
+            <!-- S -->
+            <div class="pkg-card">
+                <div class="pkg-head">
+                    <h3>Basis</h3>
+                    <div class="pkg-price">89€</div>
+                    <p style="color: #666; font-size: 0.9rem;">Quick & Professional</p>
+                </div>
+                <ul class="pkg-features">
+                    <li><i class="fa-solid fa-check check"></i> 20 Min. Shooting</li>
+                    <li><i class="fa-solid fa-check check"></i> 1 Motiv inkl. Retusche</li>
+                    <li><i class="fa-solid fa-check check"></i> 1 Outfit</li>
+                </ul>
+                <a href="#" class="btn-full">Termin wählen</a>
+            </div>
+
+            <!-- M -->
+            <div class="pkg-card featured">
+                <div class="pkg-head">
+                    <h3>Karriere</h3>
+                    <div class="pkg-price">199€</div>
+                    <p style="color: #666; font-size: 0.9rem;">Perfekt für Bewerbungen</p>
+                </div>
+                <ul class="pkg-features">
+                    <li><i class="fa-solid fa-star check"></i> <strong>60 Min. Coaching</strong></li>
+                    <li><i class="fa-solid fa-check check"></i> 3 Motive inkl. Retusche</li>
+                    <li><i class="fa-solid fa-check check"></i> Outfit-Wechsel inkl.</li>
+                </ul>
+                <a href="#" class="btn-full">Diesen Termin sichern</a>
+            </div>
+
+            <!-- L -->
+            <div class="pkg-card">
+                <div class="pkg-head">
+                    <h3>Executive</h3>
+                    <div class="pkg-price">349€</div>
+                    <p style="color: #666; font-size: 0.9rem;">Für Selbstständige</p>
+                </div>
+                <ul class="pkg-features">
+                    <li><i class="fa-solid fa-check check"></i> 90 Min. Shooting</li>
+                    <li><i class="fa-solid fa-check check"></i> Kommerzielle Nutzung</li>
+                    <li><i class="fa-solid fa-check check"></i> 5 Motive inkl. Retusche</li>
+                </ul>
+                <a href="#" class="btn-full">Anfragen</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. STUDIO & B2B -->
+    <section class="studio-sec">
+        <h2>Ein Raum für Wirkung.</h2>
+        <p style="max-width: 600px; margin: 0 auto; color: #555;">
+            Odenwaldstraße 19, Balingen. Parkplätze direkt vor der Tür. Ruhige Atmosphäre ohne Zeitdruck.
+        </p>
+        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1200" class="studio-img-large" alt="Studio">
+        
+        <div style="margin-top: 60px; padding: 40px; background: #EAEAE8; border-radius: 20px;">
+            <h3>Für Firmen & Teams</h3>
+            <p style="margin-bottom: 20px;">Einheitliche Mitarbeiterfotos stärken Ihre Marke.</p>
+            <a href="mailto:info@pix.de" style="color: black; font-weight: 700; text-decoration: underline;">Firmenangebot anfordern &rarr;</a>
+            <div style="margin-top: 30px; display: flex; gap: 20px; justify-content: center; opacity: 0.5; font-weight: 700;">
+                <span>SPARKASSE</span> <span>VOLKSBANK</span> <span>EDEKA</span>
+            </div>
+        </div>
+    </section>
+
+    <footer style="text-align: center; padding: 40px; color: #999; font-size: 0.8rem;">
+        PIX Fotostudio Balingen © 2026
+    </footer>
+
+    <!-- SCRIPT: Scroll Logic für Button -->
+    <script>
+        let lastScrollTop = 0;
+        const btn = document.getElementById('smartBtn');
+
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                // Scrollt nach UNTEN -> Einklappen (nur Icon)
+                btn.classList.add('collapsed');
+            } else {
+                // Scrollt nach OBEN -> Ausklappen (voller Text)
+                btn.classList.remove('collapsed');
+            }
+            lastScrollTop = scrollTop;
+        });
+    </script>
+</body>
+</html>
