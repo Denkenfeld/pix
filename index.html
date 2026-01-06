@@ -92,12 +92,33 @@
         .artist-bubble { background: #EAEAE8; padding: 40px; border-radius: 30px; border-bottom-left-radius: 0; position: relative; max-width: 400px; }
         .artist-name { font-weight: 700; font-size: 1.2rem; margin-bottom: 10px; color: #D96C4A; }
 
-        /* --- GALLERY --- */
+        /* --- GALLERY (HYBRID SCROLL) --- */
         .gallery-wrap { padding: 40px 0; overflow: hidden; background: white; }
-        .gallery-track { display: flex; gap: 30px; overflow-x: auto; -ms-overflow-style: none; scrollbar-width: none; cursor: grab; }
-        .gallery-track::-webkit-scrollbar { display: none; }
+        
+        .gallery-track { 
+            display: flex; 
+            gap: 30px; 
+            overflow-x: auto; /* WICHTIG für manuelles Scrollen */
+            -ms-overflow-style: none; /* IE/Edge Scrollbar ausblenden */
+            scrollbar-width: none;    /* Firefox Scrollbar ausblenden */
+            padding-left: 20px;       /* Kleiner Einzug am Anfang */
+            padding-right: 20px; 
+            cursor: grab;
+            white-space: nowrap;
+            /* Keine CSS Animation mehr, JS übernimmt das */
+        }
+        
+        .gallery-track::-webkit-scrollbar { display: none; } /* Chrome/Safari Scrollbar ausblenden */
         .gallery-track:active { cursor: grabbing; }
-        .gallery-item { width: 600px; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); flex-shrink: 0; }
+        
+        .gallery-item { 
+            width: 600px; 
+            aspect-ratio: 16/9; 
+            border-radius: 16px; 
+            overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            flex-shrink: 0; 
+        }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; object-position: top; pointer-events: none; }
 
         /* --- SOCIAL PROOF --- */
@@ -156,14 +177,32 @@
             display: grid; 
             grid-template-columns: 1fr 2fr; 
             gap: 40px; 
-            align-items: start;
+            align-items: start; 
         }
+        
+        .faq-img-container {
+            line-height: 0; 
+            margin: 0;
+            padding: 0;
+        }
+
         .faq-img { 
             width: 100%; border-radius: 20px; 
-            height: 100%; min-height: 400px; 
-            object-fit: cover; 
+            height: 100%; 
+            min-height: 480px; 
+            object-fit: cover;
+            display: block; 
         }
-        .faq-item { background: white; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05); }
+        
+        .faq-content {
+            padding-top: 0;
+            margin-top: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px; 
+        }
+
+        .faq-item { background: white; border-radius: 12px; border: 1px solid rgba(0,0,0,0.05); width: 100%; }
         .faq-question { padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
         .faq-icon { transition: transform 0.3s; }
         .faq-item.active .faq-icon { transform: rotate(180deg); }
@@ -180,7 +219,7 @@
             width: 100%; height: 400px; 
             border-radius: 24px; overflow: hidden; 
             box-shadow: 0 5px 20px rgba(0,0,0,0.05); 
-            position: relative; /* Wichtig für absolute children */
+            position: relative; 
         }
         
         /* Privacy Map Styles */
@@ -315,13 +354,16 @@
 
     <!-- GALLERY -->
     <div class="gallery-wrap reveal">
-        <h3 style="padding-left: 20px; margin-bottom: 20px; font-family: var(--font-head);">Selected Works</h3>
+        <h3 style="padding-left: 20px; margin-bottom: 20px; font-family: var(--font-head);">Selected Works: Bewerbungsfotos | Businessportraits | Studio & vor Ort</h3>
+        
         <div class="gallery-track" id="galleryTrack">
+            <!-- Einfach nur die Bilder, kein Wrapper, JS übernimmt Loop -->
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-bewerbung-1.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-2.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-4.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s3.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s1.jpg"></div>
+            <!-- Duplikate für Loop-Feeling -->
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-bewerbung-1.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-2.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-4.jpg"></div>
@@ -444,11 +486,11 @@
 
     <!-- FAQ -->
     <section class="faq-wrap reveal">
-        <div>
+        <div class="faq-img-container">
             <h2>Häufige Fragen</h2>
-            <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-studio3.jpg" class="faq-img" alt="Studio Detail">
+            <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-studio3.jpg" class="faq-img" alt="Studio Detail" style="margin-top: 15px;">
         </div>
-        <div style="padding-top: 0px;">
+        <div class="faq-content">
             <div class="faq-item">
                 <div class="faq-question">Was soll ich anziehen? <i class="fa-solid fa-chevron-down faq-icon"></i></div>
                 <div class="faq-answer">
@@ -627,22 +669,37 @@
         }
     });
 
-    // Hybrid Auto Scroll
+    // *** JS AUTO SCROLL MIT PAUSE FUNKTION (NEU) ***
     const track = document.getElementById('galleryTrack');
-    let autoScrollActive = true;
-    let scrollInterval;
-    function startAutoScroll() {
-        if (!autoScrollActive) return;
-        clearInterval(scrollInterval);
-        scrollInterval = setInterval(() => {
-            if (track.scrollLeft >= (track.scrollWidth / 2)) { track.scrollLeft = 0; } else { track.scrollLeft += 1; }
-        }, 20); 
+    let autoScrollSpeed = 1; // Geschwindigkeit
+    let isHovering = false;
+    let autoScrollId;
+
+    function autoScroll() {
+        if (!isHovering) {
+            track.scrollLeft += autoScrollSpeed;
+            // Wenn am Ende angekommen, springe fast an den Anfang (für Loop-Effekt müsste man mehr klonen, aber so reicht es oft)
+            // oder man lässt es einfach durchlaufen und der User scrollt zurück.
+            // Einfacher Infinite Loop Hack:
+            if(track.scrollLeft >= (track.scrollWidth - track.clientWidth)) {
+                track.scrollLeft = 0;
+            }
+        }
+        autoScrollId = requestAnimationFrame(autoScroll);
     }
-    const stopScroll = () => { autoScrollActive = false; clearInterval(scrollInterval); };
-    track.addEventListener('touchstart', stopScroll);
-    track.addEventListener('mousedown', stopScroll);
-    track.addEventListener('wheel', stopScroll);
-    startAutoScroll();
+
+    // Start Scroll
+    autoScroll();
+
+    // Stop on Interaction
+    track.addEventListener('mouseenter', () => isHovering = true);
+    track.addEventListener('mouseleave', () => isHovering = false);
+    track.addEventListener('touchstart', () => isHovering = true);
+    track.addEventListener('touchend', () => {
+        // Kurze Verzögerung nach Loslassen, bevor es weitergeht
+        setTimeout(() => { isHovering = false; }, 1000);
+    });
+
 
     // Click to Video
     const circle = document.getElementById('artistCircle');
