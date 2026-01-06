@@ -19,6 +19,15 @@
             --invest-bg: #4A4036;
             --card-bg-start: #FFFCF7;
             --card-bg-end: #F0EBE0;
+            
+            /* Review Widget Vars */
+            --rw-bg: #ffffff;
+            --rw-text: #222;
+            --rw-sub: #666;
+            --rw-star: #fbbc04;
+            --rw-progress: #d4c5a3;
+            --rw-arrow-bg: rgba(255, 255, 255, 0.9);
+            --rw-arrow-hover: #fff;
         }
 
         html { scroll-behavior: smooth; }
@@ -92,41 +101,116 @@
         .artist-bubble { background: #EAEAE8; padding: 40px; border-radius: 30px; border-bottom-left-radius: 0; position: relative; max-width: 400px; }
         .artist-name { font-weight: 700; font-size: 1.2rem; margin-bottom: 10px; color: #D96C4A; }
 
-        /* --- GALLERY (HYBRID SCROLL) --- */
+        /* --- GALLERY --- */
         .gallery-wrap { padding: 40px 0; overflow: hidden; background: white; }
-        
         .gallery-track { 
-            display: flex; 
-            gap: 30px; 
-            overflow-x: auto; /* WICHTIG für manuelles Scrollen */
-            -ms-overflow-style: none; /* IE/Edge Scrollbar ausblenden */
-            scrollbar-width: none;    /* Firefox Scrollbar ausblenden */
-            padding-left: 20px;       /* Kleiner Einzug am Anfang */
-            padding-right: 20px; 
-            cursor: grab;
-            white-space: nowrap;
-            /* Keine CSS Animation mehr, JS übernimmt das */
+            display: flex; gap: 30px; overflow-x: auto; 
+            -ms-overflow-style: none; scrollbar-width: none; 
+            padding-left: 20px; padding-right: 20px; cursor: grab; white-space: nowrap;
         }
-        
-        .gallery-track::-webkit-scrollbar { display: none; } /* Chrome/Safari Scrollbar ausblenden */
+        .gallery-track::-webkit-scrollbar { display: none; }
         .gallery-track:active { cursor: grabbing; }
-        
         .gallery-item { 
-            width: 600px; 
-            aspect-ratio: 16/9; 
-            border-radius: 16px; 
-            overflow: hidden; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            flex-shrink: 0; 
+            width: 600px; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); flex-shrink: 0; 
         }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; object-position: top; pointer-events: none; }
 
-        /* --- SOCIAL PROOF --- */
-        .social-proof { padding: 60px 20px; text-align: center; }
-        .google-box { display: inline-flex; align-items: center; gap: 15px; background: white; padding: 15px 30px; border-radius: 50px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 40px; }
-        .stars { color: #F4B400; font-size: 1.2rem; }
-        .logo-row { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; opacity: 0.5; font-weight: 700; font-size: 1rem; max-width: 900px; margin: 0 auto; line-height: 1.8; }
+        /* --- SOCIAL PROOF (Layout Grid) --- */
+        .social-proof { 
+            padding: 60px 20px; 
+            display: grid;
+            grid-template-columns: 2fr 1fr; /* 2/3 Content, 1/3 Widget */
+            gap: 40px;
+            align-items: center;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .social-left { text-align: center; }
+        .google-box-static { display: inline-flex; align-items: center; gap: 15px; background: white; padding: 15px 30px; border-radius: 50px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 40px; }
+        .stars-static { color: #F4B400; font-size: 1.2rem; }
+        .logo-row { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; opacity: 0.5; font-weight: 700; font-size: 1rem; line-height: 1.8; }
         .logo-row span { white-space: nowrap; }
+
+        /* --- GOOGLE REVIEW WIDGET STYLES (INTEGRATED) --- */
+        .review-widget {
+            width: 100%; /* Responsive im Grid */
+            max-width: 400px; /* Max Breite */
+            height: 260px; 
+            background: var(--rw-bg);
+            border-radius: 20px; 
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* Etwas stärkerer Schatten passend zum Rest */
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            user-select: none;
+            margin: 0 auto; /* Zentriert im Grid Cell wenn Platz */
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* Google Logo oben rechts */
+        .google-badge {
+            position: absolute; top: 20px; right: 20px;
+            display: flex; align-items: center; gap: 5px;
+            font-size: 13px; font-weight: 500; color: #5f6368; z-index: 10;
+        }
+        .google-badge img, .google-badge svg { width: 18px; height: 18px; }
+
+        /* Slides Container */
+        .slides-container {
+            width: 100%; height: 100%; position: relative; touch-action: pan-y;
+        }
+
+        .review-slide {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; transform: translateX(15px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none; display: flex; flex-direction: column;
+        }
+        .review-slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+
+        /* Header Bereich */
+        .review-header { margin-top: 5px; margin-bottom: 15px; display: flex; align-items: center; }
+        .avatar {
+            width: 42px; height: 42px; background-color: #f1f3f4; color: #5f6368;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: 18px; margin-right: 12px; flex-shrink: 0;
+        }
+        .user-info { display: flex; flex-direction: column; text-align: left; }
+        .user-name { font-weight: 700; font-size: 16px; color: var(--rw-text); margin-bottom: 2px; }
+        .stars-date { display: flex; align-items: center; font-size: 13px; color: var(--rw-sub); }
+        .stars { color: var(--rw-star); margin-right: 6px; letter-spacing: 0px; font-size: 15px; }
+
+        /* Bewertungstext */
+        .review-text {
+            font-size: 16px; line-height: 1.5; color: #3c4043; text-align: left;
+            display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical;
+            overflow: hidden; text-overflow: ellipsis;
+        }
+
+        /* Nav Pfeile */
+        .nav-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 32px; height: 32px; background: var(--rw-arrow-bg);
+            border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; z-index: 20; font-size: 18px; color: #555;
+            transition: all 0.2s; opacity: 0; 
+        }
+        .review-widget:hover .nav-btn { opacity: 1; }
+        .nav-btn:hover { background: var(--rw-arrow-hover); transform: translateY(-50%) scale(1.1); color: #222; }
+        .prev-btn { left: -10px; }
+        .next-btn { right: -10px; }
+
+        /* Progress Bar */
+        .progress-container {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 5px; background: #f5f5f5;
+        }
+        .progress-bar {
+            height: 100%; background-color: var(--rw-progress); width: 0%; transition: width 0.1s linear;
+        }
+        .paused .progress-bar { transition: none !important; }
 
         /* --- INVESTITION --- */
         .pricing-section {
@@ -172,36 +256,10 @@
         .btn-b2b { display: inline-block; background: #111; color: white; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; align-self: start; }
         
         /* --- FAQ GRID --- */
-        .faq-wrap { 
-            padding: 80px 20px 20px 20px; 
-            display: grid; 
-            grid-template-columns: 1fr 2fr; 
-            gap: 40px; 
-            align-items: start; 
-        }
-        
-        .faq-img-container {
-            line-height: 0; 
-            margin: 0;
-            padding: 0;
-        }
-
-        .faq-img { 
-            width: 100%; border-radius: 20px; 
-            height: 100%; 
-            min-height: 480px; 
-            object-fit: cover;
-            display: block; 
-        }
-        
-        .faq-content {
-            padding-top: 0;
-            margin-top: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 15px; 
-        }
-
+        .faq-wrap { padding: 80px 20px 20px 20px; display: grid; grid-template-columns: 1fr 2fr; gap: 40px; align-items: start; }
+        .faq-img-container { line-height: 0; margin: 0; padding: 0; }
+        .faq-img { width: 100%; border-radius: 20px; height: 100%; min-height: 480px; object-fit: cover; display: block; }
+        .faq-content { padding-top: 0; margin-top: 20px; display: flex; flex-direction: column; gap: 15px; }
         .faq-item { background: white; border-radius: 12px; border: 1px solid rgba(0,0,0,0.05); width: 100%; }
         .faq-question { padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
         .faq-icon { transition: transform 0.3s; }
@@ -214,82 +272,34 @@
         .contact-info-block { display: flex; gap: 50px; align-items: center; margin-bottom: 60px; flex-wrap: wrap; justify-content: center; }
         .contact-avatar-xxl { width: 450px; height: 450px; border-radius: 50%; object-fit: cover; border: 10px solid #F4F4F2; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
         .contact-text { max-width: 400px; font-size: 1.1rem; line-height: 1.8; }
-        
-        .map-separate { 
-            width: 100%; height: 400px; 
-            border-radius: 24px; overflow: hidden; 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05); 
-            position: relative; 
-        }
-        
-        /* Privacy Map Styles */
-        .map-placeholder {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            cursor: pointer; z-index: 10;
-            background-image: url('https://denkenfeld.github.io/pix/map-placeholder-quer.jpeg');
-            background-size: cover; background-position: center; background-repeat: no-repeat;
-            display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
-            transition: 0.3s;
-        }
+        .map-separate { width: 100%; height: 400px; border-radius: 24px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.05); position: relative; }
+        .map-placeholder { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; z-index: 10; background-image: url('https://denkenfeld.github.io/pix/map-placeholder-quer.jpeg'); background-size: cover; background-position: center; background-repeat: no-repeat; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; transition: 0.3s; }
         .map-placeholder:hover { transform: scale(1.02); }
-        
-        .placeholder-content {
-            width: 100%; text-align: center; padding-bottom: 30px; padding-top: 80px;
-            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
-        }
-        
-        .load-btn {
-            background-color: white; color: #111; border: none; padding: 10px 25px;
-            font-size: 0.9rem; font-weight: 600; border-radius: 50px; cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: transform 0.2s;
-        }
+        .placeholder-content { width: 100%; text-align: center; padding-bottom: 30px; padding-top: 80px; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%); }
+        .load-btn { background-color: white; color: #111; border: none; padding: 10px 25px; font-size: 0.9rem; font-weight: 600; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: transform 0.2s; }
         .load-btn:hover { background-color: var(--accent-warm); color: white; }
-
         .privacy-note { display: block; margin-top: 10px; font-size: 11px; color: rgba(255,255,255,0.7); }
         .privacy-note a { color: white; text-decoration: underline; }
-
         .map-iframe-container { width: 100%; height: 100%; }
         .map-iframe-container iframe { width: 100% !important; height: 100% !important; border: 0; filter: grayscale(100%) sepia(10%); }
 
         /* --- BOTTOM ABOUT --- */
         .bottom-about { padding: 40px 20px 80px 20px; display: flex; justify-content: center; }
-        .about-bubble {
-            background: #EAEAE8; padding: 60px; border-radius: 40px; 
-            max-width: 700px; width: 100%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            text-align: left; 
-            display: flex; flex-direction: column; align-items: center;
-        }
+        .about-bubble { background: #EAEAE8; padding: 60px; border-radius: 40px; max-width: 700px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: left; display: flex; flex-direction: column; align-items: center; }
         
         /* --- FOOTER & UP BTN --- */
         .footer-container { padding: 40px 20px; text-align: center; color: #999; }
-        .back-to-top {
-            display: inline-flex; width: 50px; height: 50px; border: 1px solid #ccc;
-            border-radius: 50%; align-items: center; justify-content: center;
-            color: #555; text-decoration: none; margin-bottom: 30px;
-            transition: 0.3s;
-        }
+        .back-to-top { display: inline-flex; width: 50px; height: 50px; border: 1px solid #ccc; border-radius: 50%; align-items: center; justify-content: center; color: #555; text-decoration: none; margin-bottom: 30px; transition: 0.3s; }
         .back-to-top:hover { background: #111; border-color: #111; color: white; transform: translateY(-5px); }
         .footer-links { font-size: 0.8rem; line-height: 2; }
         .footer-links a { color: #777; text-decoration: none; margin: 0 10px; transition: 0.3s; cursor: pointer; }
         .footer-links a:hover { color: #000; }
 
-        /* --- MODAL (POPUP) --- */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); z-index: 9999;
-            justify-content: center; align-items: center; padding: 20px;
-        }
+        /* --- MODAL --- */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.active { display: flex; }
-        .modal-content {
-            background: white; width: 100%; max-width: 800px; height: 90vh; 
-            border-radius: 20px; padding: 40px; overflow-y: auto; position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-        .close-modal {
-            position: sticky; top: 0; float: right; background: none; border: none;
-            font-size: 2rem; color: #111; cursor: pointer; z-index: 100;
-        }
+        .modal-content { background: white; width: 100%; max-width: 800px; height: 90vh; border-radius: 20px; padding: 40px; overflow-y: auto; position: relative; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .close-modal { position: sticky; top: 0; float: right; background: none; border: none; font-size: 2rem; color: #111; cursor: pointer; z-index: 100; }
         .legal-text { font-size: 0.9rem; line-height: 1.6; color: #333; }
         .legal-text h2 { margin-top: 30px; margin-bottom: 15px; font-family: var(--font-head); }
         .legal-text p { margin-bottom: 15px; }
@@ -303,15 +313,12 @@
             .faq-img { height: 200px; min-height: 200px; }
             .wrapper { width: 100%; margin: 0; box-shadow: none; }
             .modal-content { padding: 20px; }
+            .social-proof { grid-template-columns: 1fr; gap: 30px; }
+            .social-left { text-align: center; }
+            .review-widget { max-width: 100%; } /* Mobile volle Breite */
         }
 
-        .call-fab {
-            position: fixed; bottom: 30px; right: 30px; z-index: 1000;
-            background: #111; color: white; height: 60px; border-radius: 30px;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-decoration: none; overflow: hidden;
-            padding: 0 25px; width: auto; transition: 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
+        .call-fab { position: fixed; bottom: 30px; right: 30px; z-index: 1000; background: #111; color: white; height: 60px; border-radius: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-decoration: none; overflow: hidden; padding: 0 25px; width: auto; transition: 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .call-fab.collapsed { width: 60px; padding: 0; }
         .fab-content { display: flex; align-items: center; white-space: nowrap; }
         .fab-text { margin-right: 15px; font-weight: 600; font-size: 0.95rem; display: flex; flex-direction: column; width: 110px; transition: 0.4s; }
@@ -331,10 +338,8 @@
                 <i class="fa-solid fa-location-dot"></i>
                 <span>Pix Fotostudio Balingen</span>
             </a>
-            
             <h1>Your Image.<br>Your Power.</h1>
             <p style="opacity: 0.9; margin-bottom: 20px; max-width: 400px;">Professionelle Business- & Corporate Fotografie.</p>
-            
             <a href="#investition" class="scroll-indicator"><i class="fa-solid fa-chevron-down"></i></a>
         </div>
     </div>
@@ -344,7 +349,6 @@
         <div class="artist-circle-wrapper" style="cursor: default;">
             <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-i-ich.jpg" class="artist-avatar" alt="Irene" style="object-position: top;">
         </div>
-
         <div class="artist-bubble">
             <div class="artist-name">Hi, ich bin Irene.</div>
             <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Fotografin in Balingen</h3>
@@ -355,15 +359,13 @@
     <!-- GALLERY -->
     <div class="gallery-wrap reveal">
         <h3 style="padding-left: 20px; margin-bottom: 20px; font-family: var(--font-head);">Selected Works: Bewerbungsfotos | Businessportraits | Studio & vor Ort</h3>
-        
         <div class="gallery-track" id="galleryTrack">
-            <!-- Einfach nur die Bilder, kein Wrapper, JS übernimmt Loop -->
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-bewerbung-1.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-2.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-4.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s3.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s1.jpg"></div>
-            <!-- Duplikate für Loop-Feeling -->
+            <!-- Duplicates -->
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-bewerbung-1.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-2.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-4.jpg"></div>
@@ -372,17 +374,37 @@
         </div>
     </div>
 
-    <!-- SOCIAL PROOF -->
+    <!-- SOCIAL PROOF & REVIEW WIDGET -->
     <div class="social-proof reveal">
-        <div class="google-box">
-            <span class="stars">★★★★★</span>
-            <span style="font-weight: 700;">4.9</span>
-            <span style="color: #666; font-size: 0.9rem;">auf Google Reviews</span>
+        <!-- LEFT: Static Social Proof -->
+        <div class="social-left">
+            <div class="google-box-static">
+                <span class="stars-static">★★★★★</span>
+                <span style="font-weight: 700;">4.9</span>
+                <span style="color: #666; font-size: 0.9rem;">auf Google Reviews</span>
+            </div>
+            <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 15px;">Vertraut von Teams bei</div>
+            <div class="logo-row">
+                <span>EDEKA</span> <span>FOKUS</span> <span>TOOM</span> <span>ALNATURA</span> 
+                <span>ALLIANZ</span> <span>MEY GENERALBAU</span> <span>WELT DER FRAU</span> <span>UNIVERSITÄT TÜBINGEN</span>
+            </div>
         </div>
-        <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 15px;">Vertraut von Teams bei</div>
-        <div class="logo-row">
-            <span>EDEKA</span> <span>FOKUS</span> <span>TOOM</span> <span>ALNATURA</span> 
-            <span>ALLIANZ</span> <span>MEY GENERALBAU</span> <span>WELT DER FRAU</span> <span>UNIVERSITÄT TÜBINGEN</span>
+        
+        <!-- RIGHT: The Dynamic Review Widget -->
+        <div class="review-widget" id="reviewWidget">
+            <div class="google-badge">
+                <svg viewBox="0 0 24 24" width="18" height="18"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                Google
+            </div>
+
+            <div class="nav-btn prev-btn" onclick="manualChange(-1)">❮</div>
+            <div class="nav-btn next-btn" onclick="manualChange(1)">❯</div>
+
+            <div class="slides-container" id="slidesContainer"></div>
+
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
         </div>
     </div>
 
@@ -390,69 +412,63 @@
     <section class="pricing-section reveal" id="investition">
         <div style="text-align: center; max-width: 800px; margin: 0 auto 60px auto;">
             <h2>Professionelle Fotos für Ihren Erfolg</h2>
-            <p style="opacity: 0.8; margin-top: 15px;">Der erste Eindruck zählt – ob auf dem Lebenslauf oder dem Business-Profil. In entspannter Atmosphäre rücke ich Ihre Persönlichkeit ins rechte Licht.</p>
+            <p style="opacity: 0.8; margin-top: 15px;">Der erste Eindruck zählt – ob auf dem Lebenslauf oder dem Business-Profil.</p>
             <p style="margin-top: 15px; color: var(--accent-warm); font-weight: 600;">Alle Pakete verstehen sich inklusive der kommerziellen Nutzungsrechte.</p>
         </div>
         
         <div class="pkg-grid">
-            <!-- PAKET S -->
+            <!-- S -->
             <div class="pkg-card">
                 <div class="pkg-shine-wrap"></div>
                 <h3>Paket S: BASIS</h3>
                 <div class="pkg-price">69 €</div>
-                <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Ideal für den schnellen, hochwertigen Einstieg.</p>
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Ideal für den schnellen Einstieg.</p>
                 <ul class="pkg-features">
-                    <li><strong>Beratung:</strong> Kurzes Vorgespräch zu Look & Wirkung</li>
-                    <li><strong>Shooting:</strong> 1 Outfit vor 1 Hintergrund nach Wahl</li>
-                    <li><strong>Auswahl:</strong> Fokus auf ca. 30 abwechslungsreiche Aufnahmen</li>
-                    <li><strong>Ergebnis:</strong> 1 professionell bearbeitete digitale Datei</li>
-                    <li><strong>Vorteil:</strong> Inkl. S/W-Kopie & Hoch-/Querformat-Option</li>
-                    <li><strong>Zeitraum:</strong> Entspannter Shooting-Termin (ca. 45 Min.)</li>
+                    <li><strong>Beratung:</strong> Kurzes Vorgespräch</li>
+                    <li><strong>Shooting:</strong> 1 Outfit, 1 Hintergrund</li>
+                    <li><strong>Auswahl:</strong> Fokus auf ca. 30 Aufnahmen</li>
+                    <li><strong>Ergebnis:</strong> 1 bearbeitete digitale Datei</li>
+                    <li><strong>Vorteil:</strong> Inkl. S/W & Hoch-/Querformat</li>
                 </ul>
-                <a href="mailto:fotostudiopix@gmail.com?subject=Anfrage%20f%C3%BCr%20ein%20Fotoshooting" class="btn-card">Anfragen</a>
+                <a href="mailto:fotostudiopix@gmail.com?subject=Anfrage" class="btn-card">Anfragen</a>
             </div>
-            
-            <!-- PAKET M -->
+            <!-- M -->
             <div class="pkg-card featured">
                 <div class="pkg-shine-wrap"></div>
                 <h3>Paket M: KARRIERE</h3>
                 <div class="pkg-price">99 €</div>
-                <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Mehr Vielfalt für verschiedene Branchen und Plattformen.</p>
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Mehr Vielfalt für verschiedene Branchen.</p>
                 <ul class="pkg-features">
-                    <li><strong>Beratung:</strong> Ausführliches Vorgespräch zum Bildkonzept</li>
-                    <li><strong>Shooting:</strong> 2 Outfits vor 2 verschiedenen Hintergründen</li>
-                    <li><strong>Auswahl:</strong> Große Auswahl aus bis zu 90 Aufnahmen</li>
-                    <li><strong>Ergebnis:</strong> 3 professionell bearbeitete digitale Dateien</li>
-                    <li><strong>Vorteil:</strong> Inkl. S/W-Kopien & Hoch-/Querformat-Option</li>
-                    <li><strong>Zeitraum:</strong> Viel Raum für Details (ca. 1 bis 2 Std.)</li>
+                    <li><strong>Beratung:</strong> Ausführliches Vorgespräch</li>
+                    <li><strong>Shooting:</strong> 2 Outfits, 2 Hintergründe</li>
+                    <li><strong>Auswahl:</strong> Auswahl aus bis zu 90 Aufnahmen</li>
+                    <li><strong>Ergebnis:</strong> 3 bearbeitete digitale Dateien</li>
+                    <li><strong>Vorteil:</strong> Inkl. S/W & Hoch-/Querformat</li>
                 </ul>
-                <a href="mailto:fotostudiopix@gmail.com?subject=Anfrage%20f%C3%BCr%20ein%20Fotoshooting" class="btn-card">Anfragen</a>
+                <a href="mailto:fotostudiopix@gmail.com?subject=Anfrage" class="btn-card">Anfragen</a>
             </div>
-            
-            <!-- PAKET L -->
+            <!-- L -->
             <div class="pkg-card">
                 <div class="pkg-shine-wrap"></div>
                 <h3>Paket L: EXECUTIVE</h3>
                 <div class="pkg-price">279 €</div>
-                <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Das Maximum an Auswahl und verschiedenen Settings.</p>
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Das Maximum an Auswahl.</p>
                 <ul class="pkg-features">
-                    <li><strong>Beratung:</strong> Intensives Vorgespräch zur Markenwirkung</li>
+                    <li><strong>Beratung:</strong> Intensives Vorgespräch</li>
                     <li><strong>Shooting:</strong> Nach Bedarf Outfits & Settings</li>
-                    <li><strong>Auswahl:</strong> Maximale Auswahl aus bis zu 200 Aufnahmen</li>
-                    <li><strong>Ergebnis:</strong> 9 professionell bearbeitete digitale Dateien</li>
-                    <li><strong>Vorteil:</strong> Maximale Flexibilität für alle Business-Kanäle</li>
-                    <li><strong>Zeitraum:</strong> Umfassendes Premium-Shooting (ca. 3 bis 4 Std.)</li>
+                    <li><strong>Auswahl:</strong> Auswahl aus bis zu 200 Aufnahmen</li>
+                    <li><strong>Ergebnis:</strong> 9 bearbeitete digitale Dateien</li>
+                    <li><strong>Vorteil:</strong> Maximale Flexibilität</li>
                 </ul>
-                <a href="mailto:fotostudiopix@gmail.com?subject=Anfrage%20f%C3%BCr%20ein%20Fotoshooting" class="btn-card">Anfragen</a>
+                <a href="mailto:fotostudiopix@gmail.com?subject=Anfrage" class="btn-card">Anfragen</a>
             </div>
         </div>
-
         <div class="price-note">
-            <strong>Gut zu wissen:</strong> Sie benötigen mehr Auswahl? Weitere Bilder können jederzeit unkompliziert hinzugebucht werden. Die professionelle Bearbeitung erfolgt standardmäßig innerhalb von 48 Stunden – für ganz Eilige biete ich gegen Aufpreis einen Express-Service innerhalb von 4 Stunden an.
+            <strong>Gut zu wissen:</strong> Weitere Bilder können jederzeit unkompliziert hinzugebucht werden. Bearbeitung innerhalb von 48 Stunden.
         </div>
     </section>
 
-    <!-- TEAM -->
+    <!-- B2B SECTIONS -->
     <section class="b2b-section reveal">
         <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s4.jpg" class="b2b-img" alt="Corporate Team">
         <div class="b2b-content">
@@ -462,22 +478,21 @@
             <ul style="list-style: none; margin-bottom: 30px; font-weight: 500; color: #333;">
                 <li style="margin-bottom: 10px;">✓ Mobiles Studio (wir kommen zu Ihnen)</li>
                 <li style="margin-bottom: 10px;">✓ Bildbearbeitung im Firmen-Look</li>
-                <li>✓ Nutzungsrechte für Web & Print inklusive</li>
+                <li>✓ Nutzungsrechte inklusive</li>
             </ul>
             <a href="mailto:firmen@pix.de" class="btn-b2b">Firmenangebot anfordern &rarr;</a>
         </div>
     </section>
-
-    <!-- INDIVIDUELL -->
+    
     <section class="b2b-section reveal">
         <div class="b2b-content">
             <span style="color: #D96C4A; font-weight: 700; letter-spacing: 1px; margin-bottom: 10px;">KREATIV & INDIVIDUELL</span>
             <h2>Individuelle Fotoshootings.</h2>
-            <p style="margin-bottom: 20px; color: #555;">Sie brauchen mehr als Standard? Wir entwickeln gemeinsam Bildkonzepte, die Ihre Persönlichkeit oder Marke einzigartig inszenieren.</p>
+            <p style="margin-bottom: 20px; color: #555;">Wir entwickeln gemeinsam Bildkonzepte, die Ihre Persönlichkeit inszenieren.</p>
             <ul style="list-style: none; margin-bottom: 30px; font-weight: 500; color: #333;">
-                <li style="margin-bottom: 10px;">✓ Ausführliche Vorbesprechung & Moodboards</li>
-                <li style="margin-bottom: 10px;">✓ Spezielles Licht-Setup & Styling</li>
-                <li>✓ High-End Retusche für Magazin-Look</li>
+                <li style="margin-bottom: 10px;">✓ Vorbesprechung & Moodboards</li>
+                <li style="margin-bottom: 10px;">✓ Spezielles Licht-Setup</li>
+                <li>✓ High-End Retusche</li>
             </ul>
             <a href="#kontakt" class="btn-b2b">Konzept besprechen &rarr;</a>
         </div>
@@ -491,85 +506,41 @@
             <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-studio3.jpg" class="faq-img" alt="Studio Detail" style="margin-top: 15px;">
         </div>
         <div class="faq-content">
-            <div class="faq-item">
-                <div class="faq-question">Was soll ich anziehen? <i class="fa-solid fa-chevron-down faq-icon"></i></div>
-                <div class="faq-answer">
-                    Das Outfit richtet sich nach dem Job. <br><br>
-                    <strong>Konservativ:</strong> Hemd/Bluse in dezenten Farben, Jackett/Blazer, keine auffälligen Muster.<br>
-                    <strong>Kreativ:</strong> Gut sitzendes T-Shirt oder schlichtes Oberteil genügt.<br><br>
-                    Zieh das Outfit am besten schon vorher an und bring eine Alternative mit. Für Bewerbungsfotos zählt nur Oberkörper & Gesicht.
-                </div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question">Wie style ich meine Haare? <i class="fa-solid fa-chevron-down faq-icon"></i></div>
-                <div class="faq-answer">
-                    Frisch gewaschen, gepflegt und ohne aufwendige Frisuren.<br>
-                    <strong>Lange Haare:</strong> offen, Zopf oder locker hochgesteckt.<br>
-                    <strong>Männer:</strong> 3-Tage-Bart spätestens zwei Stunden vorher rasieren; Vollbart trimmen.
-                </div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question">Welches Make-up ist geeignet? <i class="fa-solid fa-chevron-down faq-icon"></i></div>
-                <div class="faq-answer">
-                    Dezent und alltagstauglich. Keine Glanzprodukte – lieber mattes Puder. Hautunreinheiten müssen nicht immer abgedeckt werden; das geht oft auch in der Retusche. Eigenes Make-up kann natürlich mitgebracht und im Studio angepasst werden.
-                </div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question">Welchen Schmuck sollte ich tragen? <i class="fa-solid fa-chevron-down faq-icon"></i></div>
-                <div class="faq-answer">
-                    Weniger ist mehr: dezente Ohrringe oder schlichte Kette sind okay.<br>
-                    Auffälliger Schmuck lenkt meist ab.
-                </div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question">Wie verhalte ich mich vor der Kamera? <i class="fa-solid fa-chevron-down faq-icon"></i></div>
-                <div class="faq-answer">
-                    Keine Sorge: Ich gebe vor und während des Shootings klare Hinweise zu Haltung und Ausdruck. Das ganze in ruhiger und entspannter Atmosphäre.
-                </div>
-            </div>
+            <div class="faq-item"><div class="faq-question">Was soll ich anziehen? <i class="fa-solid fa-chevron-down faq-icon"></i></div><div class="faq-answer">Das Outfit richtet sich nach dem Job. Konservativ oder kreativ? Zieh es am besten vorher an und bring eine Alternative mit.</div></div>
+            <div class="faq-item"><div class="faq-question">Wie style ich meine Haare? <i class="fa-solid fa-chevron-down faq-icon"></i></div><div class="faq-answer">Frisch gewaschen und gepflegt. Männer: 3-Tage-Bart rasieren oder trimmen.</div></div>
+            <div class="faq-item"><div class="faq-question">Welches Make-up ist geeignet? <i class="fa-solid fa-chevron-down faq-icon"></i></div><div class="faq-answer">Dezent und matt. Hautunreinheiten können retuschiert werden.</div></div>
+            <div class="faq-item"><div class="faq-question">Welchen Schmuck sollte ich tragen? <i class="fa-solid fa-chevron-down faq-icon"></i></div><div class="faq-answer">Weniger ist mehr. Auffälliger Schmuck lenkt ab.</div></div>
+            <div class="faq-item"><div class="faq-question">Wie verhalte ich mich vor der Kamera? <i class="fa-solid fa-chevron-down faq-icon"></i></div><div class="faq-answer">Keine Sorge, ich leite dich an. Alles ganz entspannt.</div></div>
         </div>
     </section>
 
-    <!-- KONTAKT & MAP -->
+    <!-- KONTAKT -->
     <section class="contact-wrap reveal" id="kontakt">
         <div class="contact-info-block">
             <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-i-kontakt.jpg" class="contact-avatar-xxl" alt="Irene">
             <div class="contact-text">
                 <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Kommen Sie vorbei.</h3>
-                <p>
-                    <strong>PIX Fotostudio</strong><br>
-                    Odenwaldstraße 19, 72336 Balingen<br><br>
-                    📞 07433 / 123456<br>
-                    ✉️ info@pix.de
-                </p>
+                <p><strong>PIX Fotostudio</strong><br>Odenwaldstraße 19, 72336 Balingen<br><br>📞 07433 / 123456<br>✉️ info@pix.de</p>
                 <p style="margin-top: 20px; color: #888; font-size: 0.9rem;">Parkplätze direkt vor der Tür.</p>
             </div>
         </div>
-        
-        <!-- PRIVACY MAP INTEGRATION -->
         <div class="map-separate">
             <div id="map-placeholder" class="map-placeholder" onclick="loadMap()">
                 <div class="placeholder-content">
                     <button class="load-btn">Karte aktivieren</button>
-                    <span class="privacy-note">
-                        Meldet Daten an Google. 
-                        <a href="https://policies.google.com/privacy" target="_blank" onclick="event.stopPropagation();">Datenschutz</a>
-                    </span>
+                    <span class="privacy-note">Meldet Daten an Google. <a href="https://policies.google.com/privacy" target="_blank" onclick="event.stopPropagation();">Datenschutz</a></span>
                 </div>
             </div>
             <div id="map-target" class="map-iframe-container"></div>
         </div>
     </section>
 
-    <!-- BOTTOM ÜBER MICH (JETZT HIER UNTEN) -->
+    <!-- BOTTOM ABOUT -->
     <div class="bottom-about reveal">
         <div class="about-bubble">
             <div class="artist-name">Über mich</div>
             <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Irene Ilter</h3>
-            <p style="color: #444; line-height: 1.6; margin-bottom: 40px;">
-                Seit über 15 Jahren spezialisiere ich mich darauf, Persönlichkeit und Präsenz in den Fokus zu rücken. In meinem Studio in Balingen-Frommern verbinde ich modernste Technik mit einer entspannten Atmosphäre, um Bewerbungsfotos und Business-Porträts zu schaffen, die wirklich hängen bleiben. Mein Ziel: Bilder, die nicht nur professionell aussehen, sondern Ihre individuelle Geschichte erzählen.
-            </p>
-            
+            <p style="color: #444; line-height: 1.6; margin-bottom: 40px;">Seit über 15 Jahren spezialisiere ich mich darauf, Persönlichkeit und Präsenz in den Fokus zu rücken...</p>
             <div class="artist-circle-wrapper" id="artistCircle">
                 <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-i-kreis.png" class="artist-avatar" alt="Irene" id="artistImg">
                 <video class="artist-video" id="artistVideo" muted playsinline>
@@ -583,16 +554,10 @@
 
     <!-- FOOTER -->
     <div class="footer-container">
-        <a href="#top" class="back-to-top">
-            <i class="fa-solid fa-chevron-up"></i>
-        </a>
+        <a href="#top" class="back-to-top"><i class="fa-solid fa-chevron-up"></i></a>
         <div class="footer-links">
             <p>PIX Fotostudio Balingen © 2026</p>
-            <p>
-                <a onclick="openModal()">Impressum</a> • 
-                <a onclick="openModal()">Datenschutz</a> • 
-                <a onclick="openModal()">AGB</a>
-            </p>
+            <p><a onclick="openModal()">Impressum</a> • <a onclick="openModal()">Datenschutz</a> • <a onclick="openModal()">AGB</a></p>
         </div>
     </div>
 </div>
@@ -602,150 +567,155 @@
     <div class="modal-content">
         <button class="close-modal" onclick="closeModal()">&times;</button>
         <div class="legal-text">
-            <h2>Impressum</h2>
-            <p><strong>Angaben gemäß § 5 TMG</strong></p>
-            <p>PIX Fotostudio<br>
-            Inhaberin: Irene Ilter<br>
-            Odenwaldstraße 19<br>
-            72336 Balingen</p>
-            <p><strong>Kontakt</strong><br>
-            Telefon: 07433 / 123456<br>
-            E-Mail: fotostudiopix@gmail.com</p>
-
-            <h2>Datenschutzerklärung</h2>
-            <p><strong>1. Datenschutz auf einen Blick</strong></p>
-            <p>Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend der gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.</p>
-            <p><strong>2. Datenerfassung auf unserer Website</strong></p>
-            <p>Die Nutzung unserer Webseite ist in der Regel ohne Angabe personenbezogener Daten möglich. Soweit auf unseren Seiten personenbezogene Daten (beispielsweise Name, Anschrift oder E-Mail-Adressen) erhoben werden, erfolgt dies, soweit möglich, stets auf freiwilliger Basis.</p>
-            <p><strong>Google Maps</strong></p>
-            <p>Diese Seite nutzt über eine API den Kartendienst Google Maps. Anbieter ist die Google Ireland Limited. Zur Nutzung der Funktionen von Google Maps ist es notwendig, Ihre IP-Adresse zu speichern. Diese Informationen werden in der Regel an einen Server von Google in den USA übertragen und dort gespeichert. Wir haben den Dienst so eingebunden, dass die Datenübertragung erst beginnt, wenn Sie aktiv auf die Karte klicken (Two-Click-Solution).</p>
-
-            <h2>Allgemeine Geschäftsbedingungen (AGB)</h2>
-            <p><strong>1. Geltungsbereich</strong></p>
-            <p>Die nachfolgenden AGB gelten für alle dem Fotografen erteilten Aufträge. Sie gelten als vereinbart, wenn ihnen nicht umgehend widersprochen wird.</p>
-            <p><strong>2. Urheberrecht</strong></p>
-            <p>Dem Fotografen steht das Urheberrecht an den Lichtbildern nach Maßgabe des Urheberrechtsgesetzes zu. Die vom Fotografen hergestellten Lichtbilder sind grundsätzlich nur für den eigenen Gebrauch des Auftraggebers bestimmt, sofern nicht ausdrücklich kommerzielle Nutzungsrechte übertragen wurden (siehe Paketbeschreibung).</p>
-            <p><strong>3. Vergütung, Eigentumsvorbehalt</strong></p>
-            <p>Für die Herstellung der Lichtbilder wird ein Honorar als Stundensatz, Tagessatz oder vereinbarte Pauschale erhoben. Bis zur vollständigen Bezahlung des Kaufpreises bleiben die gelieferten Lichtbilder Eigentum des Fotografen.</p>
+            <h2>Impressum & Datenschutz</h2>
+            <p>Hier steht der rechtliche Text...</p>
         </div>
     </div>
 </div>
 
-<!-- BUTTON -->
+<!-- CALL BTN -->
 <a href="tel:07433123456" class="call-fab" id="smartBtn">
     <div class="fab-content">
-        <div class="fab-text">
-            <span style="font-size: 0.7rem; opacity: 0.7;">Mo-Sa 8-20h</span>
-            <span><span class="status-dot"></span>Jetzt anrufen</span>
-        </div>
+        <div class="fab-text"><span style="font-size: 0.7rem; opacity: 0.7;">Mo-Sa 8-20h</span><span><span class="status-dot"></span>Jetzt anrufen</span></div>
         <i class="fa-solid fa-phone fab-icon"></i>
     </div>
 </a>
 
 <script>
-    // FAQ
+    // --- MAIN SITE LOGIC ---
     document.querySelectorAll('.faq-question').forEach(item => { item.addEventListener('click', () => { item.parentElement.classList.toggle('active'); }); });
     
-    // Scroll Reveal
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     
-    // Parallax
     const heroImg = document.getElementById('heroImg');
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        if(scrolled < 1000) heroImg.style.transform = `translateY(${scrolled * 0.3}px)`;
-    });
+    window.addEventListener('scroll', () => { if(window.pageYOffset < 1000) heroImg.style.transform = `translateY(${window.pageYOffset * 0.3}px)`; });
 
-    // Smart FAB
     let lastScrollTop = 0; const btn = document.getElementById('smartBtn');
     window.addEventListener('scroll', function() {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        if (Math.abs(scrollTop - lastScrollTop) > 50) {
-            if (scrollTop > lastScrollTop && scrollTop > 100) btn.classList.add('collapsed'); else btn.classList.remove('collapsed');
-            lastScrollTop = scrollTop;
+        let st = window.pageYOffset || document.documentElement.scrollTop;
+        if (Math.abs(st - lastScrollTop) > 50) {
+            if (st > lastScrollTop && st > 100) btn.classList.add('collapsed'); else btn.classList.remove('collapsed');
+            lastScrollTop = st;
         }
     });
 
-    // *** JS AUTO SCROLL MIT PAUSE FUNKTION (NEU) ***
     const track = document.getElementById('galleryTrack');
-    let autoScrollSpeed = 1; // Geschwindigkeit
-    let isHovering = false;
-    let autoScrollId;
-
+    let autoScrollSpeed = 1; let isHovering = false;
     function autoScroll() {
-        if (!isHovering) {
-            track.scrollLeft += autoScrollSpeed;
-            // Wenn am Ende angekommen, springe fast an den Anfang (für Loop-Effekt müsste man mehr klonen, aber so reicht es oft)
-            // oder man lässt es einfach durchlaufen und der User scrollt zurück.
-            // Einfacher Infinite Loop Hack:
-            if(track.scrollLeft >= (track.scrollWidth - track.clientWidth)) {
-                track.scrollLeft = 0;
-            }
-        }
-        autoScrollId = requestAnimationFrame(autoScroll);
+        if (!isHovering) { track.scrollLeft += autoScrollSpeed; if(track.scrollLeft >= (track.scrollWidth - track.clientWidth)) track.scrollLeft = 0; }
+        requestAnimationFrame(autoScroll);
     }
-
-    // Start Scroll
     autoScroll();
-
-    // Stop on Interaction
     track.addEventListener('mouseenter', () => isHovering = true);
     track.addEventListener('mouseleave', () => isHovering = false);
     track.addEventListener('touchstart', () => isHovering = true);
-    track.addEventListener('touchend', () => {
-        // Kurze Verzögerung nach Loslassen, bevor es weitergeht
-        setTimeout(() => { isHovering = false; }, 1000);
-    });
+    track.addEventListener('touchend', () => setTimeout(() => isHovering = false, 1000));
 
-
-    // Click to Video
     const circle = document.getElementById('artistCircle');
     const vid = document.getElementById('artistVideo');
     const img = document.getElementById('artistImg');
     const flash = document.getElementById('flashOverlay');
     let isPlaying = false;
-
     circle.addEventListener('click', () => {
-        if(isPlaying) return; 
-        isPlaying = true;
-        circle.classList.add('playing');
-        vid.style.opacity = '1'; img.style.opacity = '0';
-        vid.play();
-        vid.onended = () => {
-            flash.style.opacity = '1';
-            setTimeout(() => {
-                vid.style.opacity = '0'; img.style.opacity = '1';
-                vid.currentTime = 0; circle.classList.remove('playing'); isPlaying = false;
-                setTimeout(() => { flash.style.opacity = '0'; }, 100);
-            }, 150);
-        };
+        if(isPlaying) return; isPlaying = true; circle.classList.add('playing');
+        vid.style.opacity = '1'; img.style.opacity = '0'; vid.play();
+        vid.onended = () => { flash.style.opacity = '1'; setTimeout(() => { vid.style.opacity = '0'; img.style.opacity = '1'; vid.currentTime = 0; circle.classList.remove('playing'); isPlaying = false; setTimeout(() => flash.style.opacity = '0', 100); }, 150); };
     });
 
-    // LEGAL MODAL LOGIC
     const modal = document.getElementById('legalModal');
-    function openModal() {
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
+    function openModal() { modal.classList.add('active'); document.body.style.overflow = 'hidden'; }
+    function closeModal() { modal.classList.remove('active'); document.body.style.overflow = 'auto'; }
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+    function loadMap() {
+        document.getElementById('map-target').innerHTML = '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10627.353405225707!2d8.848415699999999!3d48.2482391!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4799fac5feec6cdd%3A0x2a4c7fb9df518b6a!2sPix%20Fotostudio%20-%20Fotograf%20Balingen!5e0!3m2!1sde!2sde!4v1767658877793!5m2!1sde!2sde" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>';
+        document.getElementById('map-placeholder').style.display = 'none';
     }
-    function closeModal() {
-        modal.classList.remove('active');
-        document.body.style.overflow = 'auto';
-    }
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
+
+    // --- GOOGLE REVIEW WIDGET LOGIC (UPDATED) ---
+    const reviews = [
+        { name: "Manuela Ritter", date: "vor 3 Monaten", text: "Ich kann mich den vielen positiven Bewertungen nur anschließen. Ich habe sehr zügig einen Termin erhalten und habe mich das ganze Shooting über sehr wohl gefühlt." },
+        { name: "Sofie Miller", date: "vor einem Monat", text: "Ich bin super zufrieden! Die Fotografin hat sich sehr viel Zeit genommen und eine total angenehme Atmosphäre geschaffen." },
+        { name: "Kevine Feupe Manong", date: "vor 3 Monaten", text: "Super nette und einfühlsame Fotografin! Sie hat sich viel Zeit genommen und mir hilfreiche Tipps gegeben." },
+        { name: "Anett Ludwig", date: "vor 5 Monaten", text: "Eine super liebe und professionelle Fotografin! Die Bilder haben meine Erwartung total übertroffen." },
+        { name: "Lena Frassmann", date: "vor 3 Monaten", text: "Irene hat sich ganz viel Zeit genommen und mir alles genau erklärt und mir sehr gute Tipps gegeben." },
+        { name: "Lisa", date: "vor 5 Monaten", text: "Das Shooting für mein neues Bewerbungsfoto war total angenehm und produktiv. Irene hat sich viel Zeit genommen." },
+        { name: "Elke Schuck", date: "vor 5 Monaten", text: "in einer total entspannten Atmosphäre, habe ich in kürzester Zeit das perfekte Bewerbungsfoto bekommen." },
+        { name: "Franziska R.", date: "vor 10 Monaten", text: "Ich bin wirklich sehr zufrieden mit meinen neuen Bewerbungsfotos. Irene war professionell und sehr sympathisch." },
+        { name: "Kerstin Ohnmacht", date: "vor 2 Monaten", text: "Sehr schöne Bilder sind herausgekommen! Lieben Dank für die gute Begleitung während der Aufnahmen!" },
+        { name: "xx_luna_xx X", date: "vor 8 Monaten", text: "Für eine Bewerbung brauchte ich ein Foto - Irene hat mir nicht einfach irgendeins geschossen, sondern das perfekte." },
+        { name: "Tamara Stumpp", date: "vor 11 Monaten", text: "Ich war bei Irene um Bilder für meine Bewerbungsmappe machen zu lassen. Für mich war das komplett neu nach 10 Jahren." },
+        { name: "Dawit Tesfaye", date: "vor 6 Monaten", text: "Super freundlich, kein Hektik entspannt, ofen für Positionen und Stil, kann ich nur empfehlen :)" },
+        { name: "MyAnno", date: "vor einem Jahr", text: "Irene hat sich für meine Bewerbungsfotos viel Zeit genommen und die Atmosphäre war durchweg positiv." },
+        { name: "Ante J.", date: "vor 10 Monaten", text: "Irene hat sich optimal auf mich eingestimmt und hat ihre Kamera und Beleuchtung perfekt im Griff." },
+        { name: "Micha Wer", date: "vor einem Jahr", text: "Die Fotos sind spitze und das Resultat aus Kundenfreundlichkeit und Professionalität." },
+        { name: "Ste Mel", date: "vor einem Jahr", text: "Wir haben uns bei Irene für ein Gruppenfoto angemeldet. Das Ergebnis ist sehr schön." },
+        { name: "Timo Scherer", date: "vor 6 Monaten", text: "Super spontan einen Termin bekommen. Super Service, total professionell! Kann man nur weiterempfehlen!" },
+        { name: "Laslo Levai", date: "vor 9 Monaten", text: "Irene ist eine tolle Fotographin die einen sehr gut ins Licht bringen kann. Danke für das tolle Erlebnis." },
+        { name: "Bohdana Schibarew", date: "vor 2 Jahren", text: "Irene hat uns mit ihren Fähigkeiten wunderschöne Schwangerschaftsfotos gezaubert!" },
+        { name: "Nadja Deininger", date: "vor 12 Jahren", text: "Sehr zu empfehlen! Die beiden sind wirklich sympathisch und hilfsbereit, haben sehr schöne Bilder von uns gemacht." },
+        { name: "Richy Hitch", date: "vor 13 Jahren", text: "Wir waren dort um ein Gruppenfoto/Familienbild zu machen. Da ich den Termin sehr Kurzfristig ausgemacht hatte, ist trotzdem alles super gelaufen." },
+        { name: "Barbara Schneider", date: "vor 13 Jahren", text: "Ich war dort, um Bewerbungsfotos machen zu lassen. Vor Ort wurde gemeinsam ein Outfit gewählt." }
+    ];
+
+    const container = document.getElementById('slidesContainer');
+    const progressBar = document.getElementById('progressBar');
+    const widget = document.getElementById('reviewWidget');
+    
+    let currentIndex = 0;
+    const intervalTime = 6000;
+    let timer;
+    let isPaused = false;
+
+    // Init Reviews
+    reviews.forEach((review, index) => {
+        const slide = document.createElement('div');
+        slide.className = `review-slide ${index === 0 ? 'active' : ''}`;
+        const initial = review.name.charAt(0);
+        slide.innerHTML = `<div class="review-header"><div class="avatar">${initial}</div><div class="user-info"><span class="user-name">${review.name}</span><div class="stars-date"><span class="stars">★★★★★</span><span>${review.date}</span></div></div></div><div class="review-text">"${review.text}"</div>`;
+        container.appendChild(slide);
     });
 
-    // GOOGLE MAPS LOAD FUNCTION
-    function loadMap() {
-        var placeholder = document.getElementById('map-placeholder');
-        var target = document.getElementById('map-target');
-        var iframeCode = '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10627.353405225707!2d8.848415699999999!3d48.2482391!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4799fac5feec6cdd%3A0x2a4c7fb9df518b6a!2sPix%20Fotostudio%20-%20Fotograf%20Balingen!5e0!3m2!1sde!2sde!4v1767658877793!5m2!1sde!2sde" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>';
-        target.innerHTML = iframeCode;
-        placeholder.style.display = 'none';
+    function showSlide(index) {
+        const slides = document.querySelectorAll('.review-slide');
+        slides[currentIndex].classList.remove('active');
+        if (index >= slides.length) currentIndex = 0; else if (index < 0) currentIndex = slides.length - 1; else currentIndex = index;
+        slides[currentIndex].classList.add('active');
+        resetTimer();
     }
+    function nextSlide() { if (!isPaused) showSlide(currentIndex + 1); }
+    function manualChange(direction) { showSlide(currentIndex + direction); }
+
+    function resetTimer() {
+        progressBar.style.transition = 'none'; progressBar.style.width = '0%';
+        setTimeout(() => { if (!isPaused) { progressBar.style.transition = `width ${intervalTime}ms linear`; progressBar.style.width = '100%'; } }, 50);
+        clearInterval(timer);
+        if (!isPaused) timer = setInterval(nextSlide, intervalTime);
+    }
+
+    widget.addEventListener('mouseenter', () => {
+        isPaused = true; clearInterval(timer);
+        const w = window.getComputedStyle(progressBar).getPropertyValue('width');
+        progressBar.style.transition = 'none'; progressBar.style.width = w;
+    });
+    widget.addEventListener('mouseleave', () => { isPaused = false; resetTimer(); });
+
+    let touchStartX = 0; let touchEndX = 0;
+    widget.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; isPaused = true; }, {passive: true});
+    widget.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        if (touchEndX < touchStartX - 50) manualChange(1);
+        if (touchEndX > touchStartX + 50) manualChange(-1);
+        isPaused = false; resetTimer();
+    }, {passive: true});
+
+    // Start Widget
+    setTimeout(() => { progressBar.style.transition = `width ${intervalTime}ms linear`; progressBar.style.width = '100%'; }, 100);
+    timer = setInterval(nextSlide, intervalTime);
+
 </script>
 </body>
 </html>
