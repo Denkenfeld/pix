@@ -1,0 +1,242 @@
+<div class="form-wrapper">
+    <!-- Flatpickr CSS (Falls nicht im Main-Head, laden wir es hier bedingt, 
+         aber besser wäre es im Main-Head. Für Sicherheit lassen wir den Link hier weg 
+         und binden ihn in der Hauptdatei ein.) -->
+
+    <style>
+        /* Scoped Styles für das Formular im Modal */
+        .form-wrapper {
+            background: white;
+            padding: 10px; /* Weniger Padding im Modal, Container macht den Rest */
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .form-header h2 { 
+            text-align: center; 
+            color: #2c2c2c; 
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            font-family: var(--font-head, sans-serif);
+        }
+
+        .form-group { margin-bottom: 22px; text-align: left; }
+
+        .form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            color: #555; 
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-left: 5px;
+        }
+
+        /* Inputs und Selects */
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 14px 18px; 
+            border: 1px solid #e0e0e0;
+            border-radius: 15px; 
+            font-size: 16px; 
+            -webkit-appearance: none; 
+            appearance: none;
+            background-color: #fafafa;
+            box-sizing: border-box;
+            min-height: 52px;
+            transition: all 0.2s ease;
+            color: #333;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Fokus (Beige) */
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #d4c4a8;
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(212, 196, 168, 0.2);
+        }
+
+        /* BUTTON STYLE */
+        #submitBtn {
+            width: 100%;
+            background-color: #d4c4a8; 
+            color: #4a4a4a;
+            border: none;
+            padding: 16px;
+            border-radius: 15px; 
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s, transform 0.1s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        #submitBtn:hover { background-color: #c4b498; }
+        #submitBtn:active { transform: scale(0.98); }
+        #submitBtn:disabled { background-color: #e0e0e0; cursor: not-allowed; color: #999; }
+
+        .disclaimer {
+            text-align: center; font-size: 0.8rem; color: #999; margin-top: 12px; line-height: 1.4;
+        }
+
+        /* Custom Pfeil für Selects */
+        .form-group select {
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%234a4a4a%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 18px top 50%;
+            background-size: 12px auto;
+            cursor: pointer;
+        }
+
+        /* Success Message */
+        #success-message {
+            display: none; text-align: center; padding: 40px 0;
+        }
+        .check-icon { font-size: 50px; color: #d4c4a8; margin-bottom: 20px; display: block; }
+        .success-text { font-size: 1.1rem; color: #4a4a4a; line-height: 1.6; }
+
+        /* Flatpickr Override */
+        .flatpickr-day.selected {
+            background: #d4c4a8 !important; border-color: #d4c4a8 !important; color: #4a4a4a !important;
+        }
+    </style>
+
+    <div id="form-content">
+        <div class="form-header">
+            <h2>Anfrage senden</h2>
+        </div>
+        
+        <form id="bookingForm">
+            <!-- Hidden Fields -->
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_subject" value="Neue Fotoshooting Anfrage">
+            <input type="text" name="_honey" style="display:none">
+
+            <!-- Name -->
+            <div class="form-group">
+                <label for="name">Ihr Name</label>
+                <input type="text" id="name" name="Name" required placeholder="Ihr Name">
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email">E-Mail Adresse</label>
+                <input type="email" id="email" name="Email" required placeholder="name@beispiel.de">
+            </div>
+
+            <!-- Paket -->
+            <div class="form-group">
+                <label for="paket">Gewünschtes Paket</label>
+                <select id="paket" name="Paket" required>
+                    <option value="" disabled selected>Bitte wählen...</option>
+                    <option value="Paket S: Basis">Paket S: Basis</option>
+                    <option value="Paket M: Karriere">Paket M: Karriere</option>
+                    <option value="Paket L: Executive">Paket L: Executive</option>
+                    <option value="B2B / Firmenanfrage">B2B / Firmenanfrage</option>
+                    <option value="Individuelles Fotoshooting">Individuelles Fotoshooting</option>
+                </select>
+            </div>
+
+            <!-- Datum (Flatpickr) -->
+            <div class="form-group">
+                <label for="date">Wunschtermin</label>
+                <input type="text" id="date" name="Datum" required placeholder="Datum auswählen..." readonly>
+            </div>
+
+            <!-- Uhrzeit -->
+            <div class="form-group">
+                <label for="time">Uhrzeit</label>
+                <select id="time" name="Uhrzeit" required>
+                    <option value="" disabled selected>Uhrzeit wählen...</option>
+                    <option value="08:00">08:00 Uhr</option>
+                    <option value="09:00">09:00 Uhr</option>
+                    <option value="10:00">10:00 Uhr</option>
+                    <option value="11:00">11:00 Uhr</option>
+                    <option value="12:00">12:00 Uhr</option>
+                    <option value="13:00">13:00 Uhr</option>
+                    <option value="14:00">14:00 Uhr</option>
+                    <option value="15:00">15:00 Uhr</option>
+                    <option value="16:00">16:00 Uhr</option>
+                    <option value="17:00">17:00 Uhr</option>
+                    <option value="18:00">18:00 Uhr</option>
+                    <option value="19:00">19:00 Uhr</option>
+                </select>
+            </div>
+
+            <!-- Nachricht -->
+            <div class="form-group">
+                <label for="message">Nachricht / Wünsche</label>
+                <textarea id="message" name="Nachricht" placeholder="Ihre Nachricht an uns..."></textarea>
+            </div>
+
+            <button type="submit" id="submitBtn">Termin anfragen</button>
+            <div class="disclaimer">Termine können jederzeit kostenlos storniert werden.</div>
+        </form>
+    </div>
+
+    <!-- Success Message -->
+    <div id="success-message">
+        <span class="check-icon">✓</span>
+        <h3>Vielen Dank!</h3>
+        <p class="success-text">
+            Ihre Anfrage ist unterwegs.<br>
+            Ich melde mich in Kürze bei Ihnen.
+        </p>
+    </div>
+</div>
+
+<!-- Inline Script für Formularlogik -->
+<script>
+    // Initialisiere Flatpickr wenn Element vorhanden
+    if(typeof flatpickr !== 'undefined') {
+        flatpickr("#date", {
+            locale: "de",                
+            dateFormat: "d.m.Y",         
+            minDate: "today",            
+            maxDate: new Date().fp_incr(180), // 6 Monate       
+            disableMobile: "true",
+            disable: [ function(date) { return (date.getDay() === 0); } ] // Sonntag aus
+        });
+    }
+
+    /* Form Logik */
+    const form = document.getElementById('bookingForm');
+    const formContent = document.getElementById('form-content');
+    const successMsg = document.getElementById('success-message');
+    const btn = document.getElementById('submitBtn');
+    const FORM_TOKEN = "cb821965b533b1d5bc4b29eae2ce79f6"; 
+
+    if(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); 
+            btn.disabled = true;
+            btn.innerHTML = "Wird gesendet...";
+
+            const formData = new FormData(form);
+
+            fetch(`https://formsubmit.co/ajax/${FORM_TOKEN}`, {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                formContent.style.display = 'none';
+                successMsg.style.display = 'block';
+            })
+            .catch(error => {
+                alert("Fehler beim Senden. Bitte erneut versuchen.");
+                btn.disabled = false;
+                btn.innerHTML = "Termin anfragen";
+            });
+        });
+    }
+</script>
