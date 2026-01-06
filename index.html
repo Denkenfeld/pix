@@ -7,6 +7,9 @@
     
     <link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Flatpickr CSS für das Formular -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
     <style>
         :root {
@@ -245,7 +248,7 @@
         .pkg-features { margin: 20px 0; list-style: none; flex-grow: 1; }
         .pkg-features li { padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.08); display: block; color: #444; font-size: 0.95rem; }
         .pkg-features li strong { color: #111; display: block; margin-bottom: 4px; }
-        .btn-card { display: block; width: 100%; padding: 15px; text-align: center; background: #222; color: white; text-decoration: none; border-radius: 12px; font-weight: 700; margin-top: 20px; }
+        .btn-card { display: block; width: 100%; padding: 15px; text-align: center; background: #222; color: white; text-decoration: none; border-radius: 12px; font-weight: 700; margin-top: 20px; cursor: pointer; }
         .pkg-card.featured .btn-card { background: var(--accent-warm); }
         .price-note { margin-top: 40px; padding: 30px; background: rgba(255,255,255,0.05); border-radius: 20px; font-size: 0.9rem; line-height: 1.6; color: rgba(255,255,255,0.8); }
 
@@ -253,7 +256,7 @@
         .b2b-section { margin: 80px 20px; background: #EAE8E4; border-radius: var(--radius); overflow: hidden; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
         .b2b-content { padding: 60px 40px; display: flex; flex-direction: column; justify-content: center; }
         .b2b-img { width: 100%; height: 100%; min-height: 400px; object-fit: cover; }
-        .btn-b2b { display: inline-block; background: #111; color: white; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; align-self: start; }
+        .btn-b2b { display: inline-block; background: #111; color: white; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; align-self: start; cursor: pointer; }
         
         /* --- FAQ GRID --- */
         .faq-wrap { padding: 80px 20px 20px 20px; display: grid; grid-template-columns: 1fr 2fr; gap: 40px; align-items: start; }
@@ -295,7 +298,7 @@
         .footer-links a { color: #777; text-decoration: none; margin: 0 10px; transition: 0.3s; cursor: pointer; }
         .footer-links a:hover { color: #000; }
 
-        /* --- MODAL --- */
+        /* --- MODAL (Basis) --- */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.active { display: flex; }
         .modal-content { background: white; width: 100%; max-width: 800px; height: 90vh; border-radius: 20px; padding: 40px; overflow-y: auto; position: relative; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
@@ -304,7 +307,7 @@
         .legal-text h2 { margin-top: 30px; margin-bottom: 15px; font-family: var(--font-head); }
         .legal-text p { margin-bottom: 15px; }
 
-        /* --- MOBILE TWEAKS --- */
+        /* Mobile Modal Adjustments */
         @media(max-width: 900px) {
             .faq-wrap { grid-template-columns: 1fr; }
             .hero h1 { font-size: 3rem; }
@@ -312,7 +315,7 @@
             .gallery-item { width: 500px; }
             .faq-img { height: 200px; min-height: 200px; }
             .wrapper { width: 100%; margin: 0; box-shadow: none; }
-            .modal-content { padding: 20px; }
+            .modal-content { padding: 20px; width: 95%; max-width: 100%; }
             .social-proof { grid-template-columns: 1fr; gap: 30px; }
             .social-left { text-align: center; }
             .review-widget { max-width: 100%; } /* Mobile volle Breite */
@@ -430,7 +433,7 @@
                     <li><strong>Ergebnis:</strong> 1 bearbeitete digitale Datei</li>
                     <li><strong>Vorteil:</strong> Inkl. S/W & Hoch-/Querformat</li>
                 </ul>
-                <a href="mailto:fotostudiopix@gmail.com?subject=Anfrage" class="btn-card">Anfragen</a>
+                <a onclick="openRequestModal('Paket S: Basis')" class="btn-card">Anfragen</a>
             </div>
             <!-- M -->
             <div class="pkg-card featured">
@@ -445,7 +448,7 @@
                     <li><strong>Ergebnis:</strong> 3 bearbeitete digitale Dateien</li>
                     <li><strong>Vorteil:</strong> Inkl. S/W & Hoch-/Querformat</li>
                 </ul>
-                <a href="mailto:fotostudiopix@gmail.com?subject=Anfrage" class="btn-card">Anfragen</a>
+                <a onclick="openRequestModal('Paket M: Karriere')" class="btn-card">Anfragen</a>
             </div>
             <!-- L -->
             <div class="pkg-card">
@@ -460,7 +463,7 @@
                     <li><strong>Ergebnis:</strong> 9 bearbeitete digitale Dateien</li>
                     <li><strong>Vorteil:</strong> Maximale Flexibilität</li>
                 </ul>
-                <a href="mailto:fotostudiopix@gmail.com?subject=Anfrage" class="btn-card">Anfragen</a>
+                <a onclick="openRequestModal('Paket L: Executive')" class="btn-card">Anfragen</a>
             </div>
         </div>
         <div class="price-note">
@@ -480,7 +483,7 @@
                 <li style="margin-bottom: 10px;">✓ Bildbearbeitung im Firmen-Look</li>
                 <li>✓ Nutzungsrechte inklusive</li>
             </ul>
-            <a href="mailto:firmen@pix.de" class="btn-b2b">Firmenangebot anfordern &rarr;</a>
+            <a onclick="openRequestModal('B2B / Firmenanfrage')" class="btn-b2b">Firmenangebot anfordern &rarr;</a>
         </div>
     </section>
     
@@ -494,7 +497,7 @@
                 <li style="margin-bottom: 10px;">✓ Spezielles Licht-Setup</li>
                 <li>✓ High-End Retusche</li>
             </ul>
-            <a href="#kontakt" class="btn-b2b">Konzept besprechen &rarr;</a>
+            <a onclick="openRequestModal('Individuelles Fotoshooting')" class="btn-b2b">Konzept besprechen &rarr;</a>
         </div>
         <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-individuell-1.jpg" class="b2b-img" alt="Individual Shooting">
     </section>
@@ -557,18 +560,31 @@
         <a href="#top" class="back-to-top"><i class="fa-solid fa-chevron-up"></i></a>
         <div class="footer-links">
             <p>PIX Fotostudio Balingen © 2026</p>
-            <p><a onclick="openModal()">Impressum</a> • <a onclick="openModal()">Datenschutz</a> • <a onclick="openModal()">AGB</a></p>
+            <p><a onclick="openLegalModal()">Impressum</a> • <a onclick="openLegalModal()">Datenschutz</a> • <a onclick="openLegalModal()">AGB</a></p>
         </div>
     </div>
 </div>
 
-<!-- LEGAL MODAL -->
+<!-- LEGAL MODAL (RECHTSTEXTE) -->
 <div id="legalModal" class="modal-overlay">
     <div class="modal-content">
-        <button class="close-modal" onclick="closeModal()">&times;</button>
-        <div class="legal-text">
-            <h2>Impressum & Datenschutz</h2>
-            <p>Hier steht der rechtliche Text...</p>
+        <button class="close-modal" onclick="closeLegalModal()">&times;</button>
+        <div class="legal-text" id="legalContainer">
+            <div style="display: flex; justify-content: center; align-items: center; height: 200px;">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #ccc;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- REQUEST MODAL (BUCHUNGSANFRAGE) -->
+<div id="requestModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeRequestModal()">&times;</button>
+        <div id="requestContainer">
+            <div style="display: flex; justify-content: center; align-items: center; height: 200px;">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #ccc;"></i>
+            </div>
         </div>
     </div>
 </div>
@@ -580,6 +596,10 @@
         <i class="fa-solid fa-phone fab-icon"></i>
     </div>
 </a>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/de.js"></script>
 
 <script>
     // --- MAIN SITE LOGIC ---
@@ -625,17 +645,68 @@
         vid.onended = () => { flash.style.opacity = '1'; setTimeout(() => { vid.style.opacity = '0'; img.style.opacity = '1'; vid.currentTime = 0; circle.classList.remove('playing'); isPlaying = false; setTimeout(() => flash.style.opacity = '0', 100); }, 150); };
     });
 
-    const modal = document.getElementById('legalModal');
-    function openModal() { modal.classList.add('active'); document.body.style.overflow = 'hidden'; }
-    function closeModal() { modal.classList.remove('active'); document.body.style.overflow = 'auto'; }
-    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    // --- LEGAL MODAL LOGIC ---
+    const legalModal = document.getElementById('legalModal');
+    const legalContainer = document.getElementById('legalContainer');
+    let legalLoaded = false;
+    async function openLegalModal() {
+        legalModal.classList.add('active'); document.body.style.overflow = 'hidden';
+        if (!legalLoaded) {
+            try {
+                const res = await fetch('legal-content.html');
+                if(!res.ok) throw new Error();
+                legalContainer.innerHTML = await res.text();
+                legalLoaded = true;
+            } catch (err) { legalContainer.innerHTML = '<p style="text-align:center;">Inhalt konnte nicht geladen werden.</p>'; }
+        }
+    }
+    function closeLegalModal() { legalModal.classList.remove('active'); document.body.style.overflow = 'auto'; }
 
-    function loadMap() {
-        document.getElementById('map-target').innerHTML = '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10627.353405225707!2d8.848415699999999!3d48.2482391!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4799fac5feec6cdd%3A0x2a4c7fb9df518b6a!2sPix%20Fotostudio%20-%20Fotograf%20Balingen!5e0!3m2!1sde!2sde!4v1767658877793!5m2!1sde!2sde" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>';
-        document.getElementById('map-placeholder').style.display = 'none';
+    // --- REQUEST MODAL LOGIC ---
+    const requestModal = document.getElementById('requestModal');
+    const requestContainer = document.getElementById('requestContainer');
+    let requestLoaded = false;
+    
+    async function openRequestModal(packageName) {
+        requestModal.classList.add('active'); document.body.style.overflow = 'hidden';
+        
+        if (!requestLoaded) {
+            try {
+                const res = await fetch('pix-kontaktformular.html');
+                if(!res.ok) throw new Error();
+                const html = await res.text();
+                requestContainer.innerHTML = html;
+                requestLoaded = true;
+                
+                // Scripte im geladenen HTML ausführen
+                const scripts = requestContainer.getElementsByTagName("script");
+                for (let i = 0; i < scripts.length; i++) {
+                    eval(scripts[i].innerText);
+                }
+            } catch (err) { 
+                requestContainer.innerHTML = '<p style="text-align:center;">Formular konnte nicht geladen werden.</p>'; 
+            }
+        }
+        
+        // Paket vorselektieren, wenn geladen
+        if(packageName) {
+            // Kleiner Timeout damit das Select Element sicher im DOM ist
+            setTimeout(() => {
+                const select = document.getElementById('paket');
+                if(select) select.value = packageName;
+            }, 100);
+        }
+    }
+    
+    function closeRequestModal() { requestModal.classList.remove('active'); document.body.style.overflow = 'auto'; }
+
+    // Close Modals on Overlay Click
+    window.onclick = function(event) {
+        if (event.target == legalModal) closeLegalModal();
+        if (event.target == requestModal) closeRequestModal();
     }
 
-    // --- GOOGLE REVIEW WIDGET LOGIC (UPDATED) ---
+    // --- GOOGLE REVIEW WIDGET ---
     const reviews = [
         { name: "Manuela Ritter", date: "vor 3 Monaten", text: "Ich kann mich den vielen positiven Bewertungen nur anschließen. Ich habe sehr zügig einen Termin erhalten und habe mich das ganze Shooting über sehr wohl gefühlt." },
         { name: "Sofie Miller", date: "vor einem Monat", text: "Ich bin super zufrieden! Die Fotografin hat sich sehr viel Zeit genommen und eine total angenehme Atmosphäre geschaffen." },
@@ -664,13 +735,8 @@
     const container = document.getElementById('slidesContainer');
     const progressBar = document.getElementById('progressBar');
     const widget = document.getElementById('reviewWidget');
-    
-    let currentIndex = 0;
-    const intervalTime = 6000;
-    let timer;
-    let isPaused = false;
+    let currentIndex = 0; const intervalTime = 6000; let timer; let isPaused = false;
 
-    // Init Reviews
     reviews.forEach((review, index) => {
         const slide = document.createElement('div');
         slide.className = `review-slide ${index === 0 ? 'active' : ''}`;
@@ -683,39 +749,27 @@
         const slides = document.querySelectorAll('.review-slide');
         slides[currentIndex].classList.remove('active');
         if (index >= slides.length) currentIndex = 0; else if (index < 0) currentIndex = slides.length - 1; else currentIndex = index;
-        slides[currentIndex].classList.add('active');
-        resetTimer();
+        slides[currentIndex].classList.add('active'); resetTimer();
     }
     function nextSlide() { if (!isPaused) showSlide(currentIndex + 1); }
     function manualChange(direction) { showSlide(currentIndex + direction); }
-
     function resetTimer() {
         progressBar.style.transition = 'none'; progressBar.style.width = '0%';
         setTimeout(() => { if (!isPaused) { progressBar.style.transition = `width ${intervalTime}ms linear`; progressBar.style.width = '100%'; } }, 50);
-        clearInterval(timer);
-        if (!isPaused) timer = setInterval(nextSlide, intervalTime);
+        clearInterval(timer); if (!isPaused) timer = setInterval(nextSlide, intervalTime);
     }
-
-    widget.addEventListener('mouseenter', () => {
-        isPaused = true; clearInterval(timer);
-        const w = window.getComputedStyle(progressBar).getPropertyValue('width');
-        progressBar.style.transition = 'none'; progressBar.style.width = w;
-    });
+    widget.addEventListener('mouseenter', () => { isPaused = true; clearInterval(timer); const w = window.getComputedStyle(progressBar).getPropertyValue('width'); progressBar.style.transition = 'none'; progressBar.style.width = w; });
     widget.addEventListener('mouseleave', () => { isPaused = false; resetTimer(); });
-
     let touchStartX = 0; let touchEndX = 0;
     widget.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; isPaused = true; }, {passive: true});
-    widget.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        if (touchEndX < touchStartX - 50) manualChange(1);
-        if (touchEndX > touchStartX + 50) manualChange(-1);
-        isPaused = false; resetTimer();
-    }, {passive: true});
-
-    // Start Widget
+    widget.addEventListener('touchend', (e) => { touchEndX = e.changedTouches[0].screenX; if (touchEndX < touchStartX - 50) manualChange(1); if (touchEndX > touchStartX + 50) manualChange(-1); isPaused = false; resetTimer(); }, {passive: true});
     setTimeout(() => { progressBar.style.transition = `width ${intervalTime}ms linear`; progressBar.style.width = '100%'; }, 100);
     timer = setInterval(nextSlide, intervalTime);
 
+    function loadMap() {
+        document.getElementById('map-target').innerHTML = '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10627.353405225707!2d8.848415699999999!3d48.2482391!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4799fac5feec6cdd%3A0x2a4c7fb9df518b6a!2sPix%20Fotostudio%20-%20Fotograf%20Balingen!5e0!3m2!1sde!2sde!4v1767658877793!5m2!1sde!2sde" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>';
+        document.getElementById('map-placeholder').style.display = 'none';
+    }
 </script>
 </body>
 </html>
