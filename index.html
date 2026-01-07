@@ -714,57 +714,36 @@
     const track = document.getElementById('galleryTrack');
     let autoScrollSpeed = 1; 
     let isHovering = false;
-    let userInteracted = false;
     let animationId = null;
 
-    // Core animation function
     function autoScroll() {
-        if (!isHovering && userInteracted) { 
-            track.scrollLeft += autoScrollSpeed; 
-            if(track.scrollLeft >= (track.scrollWidth - track.clientWidth)) {
-                track.scrollLeft = 0;
+        if (!isHovering) { 
+            // Only scroll if content overflows
+            if (track.scrollWidth > track.clientWidth) {
+                track.scrollLeft += autoScrollSpeed; 
+
+                // Reset to 0 when near end
+                if(track.scrollLeft >= (track.scrollWidth - track.clientWidth - 1)) {
+                    track.scrollLeft = 0;
+                }
             }
         }
         animationId = requestAnimationFrame(autoScroll);
     }
 
-    // SAFARI FIX: Start animation only when element is visible or user interacts
-    // 1. Visibility Check
-    const galleryObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && !userInteracted) {
-                userInteracted = true;
-                if (!animationId) autoScroll();
-            }
-        });
-    }, { threshold: 0.1 });
+    // START IMMEDIATELY
+    autoScroll();
 
-    if (track) galleryObserver.observe(track);
-
-    // 2. Interaction Fallback (double safety for strict browsers)
-    const unlockAutoScroll = () => {
-        if (!userInteracted) {
-            userInteracted = true;
-            if (!animationId) autoScroll();
-        }
-    };
-    ['click', 'touchstart', 'scroll'].forEach(evt => 
-        document.addEventListener(evt, unlockAutoScroll, { once: true, passive: true })
-    );
-
-    // Event Listeners for Pausing
+    // PAUSE/RESUME HANDLERS
     track.addEventListener('mouseenter', () => isHovering = true);
     track.addEventListener('mouseleave', () => isHovering = false);
 
-    // Touch Logic
-    track.addEventListener('touchstart', () => {
-        isHovering = true;
-        // Also ensure it starts if it hasn't already
-        unlockAutoScroll();
-    }, { passive: true });
+    track.addEventListener('touchstart', () => { isHovering = true; }, { passive: true });
+    track.addEventListener('touchend', () => { setTimeout(() => isHovering = false, 1500); });
 
-    track.addEventListener('touchend', () => {
-        setTimeout(() => isHovering = false, 1500); // 1.5s pause after touch
+    // Performance: Pause when tab hidden
+    document.addEventListener('visibilitychange', () => {
+        isHovering = document.hidden;
     });
 
     const artistCircle = document.getElementById('artistCircle');
