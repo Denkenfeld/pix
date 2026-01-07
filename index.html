@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -713,13 +714,12 @@
     const track = document.getElementById('galleryTrack');
     let autoScrollSpeed = 1; 
     let isHovering = false;
-    let isPaused = false;
-    let animationId = null;
     let userInteracted = false;
+    let animationId = null;
 
-    // Auto-scroll function
+    // Core animation function
     function autoScroll() {
-        if (!isHovering && !isPaused && userInteracted) { 
+        if (!isHovering && userInteracted) { 
             track.scrollLeft += autoScrollSpeed; 
             if(track.scrollLeft >= (track.scrollWidth - track.clientWidth)) {
                 track.scrollLeft = 0;
@@ -728,53 +728,44 @@
         animationId = requestAnimationFrame(autoScroll);
     }
 
-    // Start animation when gallery becomes visible (Safari fix)
+    // SAFARI FIX: Start animation only when element is visible or user interacts
+    // 1. Visibility Check
     const galleryObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting && !userInteracted) {
-                userInteracted = true; // Mark as visible
+                userInteracted = true;
                 if (!animationId) autoScroll();
             }
         });
     }, { threshold: 0.1 });
 
-    galleryObserver.observe(track);
+    if (track) galleryObserver.observe(track);
 
-    // Also start on any user interaction (Safari fallback)
-    const startOnInteraction = () => {
+    // 2. Interaction Fallback (double safety for strict browsers)
+    const unlockAutoScroll = () => {
         if (!userInteracted) {
             userInteracted = true;
             if (!animationId) autoScroll();
         }
     };
+    ['click', 'touchstart', 'scroll'].forEach(evt => 
+        document.addEventListener(evt, unlockAutoScroll, { once: true, passive: true })
+    );
 
-    document.addEventListener('click', startOnInteraction, { once: true });
-    document.addEventListener('scroll', startOnInteraction, { once: true });
-    document.addEventListener('touchstart', startOnInteraction, { once: true });
+    // Event Listeners for Pausing
+    track.addEventListener('mouseenter', () => isHovering = true);
+    track.addEventListener('mouseleave', () => isHovering = false);
 
-    // Mouse hover: pause
-    track.addEventListener('mouseenter', () => { isHovering = true; });
-    track.addEventListener('mouseleave', () => { isHovering = false; });
-
-    // Touch/scroll: pause and resume after delay
-    let scrollTimeout;
-    track.addEventListener('touchstart', () => { 
-        isHovering = true; 
-        userInteracted = true;
-    });
-
-    track.addEventListener('touchend', () => { 
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => { isHovering = false; }, 1500);
-    });
-
-    track.addEventListener('scroll', () => {
-        if (!isHovering) { // Only if not already hovering/touching
-            isPaused = true;
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => { isPaused = false; }, 1500);
-        }
+    // Touch Logic
+    track.addEventListener('touchstart', () => {
+        isHovering = true;
+        // Also ensure it starts if it hasn't already
+        unlockAutoScroll();
     }, { passive: true });
+
+    track.addEventListener('touchend', () => {
+        setTimeout(() => isHovering = false, 1500); // 1.5s pause after touch
+    });
 
     const artistCircle = document.getElementById('artistCircle');
     const artistImg = document.getElementById('artistImg');
@@ -890,20 +881,24 @@
         .then(h => {
             document.getElementById('requestContainer').innerHTML = h;
 
+            // Polling-Mechanismus
             let attempts = 0;
-            const maxAttempts = 20;
+            const maxAttempts = 20; // 1 Sekunde lang versuchen
 
             const interval = setInterval(() => {
                 attempts++;
 
+                // Versuche das Element zu finden
                 const select = document.getElementById('subjectField') || 
                                document.querySelector('#requestContainer select');
 
                 if (select) {
                     clearInterval(interval);
 
+                    // 1. Direkte Zuweisung
                     select.value = paketName;
 
+                    // 2. Falls fehlgeschlagen, Suche in Optionen
                     if (select.value !== paketName) {
                          const target = paketName.toLowerCase().trim();
                          for (let i = 0; i < select.options.length; i++) {
@@ -918,6 +913,7 @@
                         }
                     }
 
+                    // Flatpickr initialisieren
                     if (window.flatpickr && document.getElementById('dateInput') && !document.getElementById('dateInput')._flatpickr) {
                         flatpickr("#dateInput", { 
                             enableTime: true, dateFormat: "d.m.Y H:i", minDate: "today", 
