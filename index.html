@@ -632,7 +632,7 @@
         <div class="about-bubble">
             
             <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Your Image. Your Power.</h3>
-            <p style="color: #444; line-height: 1.6; margin-bottom: 40px;">15 Jahre Erfahrung in der Business-Fotografie. Mein Ziel sind professionelle Aufnahmen, die Ihre Persönlichkeit unterstreichen. Ihr Erfolg ist mein Maßstab für Qualität.</p>
+            <p style="color: #444; line-height: 1.6; margin-bottom: 40px;">15 Jahre Erfahrung in der Business-Fotografie. Mein Ziel sind professionelle Aufnahmen, die Ihre Persönlichkeit unterstreichen. <br><br><strong>Ihr Erfolg ist mein Maßstab für Qualität.</strong></p>
             <div class="artist-circle-wrapper" id="artistCircle">
                 <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-i-kreis.png" class="artist-avatar" alt="Irene" id="artistImg">
                 <video class="artist-video" id="artistVideo" muted playsinline>
@@ -714,47 +714,61 @@
     const track = document.getElementById('galleryTrack');
     let autoScrollSpeed = 1; 
     let isHovering = false;
+    let scrollTimer = null;
 
-    // Use setInterval instead of requestAnimationFrame for Safari reliability
-    // 60fps = approx 16ms
-    let intervalId = setInterval(() => {
-        if (!isHovering && track) {
-             if (track.scrollWidth > track.clientWidth) {
-                track.scrollLeft += autoScrollSpeed;
+    // Function to start the scrolling loop
+    function startScroll() {
+        // Clear any existing timer to avoid duplicates
+        if (scrollTimer) clearInterval(scrollTimer);
 
-                // Reset / Loop
-                if(track.scrollLeft >= (track.scrollWidth - track.clientWidth - 1)) {
-                    track.scrollLeft = 0;
-                }
-            }
-        }
-    }, 20); // 50fps target - slightly slower to reduce load
+        // Use setInterval for consistent timing (20ms = 50fps)
+        scrollTimer = setInterval(() => {
+            if (!isHovering && track) {
+                if (track.scrollWidth > track.clientWidth) {
+                    track.scrollLeft += autoScrollSpeed;
 
-    // Interaction
-    track.addEventListener('mouseenter', () => isHovering = true);
-    track.addEventListener('mouseleave', () => isHovering = false);
-
-    track.addEventListener('touchstart', () => { isHovering = true; }, {passive: true});
-    track.addEventListener('touchend', () => { 
-        setTimeout(() => isHovering = false, 1500); 
-    });
-
-    // Visibility API to prevent battery drain
-    document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            clearInterval(intervalId);
-        } else {
-            intervalId = setInterval(() => {
-                if (!isHovering && track) {
-                    if (track.scrollWidth > track.clientWidth) {
-                        track.scrollLeft += autoScrollSpeed;
-                        if(track.scrollLeft >= (track.scrollWidth - track.clientWidth - 1)) track.scrollLeft = 0;
+                    // Seamless Loop: Reset when near end
+                    if(track.scrollLeft >= (track.scrollWidth - track.clientWidth - 1)) {
+                        track.scrollLeft = 0;
                     }
                 }
-            }, 20);
+            }
+        }, 20);
+    }
+
+    // 1. Start Immediately
+    startScroll();
+
+    // 2. Start on Window Load (Safari Layout Safety)
+    window.addEventListener('load', () => {
+        startScroll();
+        // Tiny scroll to wake up Safari's rendering layer
+        if (track) track.scrollLeft += 1;
+    });
+
+    // Interaction Logic (Pause/Resume)
+    track.addEventListener('mouseenter', () => isHovering = true);
+    track.addEventListener('mouseleave', () => {
+        isHovering = false;
+        startScroll(); // Explicit restart
+    });
+
+    track.addEventListener('touchstart', () => { isHovering = true; }, { passive: true });
+    track.addEventListener('touchend', () => { 
+        setTimeout(() => {
+            isHovering = false;
+            startScroll(); // Explicit restart
+        }, 1500); 
+    });
+
+    // Visibility (Save Battery)
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            clearInterval(scrollTimer);
+        } else {
+            startScroll();
         }
     });
-    
 
     const artistCircle = document.getElementById('artistCircle');
     const artistImg = document.getElementById('artistImg');
