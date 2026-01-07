@@ -714,37 +714,33 @@
     const track = document.getElementById('galleryTrack');
     let autoScrollSpeed = 1; 
     let isHovering = false;
-    let animationId = null;
-    let lastTimestamp = 0;
+    let scrollTimer = null;
 
-    // Function to start the scrolling loop using requestAnimationFrame
+    // Safari fix: Force scroll-behavior to auto (not smooth)
+    if (track) {
+        track.style.scrollBehavior = 'auto';
+    }
+
+    // Function to start the scrolling loop
     function startScroll() {
-        // Cancel any existing animation
-        if (animationId) cancelAnimationFrame(animationId);
+        // Clear any existing timer to avoid duplicates
+        if (scrollTimer) clearInterval(scrollTimer);
 
-        function animate(timestamp) {
-            if (!lastTimestamp) lastTimestamp = timestamp;
-            const elapsed = timestamp - lastTimestamp;
+        // Use setInterval for consistent timing (20ms = 50fps)
+        scrollTimer = setInterval(() => {
+            if (!isHovering && track) {
+                if (track.scrollWidth > track.clientWidth) {
+                    // Safari fix: Use scroll() method with 'instant' instead of scrollLeft
+                    const newPosition = track.scrollLeft + autoScrollSpeed;
+                    track.scroll({ left: newPosition, behavior: 'instant' });
 
-            // Update every ~20ms (50fps)
-            if (elapsed > 20) {
-                if (!isHovering && track) {
-                    if (track.scrollWidth > track.clientWidth) {
-                        track.scrollLeft += autoScrollSpeed;
-
-                        // Seamless Loop: Reset when near end
-                        if(track.scrollLeft >= (track.scrollWidth - track.clientWidth - 1)) {
-                            track.scrollLeft = 0;
-                        }
+                    // Seamless Loop: Reset when near end
+                    if(track.scrollLeft >= (track.scrollWidth - track.clientWidth - 1)) {
+                        track.scroll({ left: 0, behavior: 'instant' });
                     }
                 }
-                lastTimestamp = timestamp;
             }
-
-            animationId = requestAnimationFrame(animate);
-        }
-
-        animationId = requestAnimationFrame(animate);
+        }, 20);
     }
 
     // 1. Start Immediately
@@ -754,7 +750,17 @@
     window.addEventListener('load', () => {
         startScroll();
         // Tiny scroll to wake up Safari's rendering layer
-        if (track) track.scrollLeft += 1;
+        if (track) track.scroll({ left: 1, behavior: 'instant' });
+    });
+
+    // 3. DOMContentLoaded fallback (Safari early trigger)
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            if (track) {
+                track.scroll({ left: 0, behavior: 'instant' });
+                startScroll();
+            }
+        }, 100);
     });
 
     // Interaction Logic (Pause/Resume)
@@ -775,9 +781,8 @@
     // Visibility (Save Battery)
     document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
-            if (animationId) cancelAnimationFrame(animationId);
+            clearInterval(scrollTimer);
         } else {
-            lastTimestamp = 0;
             startScroll();
         }
     });
