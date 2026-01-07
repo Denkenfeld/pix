@@ -150,6 +150,8 @@
             display: flex; gap: 30px; overflow-x: auto; 
             -ms-overflow-style: none; scrollbar-width: none; 
             padding-left: 20px; padding-right: 20px; cursor: grab; white-space: nowrap;
+            will-change: scroll-position;
+            -webkit-overflow-scrolling: auto;
         }
         .gallery-track::-webkit-scrollbar { display: none; }
         .gallery-track:active { cursor: grabbing; }
@@ -712,90 +714,52 @@
     });
 
     const track = document.getElementById('galleryTrack');
-    let autoScrollSpeed = 1; 
     let isHovering = false;
-    let scrollTimer = null;
-    let safariUnlocked = false;
+    let lastTime = 0;
+    let accumulatedScroll = 0;
+    const autoScrollSpeed = 1; // Pixels per frame
 
-    // Safari-Detection
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    function animateScroll(timestamp) {
+        if (!lastTime) lastTime = timestamp;
+        const deltaTime = timestamp - lastTime;
+        lastTime = timestamp;
 
-    // Function to start the scrolling loop
-    function startScroll() {
-        if (scrollTimer) clearInterval(scrollTimer);
-
-        scrollTimer = setInterval(() => {
-            if (!isHovering && track) {
-                if (track.scrollWidth > track.clientWidth) {
-                    track.scrollLeft += autoScrollSpeed;
-
-                    // Seamless Loop: Reset when near end
-                    if(track.scrollLeft >= (track.scrollWidth - track.clientWidth - 1)) {
-                        track.scrollLeft = 0;
-                    }
-                }
+        if (!isHovering && track && track.scrollWidth > track.clientWidth) {
+            accumulatedScroll += autoScrollSpeed * (deltaTime / 16.67); // ~60fps normalization
+            if (accumulatedScroll >= 1) {
+                track.scrollLeft += Math.floor(accumulatedScroll);
+                accumulatedScroll -= Math.floor(accumulatedScroll);
             }
-        }, 16); // ~60fps für smoothness
-    }
 
-    // Safari-Unlock: Erster User-Interaction startet Animation
-    function unlockSafari() {
-        if (!safariUnlocked && isSafari) {
-            safariUnlocked = true;
-            startScroll();
+            if (track.scrollLeft >= (track.scrollWidth - track.clientWidth - 1)) {
+                track.scrollLeft = 0;
+            }
         }
+
+        requestAnimationFrame(animateScroll);
     }
 
-    // Start für Nicht-Safari Browser
-    if (!isSafari) {
-        startScroll();
-    }
+    // Start animation
+    requestAnimationFrame(animateScroll);
 
-    // Window Load
-    window.addEventListener('load', () => {
-        if (!isSafari) {
-            startScroll();
-        } else {
-            // Safari: Warte auf erste User-Geste
-            ['scroll', 'click', 'touchstart', 'keydown'].forEach(evt => {
-                document.addEventListener(evt, unlockSafari, { once: true, passive: true });
-            });
-
-            // Fallback: Nach 2 Sekunden trotzdem versuchen
-            setTimeout(() => {
-                if (!safariUnlocked) {
-                    safariUnlocked = true;
-                    startScroll();
-                }
-            }, 2000);
-        }
-    });
-
-    // Interaction Logic (Pause/Resume)
+    // Pause on hover/touch
     track.addEventListener('mouseenter', () => isHovering = true);
-    track.addEventListener('mouseleave', () => {
-        isHovering = false;
+    track.addEventListener('mouseleave', () => isHovering = false);
+    track.addEventListener('touchstart', () => isHovering = true, { passive: true });
+    track.addEventListener('touchend', () => { setTimeout(() => isHovering = false, 1500); });
+
+    // Wake-up for Safari
+    window.addEventListener('load', () => {
+        track.scrollLeft += 1;
+        setTimeout(() => { track.scrollLeft -= 1; }, 100);
+        if (track.focus) track.focus();
     });
 
-    track.addEventListener('touchstart', () => { 
-        isHovering = true;
-        if (isSafari) unlockSafari();
-    }, { passive: true });
-
-    track.addEventListener('touchend', () => { 
-        setTimeout(() => {
-            isHovering = false;
-        }, 1500); 
-    });
-
-    // Visibility (Save Battery)
+    // Handle visibility
     document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            if (scrollTimer) clearInterval(scrollTimer);
-        } else {
-            if (!isSafari || safariUnlocked) {
-                startScroll();
-            }
+        if (!document.hidden) {
+            lastTime = 0;
+            requestAnimationFrame(animateScroll);
         }
     });
 
