@@ -612,7 +612,7 @@
             <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-i-kontakt.jpg" class="contact-avatar-xxl" alt="Irene">
             <div class="contact-text">
                 <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Kommen Sie vorbei.</h3>
-                <p><strong>PIX Fotostudio</strong><br>Odenwaldstraße 19, 72336 Balingen<br><br>📞 015150715629<br>✉️ Mail: <a href="mailto:fotostudiopix@gmail.com">fotostudiopix@gmail.com</a></p>
+                <p><strong>PIX Fotostudio</strong><br>Irene Ilter<br>Odenwaldstraße 19, 72336 Balingen<br><br>📞 015150715629<br>✉️ Mail: <a href="mailto:fotostudiopix@gmail.com">fotostudiopix@gmail.com</a></p>
                 <p style="margin-top: 20px; color: #888; font-size: 0.9rem;">Parkplätze direkt vor der Tür<br>Fotoshootings sind nur mit Termin möglich</p>
             </div>
         </div>
@@ -630,7 +630,7 @@
     <!-- BOTTOM ABOUT -->
     <div class="bottom-about reveal">
         <div class="about-bubble">
-            <div class="artist-name">Über mich</div>
+            
             <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Your Image. Your Power.</h3>
             <p style="color: #444; line-height: 1.6; margin-bottom: 40px;">15 Jahre Erfahrung in der Business-Fotografie. Mein Ziel sind professionelle Aufnahmen, die Ihre Persönlichkeit unterstreichen. Ihr Erfolg ist mein Maßstab für Qualität.</p>
             <div class="artist-circle-wrapper" id="artistCircle">
@@ -714,52 +714,47 @@
     const track = document.getElementById('galleryTrack');
     let autoScrollSpeed = 1; 
     let isHovering = false;
-    let animationId = null;
-    let scrollPos = 0; // Virtual scroll position
 
-    // 1. High-Performance Loop (Desktop/Smooth)
-    function autoScroll() {
-        if (!isHovering) {
-            if (track.scrollWidth > track.clientWidth) {
+    // Use setInterval instead of requestAnimationFrame for Safari reliability
+    // 60fps = approx 16ms
+    let intervalId = setInterval(() => {
+        if (!isHovering && track) {
+             if (track.scrollWidth > track.clientWidth) {
                 track.scrollLeft += autoScrollSpeed;
 
-                // Seamless Loop Logic
+                // Reset / Loop
                 if(track.scrollLeft >= (track.scrollWidth - track.clientWidth - 1)) {
                     track.scrollLeft = 0;
                 }
             }
         }
-        animationId = requestAnimationFrame(autoScroll);
-    }
+    }, 20); // 50fps target - slightly slower to reduce load
 
-    // Start immediately
-    autoScroll();
-
-    // 2. SAFETY INTERVAL (Safari Fix)
-    // Falls rAF stoppt oder nicht feuert (Safari Idle), zwingt dies den Browser zum Update
-    setInterval(() => {
-        if (!isHovering && !document.hidden) {
-            // Check if it moved. If not, force move.
-            // (Optional logic kept simple to avoid conflicts)
-            if (track.scrollLeft === 0 && track.scrollWidth > track.clientWidth) {
-               track.scrollLeft += 1; // Wake up call
-            }
-        }
-    }, 2000); 
-
-    // 3. User Interaction Logic
+    // Interaction
     track.addEventListener('mouseenter', () => isHovering = true);
     track.addEventListener('mouseleave', () => isHovering = false);
 
-    track.addEventListener('touchstart', () => { isHovering = true; }, { passive: true });
+    track.addEventListener('touchstart', () => { isHovering = true; }, {passive: true});
     track.addEventListener('touchend', () => { 
         setTimeout(() => isHovering = false, 1500); 
     });
 
-    // Visibility
+    // Visibility API to prevent battery drain
     document.addEventListener('visibilitychange', () => {
-        isHovering = document.hidden;
+        if (document.hidden) {
+            clearInterval(intervalId);
+        } else {
+            intervalId = setInterval(() => {
+                if (!isHovering && track) {
+                    if (track.scrollWidth > track.clientWidth) {
+                        track.scrollLeft += autoScrollSpeed;
+                        if(track.scrollLeft >= (track.scrollWidth - track.clientWidth - 1)) track.scrollLeft = 0;
+                    }
+                }
+            }, 20);
+        }
     });
+    
 
     const artistCircle = document.getElementById('artistCircle');
     const artistImg = document.getElementById('artistImg');
