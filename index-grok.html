@@ -375,6 +375,21 @@
         .btn-card:hover, .btn-b2b:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.25); opacity: 0.9; }
         .faq-question { transition: all 0.3s ease; }
         .faq-question:hover { background-color: #f9f9f9; color: var(--accent-warm); }
+
+        /* Separate Gallery CSS for Debugging */
+        .gallery-track {
+            animation: galleryScroll 60s linear infinite;
+            will-change: transform;
+        }
+
+        @keyframes galleryScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-100% / 2)); } /* Da Inhalt dupliziert ist */
+        }
+
+        .gallery-track:hover {
+            animation-play-state: paused;
+        }
     </style>
 </head>
 <body>
@@ -410,6 +425,30 @@
     <div class="gallery-wrap reveal">
         <h3 style="padding-left: 20px; margin-bottom: 20px; font-family: var(--font-head);">Selected Works: Bewerbungsfotos | Businessportraits | Studio & vor Ort</h3>
         <div class="gallery-track" id="galleryTrack">
+            <!-- Original Content -->
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-bewerbung-1.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-2.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-4.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s3.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s1.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s2.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-individuell.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-studio.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/1-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/2-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/3-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/4-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/5-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/6-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/7-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/8-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
+            <!-- Duplicates -->
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-bewerbung-1.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-2.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-4.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s3.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s1.jpg"></div>
+            <!-- Duplicate Content for Seamless Loop -->
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-bewerbung-1.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-2.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-4.jpg"></div>
@@ -712,34 +751,9 @@
         }
     });
 
+    // Separate Gallery JS for Debugging
     const track = document.getElementById('galleryTrack');
     let isHovering = false;
-    let lastTime = 0;
-    let accumulatedScroll = 0;
-    const autoScrollSpeed = 1; // Pixels per frame (adjust as needed)
-
-    function animateScroll(timestamp) {
-        if (!lastTime) lastTime = timestamp;
-        const deltaTime = timestamp - lastTime;
-        lastTime = timestamp;
-
-        if (!isHovering && track && track.scrollWidth > track.clientWidth) {
-            accumulatedScroll += autoScrollSpeed * (deltaTime / 16.67); // ~60fps normalization
-            if (accumulatedScroll >= 1) {
-                track.scrollLeft += Math.floor(accumulatedScroll);
-                accumulatedScroll -= Math.floor(accumulatedScroll);
-            }
-
-            if (track.scrollLeft >= (track.scrollWidth - track.clientWidth - 1)) {
-                track.scrollLeft = 0;
-            }
-        }
-
-        requestAnimationFrame(animateScroll);
-    }
-
-    // Start animation
-    requestAnimationFrame(animateScroll);
 
     // Pause on hover/touch
     track.addEventListener('mouseenter', () => isHovering = true);
@@ -936,4 +950,4 @@ function closeRequestModal() { document.getElementById('requestModal').classList
 </script>
 
 </body>
-</html>
+</html>#
