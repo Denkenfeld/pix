@@ -712,89 +712,92 @@
     });
 
     const track = document.getElementById('galleryTrack');
-    let autoScrollSpeed = 50; // px per second (entspricht grob 1px pro 20ms wie zuvor)
+    let autoScrollSpeed = 1; 
     let isHovering = false;
-    let animationId = null;
-    let lastTime = null;
+    let scrollTimer = null;
+    let safariUnlocked = false;
 
-    if (track) {
-        // Safari: verhindern, dass globales smooth-scrolling Einfluss nimmt
-        track.style.scrollBehavior = 'auto';
+    // Safari-Detection
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
-        function loop(time) {
-            if (lastTime === null) lastTime = time;
-            const dt = time - lastTime;
-            lastTime = time;
+    // Function to start the scrolling loop
+    function startScroll() {
+        if (scrollTimer) clearInterval(scrollTimer);
 
-            if (!isHovering) {
-                const max = track.scrollWidth - track.clientWidth;
-                if (max > 1) {
-                    let next = track.scrollLeft + (autoScrollSpeed * dt / 1000);
-                    if (next >= (max - 1)) next = 0;
-                    track.scrollLeft = next;
+        scrollTimer = setInterval(() => {
+            if (!isHovering && track) {
+                if (track.scrollWidth > track.clientWidth) {
+                    track.scrollLeft += autoScrollSpeed;
+
+                    // Seamless Loop: Reset when near end
+                    if(track.scrollLeft >= (track.scrollWidth - track.clientWidth - 1)) {
+                        track.scrollLeft = 0;
+                    }
                 }
             }
-
-            animationId = requestAnimationFrame(loop);
-        }
-
-        function startScroll() {
-            if (animationId) return; // already running
-            lastTime = null;
-            animationId = requestAnimationFrame(loop);
-        }
-
-        function stopScroll() {
-            if (!animationId) return;
-            cancelAnimationFrame(animationId);
-            animationId = null;
-            lastTime = null;
-        }
-
-        function ensureAutoScrollReady() {
-            const max = track.scrollWidth - track.clientWidth;
-
-            // Warten, bis Bilder/Layout wirklich Breite haben
-            if (max > 1) {
-                // Safari "wake-up" ohne sichtbaren Positionssprung
-                const x = track.scrollLeft;
-                track.scrollLeft = x + 1;
-                track.scrollLeft = x;
-
-                startScroll();
-                return;
-            }
-
-            setTimeout(ensureAutoScrollReady, 150);
-        }
-
-        // Start-Versuche: sofort + nach load + nach Bild-Loads
-        ensureAutoScrollReady();
-        window.addEventListener('load', ensureAutoScrollReady);
-        window.addEventListener('resize', ensureAutoScrollReady);
-
-        track.querySelectorAll('img').forEach(img => {
-            if (!img.complete) img.addEventListener('load', ensureAutoScrollReady, { once: true });
-        });
-
-        // Interaction Logic (Pause/Resume)
-        track.addEventListener('mouseenter', () => isHovering = true);
-        track.addEventListener('mouseleave', () => { isHovering = false; });
-
-        track.addEventListener('touchstart', () => { isHovering = true; }, { passive: true });
-        track.addEventListener('touchend', () => {
-            setTimeout(() => { isHovering = false; }, 1500);
-        }, { passive: true });
-
-        // Visibility (Save Battery)
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                stopScroll();
-            } else {
-                ensureAutoScrollReady();
-            }
-        });
+        }, 16); // ~60fps für smoothness
     }
+
+    // Safari-Unlock: Erster User-Interaction startet Animation
+    function unlockSafari() {
+        if (!safariUnlocked && isSafari) {
+            safariUnlocked = true;
+            startScroll();
+        }
+    }
+
+    // Start für Nicht-Safari Browser
+    if (!isSafari) {
+        startScroll();
+    }
+
+    // Window Load
+    window.addEventListener('load', () => {
+        if (!isSafari) {
+            startScroll();
+        } else {
+            // Safari: Warte auf erste User-Geste
+            ['scroll', 'click', 'touchstart', 'keydown'].forEach(evt => {
+                document.addEventListener(evt, unlockSafari, { once: true, passive: true });
+            });
+
+            // Fallback: Nach 2 Sekunden trotzdem versuchen
+            setTimeout(() => {
+                if (!safariUnlocked) {
+                    safariUnlocked = true;
+                    startScroll();
+                }
+            }, 2000);
+        }
+    });
+
+    // Interaction Logic (Pause/Resume)
+    track.addEventListener('mouseenter', () => isHovering = true);
+    track.addEventListener('mouseleave', () => {
+        isHovering = false;
+    });
+
+    track.addEventListener('touchstart', () => { 
+        isHovering = true;
+        if (isSafari) unlockSafari();
+    }, { passive: true });
+
+    track.addEventListener('touchend', () => { 
+        setTimeout(() => {
+            isHovering = false;
+        }, 1500); 
+    });
+
+    // Visibility (Save Battery)
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            if (scrollTimer) clearInterval(scrollTimer);
+        } else {
+            if (!isSafari || safariUnlocked) {
+                startScroll();
+            }
+        }
+    });
 
     const artistCircle = document.getElementById('artistCircle');
     const artistImg = document.getElementById('artistImg');
