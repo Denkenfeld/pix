@@ -631,8 +631,8 @@
     <div class="bottom-about reveal">
         <div class="about-bubble">
             <div class="artist-name">Über mich</div>
-            <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Irene Ilter</h3>
-            <p style="color: #444; line-height: 1.6; margin-bottom: 40px;">15 Jahre Erfahrung in der Business-Fotografie. Mein Ziel sind professionelle Aufnahmen, die Ihre Persönlichkeit unterstreichen. Ihr Erfolg ist mein Maßstab für Qualität.<br><br><strong>Your Image. Your Power.</strong></p>
+            <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Your Image. Your Power.</h3>
+            <p style="color: #444; line-height: 1.6; margin-bottom: 40px;">15 Jahre Erfahrung in der Business-Fotografie. Mein Ziel sind professionelle Aufnahmen, die Ihre Persönlichkeit unterstreichen. Ihr Erfolg ist mein Maßstab für Qualität.</p>
             <div class="artist-circle-wrapper" id="artistCircle">
                 <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-i-kreis.png" class="artist-avatar" alt="Irene" id="artistImg">
                 <video class="artist-video" id="artistVideo" muted playsinline>
@@ -715,14 +715,15 @@
     let autoScrollSpeed = 1; 
     let isHovering = false;
     let animationId = null;
+    let scrollPos = 0; // Virtual scroll position
 
+    // 1. High-Performance Loop (Desktop/Smooth)
     function autoScroll() {
-        if (!isHovering) { 
-            // Only scroll if content overflows
+        if (!isHovering) {
             if (track.scrollWidth > track.clientWidth) {
-                track.scrollLeft += autoScrollSpeed; 
+                track.scrollLeft += autoScrollSpeed;
 
-                // Reset to 0 when near end
+                // Seamless Loop Logic
                 if(track.scrollLeft >= (track.scrollWidth - track.clientWidth - 1)) {
                     track.scrollLeft = 0;
                 }
@@ -731,17 +732,31 @@
         animationId = requestAnimationFrame(autoScroll);
     }
 
-    // START IMMEDIATELY
+    // Start immediately
     autoScroll();
 
-    // PAUSE/RESUME HANDLERS
+    // 2. SAFETY INTERVAL (Safari Fix)
+    // Falls rAF stoppt oder nicht feuert (Safari Idle), zwingt dies den Browser zum Update
+    setInterval(() => {
+        if (!isHovering && !document.hidden) {
+            // Check if it moved. If not, force move.
+            // (Optional logic kept simple to avoid conflicts)
+            if (track.scrollLeft === 0 && track.scrollWidth > track.clientWidth) {
+               track.scrollLeft += 1; // Wake up call
+            }
+        }
+    }, 2000); 
+
+    // 3. User Interaction Logic
     track.addEventListener('mouseenter', () => isHovering = true);
     track.addEventListener('mouseleave', () => isHovering = false);
 
     track.addEventListener('touchstart', () => { isHovering = true; }, { passive: true });
-    track.addEventListener('touchend', () => { setTimeout(() => isHovering = false, 1500); });
+    track.addEventListener('touchend', () => { 
+        setTimeout(() => isHovering = false, 1500); 
+    });
 
-    // Performance: Pause when tab hidden
+    // Visibility
     document.addEventListener('visibilitychange', () => {
         isHovering = document.hidden;
     });
