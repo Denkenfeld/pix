@@ -810,8 +810,18 @@
     function loadMap() {
         document.getElementById('map-placeholder').style.display = 'none';
         const iframe = document.createElement('iframe');
-        iframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2643.689625345758!2d8.850123!3d48.270123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x479a0aa7a4a2a4a7%3A0x4a4a4a4a4a4a4a4a!2sOdenwaldstra%C3%9Fe%2019%2C%2072336%20Balingen!5e0!3m2!1sde!2sde!4v1680000000000!5m2!1sde!2sde";
-        iframe.allowFullscreen = true; iframe.loading = "lazy"; iframe.referrerPolicy = "no-referrer-when-downgrade";
+        iframe.src = "https://maps.google.com/maps?q=Odenwaldstra%C3%9Fe+19,+72336+Balingen&t=&z=15&ie=UTF8&iwloc=&output=embed";
+        iframe.allowFullscreen = true;
+        iframe.loading = 'lazy';
+        iframe.referrerPolicy = 'no-referrer-when-downgrade';
+
+        // Error handling for mobile
+        iframe.onerror = function() {
+            console.error('Map loading failed');
+            document.getElementById('map-placeholder').innerHTML = '<div style="padding:40px;text-align:center;color:#666;">Karte konnte nicht geladen werden. Bitte öffnen Sie <a href="https://www.google.com/maps/search/?api=1&query=Odenwaldstra%C3%9Fe+19,+72336+Balingen" target="_blank" style="color:#C6A87C;">Google Maps direkt</a>.</div>';
+            document.getElementById('map-placeholder').style.display = 'flex';
+        };
+
         document.getElementById('map-target').appendChild(iframe);
     }
 
@@ -831,7 +841,7 @@
                 const subjectField = document.getElementById('subjectField');
                 if(subjectField && paketName) {
                     subjectField.value = paketName;
-                    // Robuste Auswahl: Falls value nicht passt, nach Text suchen
+                    // Robuste Auswahl
                     if (subjectField.value !== paketName && subjectField.options) {
                         for (let i = 0; i < subjectField.options.length; i++) {
                             const opt = subjectField.options[i];
