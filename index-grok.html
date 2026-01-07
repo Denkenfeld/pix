@@ -5,12 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PIX Fotostudio | Visual Excellence</title>
     
-    <!-- LOKALE ASSETS (Ersetzt externe CDNs für DSGVO-Konformität) -->
-    
-    <!-- 1. FontAwesome Icons (Lokal) -->
     <link href="assets/css/all.min.css" rel="stylesheet">
     
-    <!-- 2. Flatpickr CSS (Lokal) -->
     <link rel="stylesheet" href="assets/css/flatpickr.min.css">
 
     <style>
@@ -143,20 +139,31 @@
         .artist-bubble { background: #EAEAE8; padding: 40px; border-radius: 30px; border-bottom-left-radius: 0; position: relative; max-width: 400px; }
         .artist-name { font-weight: 700; font-size: 1.2rem; margin-bottom: 10px; color: #D96C4A; }
 
-        /* --- GALLERY --- */
-        .gallery-wrap { padding: 40px 0; overflow: hidden; background: white; }
-        .gallery-track { 
-            display: flex; gap: 30px; overflow-x: auto; 
-            -ms-overflow-style: none; scrollbar-width: none; 
-            padding-left: 20px; padding-right: 20px; cursor: grab; white-space: nowrap;
-            will-change: scroll-position; /* Safari optimization */
-            -webkit-overflow-scrolling: auto;
+        /* --- GALLERY (UPDATED FOR NEW JS) --- */
+        .gallery-wrap { 
+            padding: 40px 0; 
+            overflow: hidden; 
+            background: white; 
+            cursor: grab; /* Zeigt an, dass man ziehen kann */
         }
+        .gallery-wrap.grabbing {
+            cursor: grabbing; /* Zeigt aktives Ziehen an */
+        }
+        .gallery-track { 
+            display: flex; 
+            gap: 30px; 
+            width: max-content; /* Wichtig damit Track so breit wie der Inhalt ist */
+            will-change: transform; /* Performance Boost für Animation */
+            padding-left: 20px; 
+            padding-right: 20px; 
+        }
+        /* Scrollbars entfernen ist nicht mehr nötig, da kein natives Scrollen mehr genutzt wird, schadet aber nicht */
         .gallery-track::-webkit-scrollbar { display: none; }
-        .gallery-track:active { cursor: grabbing; }
+        
         .gallery-item { 
             width: 600px; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.1); flex-shrink: 0; 
+            pointer-events: none; /* Verhindert Bild-Drag Ghosting */
         }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; object-position: top; pointer-events: none; }
 
@@ -375,27 +382,11 @@
         .btn-card:hover, .btn-b2b:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.25); opacity: 0.9; }
         .faq-question { transition: all 0.3s ease; }
         .faq-question:hover { background-color: #f9f9f9; color: var(--accent-warm); }
-
-        /* Separate Gallery CSS for Debugging */
-        .gallery-track {
-            animation: galleryScroll 60s linear infinite;
-            will-change: transform;
-        }
-
-        @keyframes galleryScroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(calc(-100% / 2)); } /* Da Inhalt dupliziert ist */
-        }
-
-        .gallery-track:hover {
-            animation-play-state: paused;
-        }
     </style>
 </head>
 <body>
 
 <div class="wrapper" id="top">
-    <!-- HERO -->
     <div class="hero reveal active">
         <img src="https://denkenfeld.github.io/pix/start1.jpeg" alt="Hero" id="heroImg">
         <div class="hero-overlay">
@@ -409,7 +400,6 @@
         </div>
     </div>
 
-    <!-- ARTIST SECTION -->
     <section class="artist-section reveal">
         <div class="artist-circle-wrapper" style="cursor: default;">
             <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-i-ich.jpg" class="artist-avatar" alt="Irene" style="object-position: top;">
@@ -421,11 +411,9 @@
         </div>
     </section>
 
-    <!-- GALLERY -->
-    <div class="gallery-wrap reveal">
+    <div class="gallery-wrap reveal" id="galleryWrap">
         <h3 style="padding-left: 20px; margin-bottom: 20px; font-family: var(--font-head);">Selected Works: Bewerbungsfotos | Businessportraits | Studio & vor Ort</h3>
         <div class="gallery-track" id="galleryTrack">
-            <!-- Original Content -->
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-bewerbung-1.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-2.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-4.jpg"></div>
@@ -442,41 +430,10 @@
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/6-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/7-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
             <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/8-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
-            <!-- Duplicates -->
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-bewerbung-1.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-2.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-4.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s3.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s1.jpg"></div>
-            <!-- Duplicate Content for Seamless Loop -->
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-bewerbung-1.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-2.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-4.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s3.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s1.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s2.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-individuell.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-studio.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/1-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/2-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/3-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/4-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/5-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/6-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/7-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/8-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
-            <!-- Duplicates -->
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-bewerbung-1.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-2.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-4.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s3.jpg"></div>
-            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s1.jpg"></div>
         </div>
     </div>
 
-    <!-- SOCIAL PROOF & REVIEW WIDGET -->
     <div class="social-proof reveal">
-        <!-- LEFT: Static Social Proof -->
         <div class="social-left">
             <div class="google-box-static">
                 <span class="stars-static">★★★★★</span>
@@ -490,7 +447,6 @@
             </div>
         </div>
         
-        <!-- RIGHT: The Dynamic Review Widget -->
         <div class="review-widget" id="reviewWidget">
             <div class="google-badge">
                 <svg viewBox="0 0 24 24" width="18" height="18"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
@@ -508,7 +464,6 @@
         </div>
     </div>
 
-    <!-- INVESTITION -->
     <section class="pricing-section reveal" id="investition">
         <div style="text-align: center; max-width: 800px; margin: 0 auto 60px auto;">
             <h2>PIX Studioshooting: Authentisch, businessstark und alles inklusive</h2>
@@ -517,7 +472,6 @@
         </div>
         
         <div class="pkg-grid">
-            <!-- S -->
             <div class="pkg-card">
                 <div class="pkg-shine-wrap"></div>
                 <h3>Paket S: Basis</h3>
@@ -532,7 +486,6 @@
                 </ul>
                 <a onclick="openRequestModal('Paket S: Basis')" class="btn-card">Anfragen</a>
             </div>
-            <!-- M -->
             <div class="pkg-card featured">
                 <div class="pkg-shine-wrap"></div>
                 <h3>Paket M: Karriere</h3>
@@ -547,7 +500,6 @@
                 </ul>
                 <a onclick="openRequestModal('Paket M: Karriere')" class="btn-card">Anfragen</a>
             </div>
-            <!-- L -->
             <div class="pkg-card">
                 <div class="pkg-shine-wrap"></div>
                 <h3>Paket L: Executive</h3>
@@ -566,7 +518,6 @@
         
     </section>
 
-    <!-- B2B SECTIONS -->
     <section class="b2b-section reveal">
         <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s4.jpg" class="b2b-img" alt="Corporate Team">
         <div class="b2b-content">
@@ -578,7 +529,7 @@
                 <li style="margin-bottom: 10px;">✓ Bildbearbeitung im Firmen-Look</li>
                 <li>✓ Nutzungsrechte inklusive</li>
             </ul>
-            <a onclick="openRequestModal('B2B / Firmenanfrage')" class="btn-b2b">Firmenangebot anfordern &rarr;</a>
+            <a onclick="openRequestModal('B2B / Firmenanfrage')" class="btn-b2b">Firmenangebot anfordern →</a>
         </div>
     </section>
     
@@ -592,12 +543,11 @@
                 <li style="margin-bottom: 10px;">✓ Spezielles Licht-Setup</li>
                 <li>✓ High-End Retusche</li>
             </ul>
-            <a onclick="openRequestModal('Individuelles Fotoshooting')" class="btn-b2b">Konzept besprechen &rarr;</a>
+            <a onclick="openRequestModal('Individuelles Fotoshooting')" class="btn-b2b">Konzept besprechen →</a>
         </div>
         <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-individuell-1.jpg" class="b2b-img" alt="Individual Shooting">
     </section>
 
-    <!-- FAQ -->
     <section class="faq-wrap reveal">
         <div class="faq-img-container">
             <h2>Häufige Fragen & Antworten</h2>
@@ -646,7 +596,6 @@
             </div>
         </div></section>
 
-    <!-- KONTAKT -->
     <section class="contact-wrap reveal" id="kontakt">
         <div class="contact-info-block">
             <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-i-kontakt.jpg" class="contact-avatar-xxl" alt="Irene">
@@ -667,12 +616,11 @@
         </div>
     </section>
 
-    <!-- BOTTOM ABOUT -->
     <div class="bottom-about reveal">
         <div class="about-bubble">
             
             <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Your Image. Your Power.</h3>
-            <p style="color: #444; line-height: 1.6; margin-bottom: 40px;">15 Jahre Erfahrung in der Business-Fotografie. Mein Ziel sind professionelle Aufnahmen, die Ihre Persönlichkeit unterstreichen. <br><br><strong>Ihr Erfolg ist mein Maßstab für Qualität.</strong></p>
+            <p style="color: #444; line-height: 1.6; margin-bottom: 40px; text-align: center;">15 Jahre Erfahrung in der Business-Fotografie. Mein Ziel sind professionelle Aufnahmen, die Ihre Persönlichkeit unterstreichen. <br><br><strong>Ihr Erfolg ist mein Maßstab für Qualität.</strong></p>
             <div class="artist-circle-wrapper" id="artistCircle">
                 <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-i-kreis.png" class="artist-avatar" alt="Irene" id="artistImg">
                 <video class="artist-video" id="artistVideo" muted playsinline>
@@ -684,7 +632,6 @@
         </div>
     </div>
 
-    <!-- FOOTER -->
     <div class="footer-container">
         <a href="#top" class="back-to-top"><i class="fa-solid fa-chevron-up"></i></a>
         <div class="footer-links">
@@ -694,10 +641,9 @@
     </div>
 </div>
 
-<!-- LEGAL MODAL (RECHTSTEXTE) -->
 <div id="legalModal" class="modal-overlay">
     <div class="modal-content">
-        <button class="close-modal" onclick="closeLegalModal()">&times;</button>
+        <button class="close-modal" onclick="closeLegalModal()">×</button>
         <div class="legal-text" id="legalContainer">
             <div style="display: flex; justify-content: center; align-items: center; height: 200px;">
                 <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #ccc;"></i>
@@ -706,10 +652,9 @@
     </div>
 </div>
 
-<!-- REQUEST MODAL (BUCHUNGSANFRAGE) -->
 <div id="requestModal" class="modal-overlay">
     <div class="modal-content">
-        <button class="close-modal" onclick="closeRequestModal()">&times;</button>
+        <button class="close-modal" onclick="closeRequestModal()">×</button>
         <div id="requestContainer">
             <div style="display: flex; justify-content: center; align-items: center; height: 200px;">
                 <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #ccc;"></i>
@@ -718,7 +663,6 @@
     </div>
 </div>
 
-<!-- CALL BTN -->
 <a href="tel:015150715629" class="call-fab" id="smartBtn">
     <div class="fab-content">
         <div class="fab-text"><span style="font-size: 0.7rem; opacity: 0.7;">Mo-Sa 8-20h</span><span><span class="status-dot"></span>Jetzt anrufen</span></div>
@@ -726,7 +670,6 @@
     </div>
 </a>
 
-<!-- Scripts (Lokal) -->
 <script src="assets/js/flatpickr.js"></script>
 <script src="assets/js/de.js"></script>
 
@@ -751,29 +694,138 @@
         }
     });
 
-    // Separate Gallery JS for Debugging
+    // === NEW SAFARI-SAFE SCROLLING LOGIC ===
+    const wrap = document.getElementById('galleryWrap');
     const track = document.getElementById('galleryTrack');
-    let isHovering = false;
 
-    // Pause on hover/touch
-    track.addEventListener('mouseenter', () => isHovering = true);
-    track.addEventListener('mouseleave', () => isHovering = false);
-    track.addEventListener('touchstart', () => isHovering = true, { passive: true });
-    track.addEventListener('touchend', () => { setTimeout(() => isHovering = false, 1500); });
+    if (wrap && track) {
+      // 1. Klone erstellen für Endlos-Effekt
+      const originalItems = Array.from(track.children);
+      originalItems.forEach(item => {
+        track.appendChild(item.cloneNode(true));
+      });
 
-    // Wake-up for Safari
-    window.addEventListener('load', () => {
-        track.scrollLeft += 1;
-        setTimeout(() => { track.scrollLeft -= 1; }, 100);
-        track.focus();
-    });
+      // 2. Breite berechnen
+      function getItemWidth() {
+        const first = track.querySelector('.gallery-item');
+        if (!first) return 0;
+        const styles = window.getComputedStyle(track);
+        const gap = parseFloat(styles.columnGap || styles.gap || 0);
+        return first.offsetWidth + gap;
+      }
 
-    // Handle visibility
-    document.addEventListener('visibilitychange', () => {
-        if (!document.hidden) {
-            requestAnimationFrame(animateScroll);
+      let itemWidth = getItemWidth();
+      let totalWidth = itemWidth * originalItems.length;
+
+      let x = 0;
+      let baseSpeed = 0.5; // Geschwindigkeit anpassen
+      let speed = baseSpeed;
+      let isDragging = false;
+      let lastClientX = 0;
+
+      function updateTransform() {
+        track.style.transform = `translate3d(${x}px, 0, 0)`;
+      }
+
+      function loop() {
+        if (!isDragging && speed !== 0) {
+          x -= speed;
+          // Wenn wir die Hälfte durchlaufen haben (totalWidth), springen wir nahtlos zurück
+          if (Math.abs(x) >= totalWidth) x += totalWidth;
+          updateTransform();
         }
-    });
+        requestAnimationFrame(loop);
+      }
+
+      // === DRAG & TOUCH EVENTS ===
+      function pointerDown(clientX) {
+        isDragging = true;
+        lastClientX = clientX;
+        wrap.classList.add('grabbing');
+        speed = 0;
+      }
+
+      function pointerMove(clientX) {
+        if (!isDragging) return;
+        const delta = clientX - lastClientX;
+        lastClientX = clientX;
+        x += delta;
+        // Nahtlose Grenzen beim Draggen
+        if (x > 0) x -= totalWidth;
+        if (Math.abs(x) >= totalWidth) x += totalWidth;
+        updateTransform();
+      }
+
+      function pointerUp() {
+        if (!isDragging) return;
+        isDragging = false;
+        wrap.classList.remove('grabbing');
+        speed = baseSpeed;
+      }
+
+      // Maus Events
+      wrap.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        pointerDown(e.clientX);
+      });
+      window.addEventListener('mousemove', (e) => {
+        pointerMove(e.clientX);
+      });
+      window.addEventListener('mouseup', () => {
+        pointerUp();
+      });
+
+      // Touch Events
+      function onTouchStart(e) {
+        const t = e.touches[0] || e.changedTouches[0];
+        pointerDown(t.clientX);
+      }
+      function onTouchMove(e) {
+        // e.preventDefault() hier weglassen oder vorsichtig nutzen, damit vertikales Scrollen der Seite nicht blockiert wird, 
+        // es sei denn, man will horizontalen Swipe erzwingen. 
+        // Für Galerie besser:
+        const t = e.touches[0] || e.changedTouches[0];
+        pointerMove(t.clientX);
+      }
+      function onTouchEnd(e) {
+        pointerUp();
+      }
+
+      wrap.addEventListener('touchstart', onTouchStart, { passive: true });
+      wrap.addEventListener('touchmove', onTouchMove, { passive: true });
+      wrap.addEventListener('touchend', onTouchEnd, { passive: true });
+      wrap.addEventListener('touchcancel', onTouchEnd, { passive: true });
+
+      // Hover-Pause (optional)
+      wrap.addEventListener('mouseenter', () => {
+        if (!isDragging) speed = 0;
+      });
+      wrap.addEventListener('mouseleave', () => {
+        if (!isDragging) speed = baseSpeed;
+      });
+
+      window.addEventListener('resize', () => {
+        itemWidth = getItemWidth();
+        totalWidth = itemWidth * originalItems.length;
+      });
+
+      // Start the loop
+      // Warten bis Bilder geladen sind für korrekte Breite, sicherheitshalber
+      if(originalItems.length > 0) {
+          const img = originalItems[0].querySelector('img');
+          if(img && !img.complete) {
+              img.onload = () => {
+                  itemWidth = getItemWidth();
+                  totalWidth = itemWidth * originalItems.length;
+                  loop();
+              }
+          } else {
+              loop();
+          }
+      } else {
+        loop();
+      }
+    }
 
     const artistCircle = document.getElementById('artistCircle');
     const artistImg = document.getElementById('artistImg');
@@ -950,4 +1002,4 @@ function closeRequestModal() { document.getElementById('requestModal').classList
 </script>
 
 </body>
-</html>#
+</html>
