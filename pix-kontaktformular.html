@@ -1,76 +1,53 @@
 <div class="form-wrapper">
     <style>
-        /* Scoped Styles */
-        .form-wrapper {
-            background: white; padding: 10px; width: 100%; margin: 0 auto; font-family: sans-serif;
-        }
+        .form-wrapper { background: white; padding: 10px; width: 100%; margin: 0 auto; font-family: sans-serif; }
+        .form-header h2 { text-align: center; color: #2c2c2c; margin: 0 0 20px 0; font-size: 1.6rem; font-weight: 700; }
+        .form-group { margin-bottom: 15px; text-align: left; position: relative; }
 
-        .form-header h2 { 
-            text-align: center; color: #2c2c2c; margin: 0 0 20px 0;
-            font-size: 1.6rem; font-weight: 700;
-        }
-
-        .form-group { margin-bottom: 15px; text-align: left; }
-        .form-group label { display: none; } 
-
-        /* Inputs und Selects */
         .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 14px 18px; 
-            border: 1px solid #e0e0e0;
-            border-radius: 15px; 
-            font-size: 16px; 
-            -webkit-appearance: none; appearance: none;
-            background-color: #fafafa;
-            box-sizing: border-box;
-            min-height: 52px;
-            transition: all 0.2s ease;
-            color: #333;
-            font-family: inherit;
+            width: 100%; padding: 14px 18px; border: 1px solid #e0e0e0; border-radius: 15px; 
+            font-size: 16px; -webkit-appearance: none; appearance: none; background-color: #fafafa;
+            box-sizing: border-box; min-height: 52px; color: #333; font-family: inherit;
         }
 
-        /* Platzhalter-Farbe für Selects und Date-Trick */
-        .form-group select:invalid, 
-        .date-placeholder {
-            color: #999 !important;
+        /* --- DER TRICK FÜR DEN PLATZHALTER --- */
+        input[type="date"]::before {
+            content: "Wunschdatum wählen...";
+            position: absolute;
+            color: #999; /* Selbe Farbe wie bei Name/Email */
+            left: 18px;
+            top: 15px;
+            pointer-events: none;
+            width: 80%;
+            background: #fafafa; /* Deckt den Standard-Browser-Text ab */
         }
 
-        /* Spezialfall für natives Datum-Feld */
-        input[type="date"], .date-trigger {
-            position: relative;
-            cursor: pointer;
+        /* Wenn das Feld fokussiert wird oder ein Wert drin steht, verschwindet der Text */
+        input[type="date"]:focus::before,
+        input[type="date"]:valid::before {
+            display: none;
         }
 
-        /* Pfeil-Design für Selects und Date */
-        .form-group select, 
-        input[type="date"],
-        .date-trigger {
+        /* Styling für den Kalender-Pfeil */
+        input[type="date"], .form-group select {
             background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%234a4a4a%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
             background-repeat: no-repeat;
             background-position: right 18px top 50%;
             background-size: 12px auto;
+            cursor: pointer;
         }
 
-        /* Versteckt das Standard-Icon */
+        /* Macht das native Icon unsichtbar, damit es unseren Pfeil nicht überlagert */
         input[type="date"]::-webkit-calendar-picker-indicator {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            width: 100%; height: 100%;
-            opacity: 0; cursor: pointer;
-        }
-
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none; border-color: #d4c4a8; background-color: #fff;
-            box-shadow: 0 0 0 4px rgba(212, 196, 168, 0.2);
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            width: 100%; height: 100%; opacity: 0; cursor: pointer;
         }
 
         #submitBtn {
-            width: 100%; background-color: #d4c4a8; color: #4a4a4a;
-            border: none; padding: 16px; border-radius: 15px; 
-            font-size: 1.1rem; font-weight: 700; cursor: pointer;
-            margin-top: 5px; text-transform: uppercase;
+            width: 100%; background-color: #d4c4a8; color: #4a4a4a; border: none; padding: 16px; 
+            border-radius: 15px; font-size: 1.1rem; font-weight: 700; cursor: pointer; text-transform: uppercase;
         }
-
+        
         #success-message { display: none; text-align: center; padding: 40px 0; }
         .check-icon { font-size: 50px; color: #d4c4a8; margin-bottom: 20px; display: block; }
         .disclaimer { text-align: center; font-size: 0.8rem; color: #999; margin-top: 12px; }
@@ -78,11 +55,9 @@
 
     <div id="form-content">
         <div class="form-header"><h2>Anfrage senden</h2></div>
-        
         <form id="bookingForm">
             <input type="hidden" name="_captcha" value="false">
             <input type="hidden" name="_subject" value="Neue Fotoshooting Anfrage">
-            <input type="text" name="_honey" style="display:none">
 
             <div class="form-group">
                 <input type="text" name="Name" required placeholder="Ihr Name">
@@ -95,21 +70,14 @@
             <div class="form-group">
                 <select name="Paket" required>
                     <option value="" disabled selected>Gewünschtes Paket wählen...</option>
-                    <option value="Paket S: Basis">Paket S: Basis</option>
-                    <option value="Paket M: Karriere">Paket M: Karriere</option>
-                    <option value="Paket L: Executive">Paket L: Executive</option>
+                    <option value="Paket S">Paket S: Basis</option>
+                    <option value="Paket M">Paket M: Karriere</option>
+                    <option value="Paket L">Paket L: Executive</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <input type="text" 
-                       id="dateInput" 
-                       name="Datum" 
-                       placeholder="Wunschdatum wählen..." 
-                       class="date-trigger"
-                       onfocus="(this.type='date')" 
-                       onblur="if(!this.value)this.type='text'"
-                       required>
+                <input type="date" id="dateInput" name="Datum" required>
             </div>
 
             <div class="form-group">
@@ -134,25 +102,20 @@
     <div id="success-message">
         <span class="check-icon">✓</span>
         <h3>Vielen Dank!</h3>
-        <p>Ihre Anfrage ist unterwegs.</p>
+        <p>Ihre Anfrage wurde gesendet.</p>
     </div>
 </div>
 
 <script>
     (function() {
-        // Minimum Datum auf heute setzen
-        const dateEl = document.getElementById('dateInput');
-        // Falls der User direkt klickt, stellen wir sicher, dass 'min' gesetzt ist
-        if (dateEl) {
-            dateEl.addEventListener('focus', function() {
-                const today = new Date().toISOString().split('T')[0];
-                this.setAttribute('min', today);
-            });
+        // Setze Min-Datum auf heute
+        const dateInput = document.getElementById('dateInput');
+        if(dateInput) {
+            dateInput.min = new Date().toISOString().split("T")[0];
         }
 
         const form = document.getElementById('bookingForm');
         if(form) {
-            form.onclick = function(e) { e.stopPropagation(); };
             form.onsubmit = function(e) {
                 e.preventDefault();
                 const btn = document.getElementById('submitBtn');
@@ -170,7 +133,6 @@
                 .catch(() => {
                     alert("Fehler!");
                     btn.disabled = false;
-                    btn.innerHTML = "Termin anfragen";
                 });
             };
         }
