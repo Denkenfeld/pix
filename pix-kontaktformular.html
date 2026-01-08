@@ -1,9 +1,4 @@
 <div class="form-wrapper">
-    <!-- Sicherstellen, dass Flatpickr geladen wird -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/de.js"></script>
-
     <style>
         /* Scoped Styles */
         .form-wrapper {
@@ -20,9 +15,6 @@
         }
 
         .form-group { margin-bottom: 15px; text-align: left; }
-
-        /* Labels global ausblenden (falls im HTML noch vorhanden) oder Struktur ohne Labels nutzen */
-        .form-group label { display: none; } 
 
         /* Inputs und Selects */
         .form-group input, .form-group select, .form-group textarea {
@@ -57,37 +49,41 @@
         }
         #submitBtn:hover { background-color: #c4b498; }
 
-        /* Design: Pfeil nach unten & Dunkler Placeholder */
-        .form-group select, 
-        #date {
+        /* Pfeile für Selects */
+        .form-group select {
             background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%234a4a4a%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
             background-repeat: no-repeat;
             background-position: right 18px top 50%;
             background-size: 12px auto;
             cursor: pointer;
-            background-color: #fafafa;
         }
 
-        /* Placeholder Farbe erzwingen */
-        #date::placeholder { color: #333; opacity: 1; }
-        #date { color: #333; }
+        /* Datum-Input Styling (Damit es wie ein Textfeld aussieht) */
+        input[type="date"] {
+            position: relative;
+            /* Placeholder-Farbe simulieren, falls Browser noch keinen Wert hat */
+            color: #333; 
+        }
 
-        /* Flatpickr Kalender Styling */
-        .flatpickr-calendar {
-            z-index: 999999 !important; /* WICHTIG: Überlagert alles */
-            border-radius: 15px !important; border: none !important;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
-            margin-top: 5px;
+        /* Kalender-Icon im Input etwas hübscher machen (Webkit only) */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            background: transparent;
+            bottom: 0;
+            color: transparent;
+            cursor: pointer;
+            height: auto;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: auto;
         }
-        .flatpickr-day.selected {
-            background: #d4c4a8 !important; border-color: #d4c4a8 !important; color: #4a4a4a !important; font-weight: bold;
-        }
-        
-        /* Mobile Breite */
-        @media (max-width: 480px) {
-            .flatpickr-calendar {
-                width: 90% !important; left: 50% !important; transform: translateX(-50%) !important;
-            }
+        /* Pfeil hinzufügen damit es konsistent aussieht */
+        input[type="date"] {
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%234a4a4a%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 18px top 50%;
+            background-size: 12px auto;
         }
 
         #success-message { display: none; text-align: center; padding: 40px 0; }
@@ -105,17 +101,14 @@
             <input type="hidden" name="_subject" value="Neue Fotoshooting Anfrage">
             <input type="text" name="_honey" style="display:none">
 
-            <!-- Name (Label entfernt) -->
             <div class="form-group">
                 <input type="text" id="name" name="Name" required placeholder="Ihr Name">
             </div>
 
-            <!-- Email (Label entfernt) -->
             <div class="form-group">
                 <input type="email" id="email" name="Email" required placeholder="name@beispiel.de">
             </div>
 
-            <!-- Paket (Label entfernt) -->
             <div class="form-group">
                 <select id="paket" name="Paket" required>
                     <option value="" disabled selected>Gewünschtes Paket wählen...</option>
@@ -127,12 +120,14 @@
                 </select>
             </div>
 
-            <!-- Datum (Label entfernt, Placeholder dunkel, Pfeil per CSS) -->
+            <!-- NATIVES DATUMSFELD -->
+            <!-- onclick="this.showPicker()" öffnet den Kalender auch bei Klick ins Textfeld -->
             <div class="form-group">
-                <input type="text" id="date" name="Datum" required placeholder="Wunschtermin auswählen..." readonly>
+                <input type="date" id="date" name="Datum" required 
+                       placeholder="Wunschtermin auswählen..." 
+                       onclick="this.showPicker()">
             </div>
 
-            <!-- Uhrzeit (Label entfernt) -->
             <div class="form-group">
                 <select id="time" name="Uhrzeit" required>
                     <option value="" disabled selected>Uhrzeit wählen...</option>
@@ -151,7 +146,6 @@
                 </select>
             </div>
 
-            <!-- Nachricht (Label entfernt) -->
             <div class="form-group">
                 <textarea id="message" name="Nachricht" placeholder="Ihre Nachricht an uns..."></textarea>
             </div>
@@ -161,7 +155,6 @@
         </form>
     </div>
 
-    <!-- Success Message -->
     <div id="success-message">
         <span class="check-icon">✓</span>
         <h3>Vielen Dank!</h3>
@@ -170,25 +163,22 @@
 </div>
 
 <script>
-    // --- LÖSUNG FÜR DAS DATEPICKER PROBLEM ---
-    // Wir verwenden einen Intervall-Check, anstatt nur einmal beim Laden zu prüfen.
-    // Das garantiert, dass der Code erst läuft, wenn die Bibliothek wirklich da ist.
-    
-    var checkFlatpickrLoad = setInterval(function() {
-        if (typeof flatpickr !== 'undefined') {
-            console.log("Flatpickr geladen - Initialisiere Kalender...");
-            clearInterval(checkFlatpickrLoad); // Stop checking
-            
-            flatpickr("#date", {
-                locale: "de",                
-                dateFormat: "d.m.Y",         
-                minDate: "today",            
-                maxDate: new Date().fp_incr(180),      
-                disableMobile: "true", // Erzwingt dein Design auch auf Handys
-                disable: [ function(date) { return (date.getDay() === 0); } ]
-            });
-        }
-    }, 100); // Check alle 100ms
+    // Kleines Script um Sonntag manuell zu verhindern (Validierung)
+    // Da native Datepicker Sonntage oft nicht visuell ausblenden können (außer min/max),
+    // prüfen wir es nach der Eingabe.
+    const dateInput = document.getElementById('date');
+    if(dateInput) {
+        // Mindestdatum heute setzen
+        dateInput.min = new Date().toISOString().split("T")[0];
+        
+        dateInput.addEventListener('change', function() {
+            const day = new Date(this.value).getDay();
+            if(day === 0) { // 0 = Sonntag
+                alert("Sonntags sind leider keine Termine möglich. Bitte wählen Sie einen anderen Tag.");
+                this.value = ''; // Reset
+            }
+        });
+    }
 
     /* Form Logik */
     const form = document.getElementById('bookingForm');
