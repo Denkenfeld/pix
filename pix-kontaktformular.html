@@ -11,7 +11,7 @@
             box-sizing: border-box; min-height: 52px; color: #333; font-family: inherit;
         }
 
-        /* --- WICHTIGER FIX FÜR iPHONE / SAFARI (aus vorherigem Schritt beibehalten) --- */
+        /* --- WICHTIGER FIX FÜR iPHONE / SAFARI (beibehalten) --- */
         .form-group input[readonly], .flatpickr-input[readonly] {
             background-color: #fafafa;
             cursor: pointer;
@@ -39,8 +39,9 @@
             border-radius: 15px; font-size: 1.1rem; font-weight: 700; cursor: pointer; text-transform: uppercase;
         }
         
+        /* Message Container muss relative sein, damit der X-Button positioniert werden kann */
         #success-message { 
-            display: none; text-align: center; padding: 40px 0; position: relative; /* Position relative für X-Button */
+            display: none; text-align: center; padding: 40px 0; position: relative;
         }
         .check-icon { font-size: 50px; color: #d4c4a8; margin-bottom: 20px; display: block; }
         .disclaimer { text-align: center; font-size: 0.8rem; color: #999; margin-top: 12px; }
@@ -81,7 +82,7 @@
             </div>
 
             <div class="form-group">
-                <input type="text" id="dateInput" name="Datum" required placeholder="Wunschtermin wählen...">
+                <input type="text" id="dateInput" name="Datum" required placeholder="Wunschtermin wählen..." readonly>
             </div>
 
             <div class="form-group">
@@ -109,7 +110,7 @@
     </div>
 
     <div id="success-message">
-        <button class="close-success-btn" onclick="closeRequestModal()">×</button>
+        <button class="close-success-btn" onclick="if (typeof closeRequestModal === 'function') closeRequestModal()">×</button>
         <span class="check-icon">✓</span>
         <h3>Vielen Dank!</h3>
         <p style="font-size: 1.1rem; color: #4a4a4a; line-height: 1.6;">
@@ -135,23 +136,35 @@
                     method: "POST",
                     body: new FormData(form)
                 })
-                .then(() => {
-                    // Erfolgsmeldung anzeigen
+                .then(response => {
+                    // Überprüfen, ob die Antwort erfolgreich war (HTTP Status 200-299)
+                    if (response.ok) {
+                        return response.json(); // FormSubmit liefert JSON
+                    }
+                    // Fehlerfall abfangen
+                    throw new Error('Formularfehler (Status: ' + response.status + ')');
+                })
+                .then(data => {
+                    // *** 1. Success Message anzeigen ***
                     formContent.style.display = 'none';
                     successMsg.style.display = 'block';
 
-                    // Timer zum automatischen Schließen des Modals nach 5 Sekunden
+                    // *** 2. Timer zum automatischen Schließen nach 5 Sekunden ***
                     setTimeout(function() {
-                        // Prüfen, ob die Funktion zum Schließen des Modals existiert
+                        // Funktion closeRequestModal() aus dem Haupt-Dokument aufrufen
                         if (typeof closeRequestModal === 'function') {
                             closeRequestModal();
                         }
                     }, 5000); 
                 })
-                .catch(() => {
-                    alert("Es gab einen Fehler beim Senden. Bitte versuchen Sie es erneut oder rufen Sie uns an.");
+                .catch(error => {
+                    // Fehlerbehandlung für Benutzer
+                    alert("Es gab einen Fehler beim Senden (" + error.message + "). Bitte versuchen Sie es erneut.");
                     btn.disabled = false;
                     btn.innerHTML = "Termin anfragen";
+                    // Falls die Erfolgsmeldung sichtbar war, wieder ausblenden
+                    formContent.style.display = 'block';
+                    successMsg.style.display = 'none';
                 });
             };
         }
