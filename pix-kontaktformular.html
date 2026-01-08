@@ -3,12 +3,26 @@
         .form-wrapper { background: white; padding: 10px; width: 100%; margin: 0 auto; font-family: sans-serif; }
         .form-header h2 { text-align: center; color: #2c2c2c; margin: 0 0 20px 0; font-size: 1.6rem; font-weight: 700; }
         .form-group { margin-bottom: 15px; text-align: left; position: relative; }
+        
         /* Grundstyling für alle Felder */
         .form-group input, .form-group select, .form-group textarea {
             width: 100%; padding: 14px 18px; border: 1px solid #e0e0e0; border-radius: 15px;
             font-size: 16px; -webkit-appearance: none; appearance: none; background-color: #fafafa;
             box-sizing: border-box; min-height: 52px; color: #333; font-family: inherit;
         }
+
+        /* --- FIX: Breite für Datepicker erzwingen --- */
+        /* Wir sprechen die ID direkt an, das überschreibt alles andere */
+        #dateInput, 
+        .flatpickr-input, 
+        .flatpickr-mobile,
+        .flatpickr-wrapper { 
+            width: 100% !important; 
+            display: block !important;
+            box-sizing: border-box !important;
+            max-width: 100% !important;
+        }
+
         /* --- WICHTIGER FIX FÜR iPHONE / SAFARI (beibehalten) --- */
         .form-group input[readonly], .flatpickr-input[readonly] {
             background-color: #fafafa;
@@ -52,15 +66,17 @@
     <div id="form-content">
         <div class="form-header"><h2>Anfrage senden</h2></div>
         <form id="bookingForm">
-            <input type="hidden" name="_captcha" value="true"> <!-- Aktiviert für Zuverlässigkeit -->
+            <!-- WICHTIG: Captcha deaktiviert (false) -->
+            <input type="hidden" name="_captcha" value="false"> 
             <input type="hidden" name="_subject" value="Neue Fotoshooting Anfrage">
-            <input type="hidden" name="_url" value="https://deine-homepage.de/seite.html"> <!-- Ersetze mit deiner URL -->
+            <!-- Ersetze mit deiner URL -->
+            <input type="hidden" name="_url" value="https://deine-homepage.de/seite.html"> 
             <input type="text" name="_honey" style="display:none">
             <div class="form-group">
                 <input type="text" name="Name" required placeholder="Ihr Name">
             </div>
             <div class="form-group">
-                <input type="email" name="email" required placeholder="name@beispiel.de"> <!-- Klein 'email' für Kompatibilität -->
+                <input type="email" name="email" required placeholder="name@beispiel.de"> 
             </div>
             <div class="form-group">
                 <select name="Paket" id="subjectField" required>
@@ -115,7 +131,8 @@
             enableTime: false,
             dateFormat: "Y-m-d",
             minDate: "today",
-            locale: "de" // Für deutsche Formatierung
+            locale: "de", 
+            static: true // Sorgt dafür, dass Kalender im Modal richtig positioniert wird
         });
         
         const form = document.getElementById('bookingForm');
@@ -125,7 +142,7 @@
         if(form) {
             form.onsubmit = function(e) {
                 e.preventDefault();
-                console.log('Submit gestartet'); // Debug
+                console.log('Submit gestartet'); 
                 btn.disabled = true;
                 btn.innerHTML = "Wird gesendet...";
                 fetch("https://formsubmit.co/ajax/cb821965b533b1d5bc4b29eae2ce79f6", {
@@ -133,19 +150,19 @@
                     body: new FormData(form)
                 })
                 .then(response => {
-                    console.log('Response Status:', response.status); // Debug
+                    console.log('Response Status:', response.status); 
                     if (!response.ok) {
                         throw new Error('Netzwerkfehler: ' + response.status);
                     }
                     return response.json();
                 })
                 .then(data => {
-                    console.log('Data:', data); // Debug
+                    console.log('Data:', data); 
                     if (data.success) {
                         // Success Message anzeigen
                         formContent.style.display = 'none';
                         successMsg.style.display = 'block';
-                        // Timer zum automatischen Schließen nach 10 Sekunden (für Tests verlängert)
+                        // Timer zum automatischen Schließen nach 10 Sekunden
                         setTimeout(function() {
                             if (typeof closeRequestModal === 'function') {
                                 closeRequestModal();
@@ -156,7 +173,7 @@
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error); // Debug in Console
+                    console.error('Error:', error); 
                     alert("Es gab einen Fehler beim Senden: " + error.message + ". Bitte versuchen Sie es erneut.");
                     btn.disabled = false;
                     btn.innerHTML = "Termin anfragen";
