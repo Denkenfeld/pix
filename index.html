@@ -952,7 +952,10 @@
                         }
                     }
                     if (window.flatpickr && document.getElementById('dateInput') && !document.getElementById('dateInput')._flatpickr) {
-                        flatpickr("#dateInput", { disableMobile: true, enableTime: false, dateFormat: "d.m.Y H:i", minDate: "today", time_24hr: true, locale: "de", placeholder: "Wunschtermin wählen...", minuteIncrement: 30 });
+                        flatpickr("#dateInput", { disableMobile: true, enableTime: false, dateFormat: "d.m.Y H:i", minDate: "today", time_24hr: true, locale: "de", placeholder: "Wunschtermin wählen...", minuteIncrement: 30, "disable": [
+            function(date) {
+                // date.getDay() === 0 bedeutet Sonntag
+                return (date.getDay() === 0); });
                     }
                 }
                 if (attempts >= maxAttempts) clearInterval(interval);
