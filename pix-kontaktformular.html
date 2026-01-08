@@ -1,9 +1,4 @@
 <div class="form-wrapper">
-    <!-- Flatpickr CSS & JS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/de.js"></script>
-
     <style>
         /* Scoped Styles für das Formular */
         .form-wrapper {
@@ -13,105 +8,59 @@
             margin: 0 auto;
             font-family: sans-serif;
         }
-
         .form-header h2 { 
-            text-align: center; 
-            color: #2c2c2c; 
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 1.6rem;
-            font-weight: 700;
+            text-align: center; color: #2c2c2c; margin: 0 0 20px 0;
+            font-size: 1.6rem; font-weight: 700;
         }
-
         .form-group { margin-bottom: 15px; text-align: left; }
 
-        /* Inputs und Selects */
+        /* Inputs / Selects */
         .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 14px 18px; 
-            border: 1px solid #e0e0e0;
-            border-radius: 15px; 
-            font-size: 16px; 
-            -webkit-appearance: none; 
-            appearance: none;
-            background-color: #fafafa;
-            box-sizing: border-box;
-            min-height: 52px;
-            transition: all 0.2s ease;
-            color: #333;
-            font-family: inherit;
+            width: 100%; padding: 14px 18px; 
+            border: 1px solid #e0e0e0; border-radius: 15px; 
+            font-size: 16px; -webkit-appearance: none; appearance: none;
+            background-color: #fafafa; box-sizing: border-box;
+            min-height: 52px; transition: all 0.2s ease;
+            color: #333; font-family: inherit;
         }
+        .form-group textarea { min-height: 100px; resize: vertical; }
 
-        .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        /* Fokus Styles */
+        /* Fokus */
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: #d4c4a8;
-            background-color: #fff;
+            outline: none; border-color: #d4c4a8; background-color: #fff;
             box-shadow: 0 0 0 4px rgba(212, 196, 168, 0.2);
         }
 
-        /* BUTTON STYLE */
+        /* Submit Button */
         #submitBtn {
-            width: 100%;
-            background-color: #d4c4a8; 
-            color: #4a4a4a;
-            border: none;
-            padding: 16px;
-            border-radius: 15px; 
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 5px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            width: 100%; background-color: #d4c4a8; color: #4a4a4a;
+            border: none; padding: 16px; border-radius: 15px; 
+            font-size: 1.1rem; font-weight: 700; cursor: pointer;
+            margin-top: 5px; text-transform: uppercase; letter-spacing: 0.5px;
         }
         #submitBtn:hover { background-color: #c4b498; }
 
-        /* PFEIL LOGIK & PLACEHOLDER */
+        /* Pfeile & Icons */
         .form-group select, #date {
             background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%234a4a4a%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat;
-            background-position: right 18px top 50%;
-            background-size: 12px auto;
-            cursor: pointer;
-            background-color: #fafafa;
+            background-repeat: no-repeat; background-position: right 18px top 50%;
+            background-size: 12px auto; cursor: pointer; background-color: #fafafa;
         }
+        #date::placeholder { color: #333; opacity: 1; }
 
-        #date::placeholder {
-            color: #333;  
-            opacity: 1; 
-        }
-
-        /* FLATPICKR STYLING */
-        /* WICHTIG: Hoher Z-Index für Modals */
+        /* FLATPICKR CSS LOAD CHECK */
+        /* Wir laden CSS per JS, aber hier Fallback Styles falls nötig */
         .flatpickr-calendar {
-            background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            border: none;
-            font-family: inherit;
-            margin-top: 5px;
-            z-index: 999999 !important; /* Damit er ÜBER dem Modal liegt */
+            z-index: 9999999 !important; /* Extrem hoch für Modals */
+            border-radius: 15px !important; border: none !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
         }
-        .flatpickr-months .flatpickr-month { background: transparent; color: #2c2c2c; fill: #2c2c2c; }
-        .flatpickr-current-month .flatpickr-monthDropdown-months { font-weight: 700; }
-        .flatpickr-weekdays { background: transparent; }
-        span.flatpickr-weekday { color: #999; font-weight: 600; }
-        
-        .flatpickr-day.selected, .flatpickr-day.selected:hover {
+        .flatpickr-day.selected {
             background: #d4c4a8 !important; border-color: #d4c4a8 !important; color: #4a4a4a !important; font-weight: bold;
         }
-        .flatpickr-day:hover { background: #f0f0f0; }
-        .flatpickr-day.disabled { color: #ddd !important; cursor: not-allowed; }
-
         @media (max-width: 480px) {
             .flatpickr-calendar {
-                width: 90% !important; left: 50% !important; transform: translateX(-50%) !important; top: auto !important; margin-top: 10px;
+                width: 90% !important; left: 50% !important; transform: translateX(-50%) !important;
             }
         }
         
@@ -149,7 +98,11 @@
             </div>
 
             <div class="form-group">
-                <input type="text" id="date" name="Datum" required placeholder="Wunschtermin auswählen..." readonly>
+                <!-- WICHTIG: onclick ruft jetzt direkt die Init-Funktion auf -->
+                <input type="text" id="date" name="Datum" required 
+                       placeholder="Wunschtermin auswählen..." 
+                       readonly 
+                       onclick="window.initAndOpenFlatpickr(this);">
             </div>
 
             <div class="form-group">
@@ -187,26 +140,64 @@
 </div>
 
 <script>
-    // Robustere Initialisierung für Flatpickr
-    function initDatePicker() {
-        if (typeof flatpickr !== 'undefined') {
-            flatpickr("#date", {
-                locale: "de",                
-                dateFormat: "d.m.Y",         
-                minDate: "today",            
-                maxDate: new Date().fp_incr(180), 
-                disableMobile: "true", 
-                disable: [ function(date) { return (date.getDay() === 0); } ]
-            });
-        } else {
-            // Falls das Skript noch lädt, versuche es in 50ms nochmal
-            setTimeout(initDatePicker, 50);
+    /**
+     * Diese Funktion wird direkt beim Klick auf das Input-Feld ausgeführt.
+     * Sie prüft, ob Flatpickr da ist. Wenn nicht, lädt sie es nach.
+     * Wenn ja, öffnet sie den Kalender.
+     */
+    window.initAndOpenFlatpickr = function(element) {
+        // 1. Check: Wurde auf diesem Element schon Flatpickr aktiviert?
+        if (element._flatpickr) {
+            element._flatpickr.open();
+            return;
         }
-    }
-    // Starte Initialisierung sofort
-    initDatePicker();
 
-    // Form Logik
+        // 2. Check: Ist die Bibliothek geladen?
+        if (typeof flatpickr === 'undefined') {
+            console.log("Lade Flatpickr nach...");
+            
+            // CSS laden
+            if (!document.getElementById('fp-css')) {
+                var css = document.createElement('link');
+                css.id = 'fp-css'; css.rel = 'stylesheet';
+                css.href = 'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css';
+                document.head.appendChild(css);
+            }
+
+            // JS laden
+            var script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/flatpickr';
+            script.onload = function() {
+                // Deutsch laden danach
+                var scriptDE = document.createElement('script');
+                scriptDE.src = 'https://npmcdn.com/flatpickr/dist/l10n/de.js';
+                scriptDE.onload = function() {
+                    createPicker(element); // Jetzt erstellen!
+                };
+                document.head.appendChild(scriptDE);
+            };
+            document.head.appendChild(script);
+        } else {
+            // Bibliothek ist da, direkt erstellen
+            createPicker(element);
+        }
+    };
+
+    function createPicker(element) {
+        flatpickr(element, {
+            locale: "de",                
+            dateFormat: "d.m.Y",         
+            minDate: "today",            
+            maxDate: new Date().fp_incr(180), 
+            disableMobile: "true", 
+            disable: [ function(date) { return (date.getDay() === 0); } ],
+            onReady: function(selectedDates, dateStr, instance) {
+                instance.open(); // Sofort öffnen nach Erstellung
+            }
+        });
+    }
+
+    // Standard Formular Logik
     const form = document.getElementById('bookingForm');
     const formContent = document.getElementById('form-content');
     const successMsg = document.getElementById('success-message');
@@ -218,13 +209,8 @@
             e.preventDefault(); 
             btn.disabled = true;
             btn.innerHTML = "Wird gesendet...";
-
             const formData = new FormData(form);
-
-            fetch(`https://formsubmit.co/ajax/${FORM_TOKEN}`, {
-                method: "POST",
-                body: formData
-            })
+            fetch(`https://formsubmit.co/ajax/${FORM_TOKEN}`, { method: "POST", body: formData })
             .then(response => response.json())
             .then(data => {
                 formContent.style.display = 'none';
