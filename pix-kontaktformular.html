@@ -11,8 +11,7 @@
             box-sizing: border-box; min-height: 52px; color: #333; font-family: inherit;
         }
 
-        /* --- WICHTIGER FIX FÜR iPHONE / SAFARI --- */
-        /* Verhindert, dass das Datum-Feld ausgegraut/leer wirkt */
+        /* --- WICHTIGER FIX FÜR iPHONE / SAFARI (aus vorherigem Schritt beibehalten) --- */
         .form-group input[readonly], .flatpickr-input[readonly] {
             background-color: #fafafa;
             cursor: pointer;
@@ -40,14 +39,17 @@
             border-radius: 15px; font-size: 1.1rem; font-weight: 700; cursor: pointer; text-transform: uppercase;
         }
         
-        #success-message { display: none; text-align: center; padding: 40px 0; position: relative; }
+        #success-message { 
+            display: none; text-align: center; padding: 40px 0; position: relative; /* Position relative für X-Button */
+        }
         .check-icon { font-size: 50px; color: #d4c4a8; margin-bottom: 20px; display: block; }
         .disclaimer { text-align: center; font-size: 0.8rem; color: #999; margin-top: 12px; }
-        
-        /* Close X Button Style */
+
+        /* Style für den X-Button */
         .close-success-btn {
             position: absolute; top: -10px; right: 0; 
             background: none; border: none; font-size: 2rem; color: #ccc; cursor: pointer;
+            line-height: 1; padding: 5px 10px;
         }
         .close-success-btn:hover { color: #333; }
     </style>
@@ -57,7 +59,7 @@
         <form id="bookingForm">
             <input type="hidden" name="_captcha" value="false">
             <input type="hidden" name="_subject" value="Neue Fotoshooting Anfrage">
-            <input type="text" name="_honey" style="display:none">
+            <input type="text" name="_honey" style="display:none"> 
 
             <div class="form-group">
                 <input type="text" name="Name" required placeholder="Ihr Name">
@@ -94,8 +96,6 @@
                     <option value="15:00">15:00 Uhr</option>
                     <option value="16:00">16:00 Uhr</option>
                     <option value="17:00">17:00 Uhr</option>
-                    <option value="18:00">18:00 Uhr</option>
-                    <option value="19:00">19:00 Uhr</option>
                 </select>
             </div>
 
@@ -113,8 +113,7 @@
         <span class="check-icon">✓</span>
         <h3>Vielen Dank!</h3>
         <p style="font-size: 1.1rem; color: #4a4a4a; line-height: 1.6;">
-            Ihre Nachricht ist unterwegs!<br>
-            Ich melde mich in Kürze bei Ihnen.
+            Ihre Nachricht ist unterwegs! Ich melde mich in Kürze bei Ihnen.
         </p>
     </div>
 </div>
@@ -122,10 +121,13 @@
 <script>
     (function() {
         const form = document.getElementById('bookingForm');
+        const formContent = document.getElementById('form-content');
+        const successMsg = document.getElementById('success-message');
+        const btn = document.getElementById('submitBtn');
+
         if(form) {
             form.onsubmit = function(e) {
                 e.preventDefault();
-                const btn = document.getElementById('submitBtn');
                 btn.disabled = true;
                 btn.innerHTML = "Wird gesendet...";
 
@@ -134,15 +136,17 @@
                     body: new FormData(form)
                 })
                 .then(() => {
-                    document.getElementById('form-content').style.display = 'none';
-                    document.getElementById('success-message').style.display = 'block';
-                    
-                    // 5 Sekunden Timer zum automatischen Schließen
+                    // Erfolgsmeldung anzeigen
+                    formContent.style.display = 'none';
+                    successMsg.style.display = 'block';
+
+                    // Timer zum automatischen Schließen des Modals nach 5 Sekunden
                     setTimeout(function() {
-                        if (typeof closeRequestModal === "function") {
+                        // Prüfen, ob die Funktion zum Schließen des Modals existiert
+                        if (typeof closeRequestModal === 'function') {
                             closeRequestModal();
                         }
-                    }, 5000);
+                    }, 5000); 
                 })
                 .catch(() => {
                     alert("Es gab einen Fehler beim Senden. Bitte versuchen Sie es erneut oder rufen Sie uns an.");
