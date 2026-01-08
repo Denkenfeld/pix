@@ -12,6 +12,45 @@
     <link rel="stylesheet" href="assets/css/flatpickr.min.css">
 
     <style>
+
+
+
+        
+  /* Deine CSS Klasse */
+        .schraeg-durchgestrichen {
+            position: relative;
+            display: inline-block;
+            color: #D96C4A; /* Optional: Alte Farbe etwas blasser */
+            font-size: 0.9em; /* Optional: Alter Preis etwas kleiner */
+            margin-right: 10px; /* Abstand zum neuen Preis */
+        }
+
+        .schraeg-durchgestrichen::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: -2%;
+            width: 104%;  /* 104% damit der Strich etwas übersteht */
+            height: 1px;
+            background: #D96C4A; /* Rote Streichfarbe */
+            transform: rotate(-12deg);
+        }
+
+        /* Styling für den neuen Preis zum Vergleich */
+        .neuer-preis {
+            color: #d32f2f;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+
+
+
+
+
+
+
+        
         /* --- LOKALE SCHRIFTEN --- */
         @font-face {
             font-family: 'Clash Display';
@@ -451,7 +490,8 @@
                 <h3>Paket M: Karriere <span style="color: #D96C4A; font-size: 1rem; text-transform: uppercase; vertical-align: middle; margin-left: 5px;">Aktion</span></h3>
                 
                 <div class="pkg-price">
-                    <span style="text-decoration: line-through; color: #D96C4A; font-size: 0.9em; margin-right: 10px;">109 €</span>99 €
+                     <span class="schraeg-durchgestrichen" ">109 €</span>99 €
+                    
                 </div>
                 
                 <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Vielfalt für verschiedene Branchen & Plattformen</p>
