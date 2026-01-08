@@ -933,8 +933,7 @@
                         }
                     }
                     if (window.flatpickr && document.getElementById('dateInput') && !document.getElementById('dateInput')._flatpickr) {
-                        flatpickr("#dateInput", { enableTime: true, dateFormat: "d.m.Y H:i", minDate: "today", time_24hr: true, locale: "de", ,
-    placeholder: "Wunschtermin wählen...", minuteIncrement: 30 });
+                        flatpickr("#dateInput", { enableTime: true, dateFormat: "d.m.Y H:i", minDate: "today", time_24hr: true, locale: "de", placeholder: "Wunschtermin wählen...", minuteIncrement: 30 });
                     }
                 }
                 if (attempts >= maxAttempts) clearInterval(interval);
