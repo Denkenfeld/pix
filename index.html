@@ -46,13 +46,32 @@
 
 
     /* Flatpickr Monat-Header Fix */
-        .flatpickr-months .flatpickr-month {
-            height: 40px; /* Gibt dem Header mehr physischen Platz */
-        }
-        .flatpickr-current-month {
-            line-height: 1.3; /* Verhindert das "Abschneiden" von Oberlängen */
-            padding-top: 5px; /* Schiebt den Text optisch in die Mitte */
-        }
+
+/* 1. Kalender breiter machen & nach unten schieben */
+.flatpickr-calendar {
+    width: 360px !important;      /* Breite erhöhen (Standard ist ca 307px) */
+    margin-top: 15px !important;  /* Schiebt den Kalender weiter weg vom Input */
+}
+
+/* Damit die Tage die neue Breite auch ausfüllen */
+.flatpickr-days, 
+.dayContainer {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* 2. Header (Monat/Jahr) reparieren */
+.flatpickr-months .flatpickr-month {
+    height: 50px !important;      /* Deutlich mehr Platz für den Header */
+    overflow: visible !important; /* Verhindert Abschneiden von Oberlängen */
+}
+
+.flatpickr-current-month {
+    padding-top: 10px !important; /* Schiebt Text optisch tiefer */
+    height: auto !important;
+    line-height: 1.3 !important;
+}
 
 
 
