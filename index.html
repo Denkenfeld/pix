@@ -45,12 +45,19 @@
 
 
 
-    /* Flatpickr Monat-Header Fix */
+   /* --- Flatpickr Layout & Größe Fix (Responsive) --- */
 
-/* 1. Kalender breiter machen & nach unten schieben */
+/* 1. Kalender breiter, aber mobilfreundlich */
 .flatpickr-calendar {
-    width: 360px !important;      /* Breite erhöhen (Standard ist ca 307px) */
-    margin-top: 15px !important;  /* Schiebt den Kalender weiter weg vom Input */
+    width: 100% !important;       /* Nutzt verfügbare Breite */
+    max-width: 360px !important;  /* Aber nicht breiter als 360px */
+    margin-top: 15px !important;  /* Abstand nach oben */
+}
+
+/* Container-Zentrierung (falls er mal kleiner ist als der Bildschirm) */
+.flatpickr-calendar.static {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Damit die Tage die neue Breite auch ausfüllen */
@@ -61,16 +68,10 @@
     max-width: 100% !important;
 }
 
-/* 2. Header (Monat/Jahr) reparieren */
-.flatpickr-months .flatpickr-month {
-    height: 50px !important;      /* Deutlich mehr Platz für den Header */
-    overflow: visible !important; /* Verhindert Abschneiden von Oberlängen */
-}
-
-.flatpickr-current-month {
-    padding-top: 10px !important; /* Schiebt Text optisch tiefer */
-    height: auto !important;
-    line-height: 1.3 !important;
+/* Tage gleichmäßig verteilen (wichtig bei variabler Breite) */
+.flatpickr-day {
+    max-width: initial !important; /* Entfernt die fixe max-width der Tage */
+    flex-basis: 14.28% !important; /* 100% / 7 Tage = 14.28% */
 }
 
 
