@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antrag Vermittlungsbudget - PIX Fotostudio</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 15mm;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            color: #333;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+        }
+        
+        h1 {
+            font-size: 20pt;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            border-bottom: 3px solid #e91e63;
+            padding-bottom: 8px;
+        }
+        
+        h2 {
+            font-size: 14pt;
+            color: #e91e63;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+        
+        h3 {
+            font-size: 13pt;
+            color: #2c3e50;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+        
+        h4 {
+            font-size: 11pt;
+            color: #555;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+        
+        .header {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .address-block {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+        }
+        
+        .form-field {
+            margin: 12px 0;
+        }
+        
+        .form-field label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+            color: #555;
+        }
+        
+        .form-field input[type="text"],
+        .form-field input[type="date"],
+        .form-field input[type="email"] {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid #ddd;
+            padding: 5px 0;
+            font-size: 11pt;
+            transition: border-color 0.3s;
+        }
+        
+        .form-field input:focus {
+            outline: none;
+            border-bottom-color: #667eea;
+        }
+        
+        .underline {
+            border-bottom: 2px solid #333;
+            min-height: 25px;
+            margin: 5px 0;
+        }
+        
+        .checkbox-group {
+            margin: 12px 0;
+        }
+        
+        .checkbox-group label {
+            display: block;
+            margin: 8px 0;
+            padding-left: 5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 10pt;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        table th,
+        table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+        
+        table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        table tr.total-row {
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+        
+        .service-details {
+            padding-left: 15px;
+            margin-top: 8px;
+            font-size: 9.5pt;
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .service-details li {
+            margin: 3px 0;
+        }
+        
+        .package-highlight {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 5px solid #e91e63;
+        }
+        
+        .package-highlight strong {
+            color: #c2185b;
+            font-size: 12pt;
+        }
+        
+        .info-box {
+            background: #fff9e6;
+            border: 2px solid #ffd93d;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .signature-section {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        
+        .signature-field {
+            flex: 1;
+        }
+        
+        .admin-section {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-top: 30px;
+            border: 2px dashed #adb5bd;
+            border-radius: 8px;
+        }
+        
+        .admin-section h3 {
+            background: #6c757d;
+            margin-top: 0;
+        }
+        
+        .checkbox {
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+        
+        .contact-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .contact-box strong {
+            display: block;
+            font-size: 13pt;
+            margin-bottom: 5px;
+        }
+        
+        .contact-box a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 9pt;
+            color: #666;
+            border-top: 2px solid #e91e63;
+            padding-top: 15px;
+        }
+        
+        .tagline {
+            font-style: italic;
+            color: #e91e63;
+            margin-top: 8px;
+            font-size: 10pt;
+        }
+        
+        .action-buttons {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 11pt;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-print {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-pdf {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid #ddd;
+            margin: 25px 0;
+        }
+        
+        @media print {
+            body {
+                padding: 0;
+            }
+            
+            .action-buttons {
+                display: none !important;
+            }
+            
+            .admin-section {
+                page-break-before: always;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+                font-size: 10pt;
+            }
+            
+            h1 {
+                font-size: 16pt;
+            }
+            
+            h2 {
+                font-size: 12pt;
+            }
+            
+            h3 {
+                font-size: 11pt;
+                padding: 8px 12px;
+            }
+            
+            table {
+                font-size: 9pt;
+            }
+            
+            table th,
+            table td {
+                padding: 8px 6px;
+            }
+            
+            .service-details {
+                font-size: 8.5pt;
+                padding-left: 10px;
+            }
+            
+            .signature-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                bottom: 10px;
+                right: 10px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 10pt;
+            }
+            
+            .contact-box {
+                font-size: 9pt;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+                font-size: 9pt;
+            }
+            
+            h1 {
+                font-size: 14pt;
+            }
+            
+            h2 {
+                font-size: 11pt;
+            }
+            
+            h3 {
+                font-size: 10pt;
+                padding: 6px 10px;
+            }
+            
+            table {
+                font-size: 8pt;
+            }
+            
+            .service-details {
+                font-size: 8pt;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Antrag auf Förderung aus dem Vermittlungsbudget</h1>
+        <h2>Professionelle Bewerbungsfotos bei PIX Fotostudio</h2>
+    </div>
+
+    <div class="address-block">
+        <strong>An das</strong><br>
+        Jobcenter / Agentur für Arbeit<br>
+        <div class="underline"></div>
+        <div class="underline"></div>
+        <div class="underline"></div>
+    </div>
+
+    <h3>📋 Persönliche Daten des Antragstellers</h3>
+    
+    <div class="form-field">
+        <label>Name, Vorname:</label>
+        <input type="text">
+    </div>
+    
+    <div class="form-field">
+        <label>Kundennummer / Bedarfsgemeinschaftsnummer:</label>
+        <input type="text">
+    </div>
+    
+    <div class="form-field">
+        <label>Geburtsdatum:</label>
+        <input type="date">
+    </div>
+    
+    <div class="form-field">
+        <label>Anschrift:</label>
+        <input type="text" placeholder="Straße und Hausnummer">
+        <input type="text" placeholder="PLZ und Ort" style="margin-top: 5px;">
+    </div>
+    
+    <div class="form-field">
+        <label>Telefon:</label>
+        <input type="text">
+    </div>
+    
+    <div class="form-field">
+        <label>E-Mail:</label>
+        <input type="email">
+    </div>
+
+    <h3>📝 Antrag</h3>
+    
+    <p style="margin: 12px 0;">
+        Hiermit beantrage ich die Übernahme der Kosten für professionelle Bewerbungsfotos aus dem 
+        Vermittlungsbudget gemäß <strong>§ 44 SGB III</strong> bzw. <strong>§ 16 Abs. 1 SGB II</strong>.
+    </p>
+    
+    <div style="margin: 15px 0;">
+        <label style="font-weight: 600; color: #555;">Begründung:</label>
+        <p style="margin: 8px 0;">
+            Für meinen beruflichen Wiedereinstieg und meine aktuellen Bewerbungen benötige ich professionelle 
+            Bewerbungsfotos nach modernem Standard. Die Fotos sind erforderlich für:
+        </p>
+        
+        <div class="checkbox-group">
+            <label><input type="checkbox" class="checkbox"> Bewerbungsunterlagen (print und digital)</label>
+            <label><input type="checkbox" class="checkbox"> Online-Bewerbungsportale (Indeed, StepStone, etc.)</label>
+            <label><input type="checkbox" class="checkbox"> Business-Netzwerke (LinkedIn, XING)</label>
+            <label><input type="checkbox" class="checkbox"> E-Mail-Signatur und berufliche Kommunikation</label>
+            <label>
+                <input type="checkbox" class="checkbox"> Sonstige: 
+                <span style="border-bottom: 2px solid #ddd; display: inline-block; width: 250px; margin-left: 5px;"></span>
+            </label>
+        </div>
+        
+        <div style="margin-top: 12px;">
+            <strong>Anzahl geplanter Bewerbungen:</strong> 
+            <span style="border-bottom: 2px solid #ddd; display: inline-block; width: 100px; margin-left: 5px;"></span>
+        </div>
+    </div>
+
+    <h3>💼 Kostenvoranschlag PIX Fotostudio</h3>
+    
+    <div class="contact-box">
+        <strong>Dienstleister:</strong>
+        PIX Fotostudio – Irene Ilter<br>
+        Odenwaldstraße 19, 72336 Balingen<br><br>
+        📞 0151 50715629<br>
+        ✉️ <a href="mailto:fotostudiopix@gmail.com">fotostudiopix@gmail.com</a><br>
+        🌐 www.pix-fotostudio.de
+    </div>
+
+    <div class="package-highlight">
+        <strong>🎯 Spezielles Wiedereinstiegs-Paket</strong><br>
+        Optimal für eine flexible Karriereplanung und professionelle Social-Media-Präsenz
+    </div>
+
+    <h4 style="margin-top: 20px; margin-bottom: 10px;">Leistungsübersicht:</h4>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 70%;">Leistungspaket "Karriere-Start Plus"</th>
+                <th style="width: 30%;">Preis</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <strong>Umfassendes Bewerbungsfoto-Paket für den beruflichen (Wieder-)Einstieg</strong>
+                    <div class="service-details">
+                        <ul style="list-style: none; padding: 0;">
+                            <li>✓ <strong>Ausführliches Vorgespräch</strong> – Bedarfsanalyse und Zieldefinition</li>
+                            <li>✓ <strong>Professionelle Stil- und Outfit-Beratung</strong> – passend zu Ihrer Branche</li>
+                            <li>✓ <strong>Individuelle Posing-Anleitung</strong> – für natürliche und selbstbewusste Ausstrahlung</li>
+                            <li>✓ <strong>2 Outfits & 2 Hintergründe</strong> – vielseitige Einsatzmöglichkeiten</li>
+                            <li>✓ <strong>Perfekte Studio-Ausleuchtung</strong> – professionelles 3-Punkt-Lichtsetting</li>
+                            <li>✓ <strong>Bis zu 90 professionelle Aufnahmen</strong> – verschiedene Perspektiven und Posen</li>
+                            <li>✓ <strong>Gemeinsame Bildauswahl</strong> – Sie wählen Ihre Favoriten</li>
+                            <li>✓ <strong>Hochwertige Bildbearbeitung & Retusche</strong> – natürlich und professionell</li>
+                            <li>✓ <strong>3 finale digitale Dateien in hoher Auflösung</strong> – optimiert für alle Kanäle</li>
+                            <li>✓ <strong>Bewerbungsunterlagen-Check</strong> – Abstimmung von Foto und Bewerbung</li>
+                            <li>✓ <strong>Individuelle Bildanpassungen</strong> – verschiedene Formate und Zuschnitte</li>
+                            <li>✓ <strong>Professionelle Bewerbungstipps</strong> – für einen erfolgreichen Karrierestart</li>
+                            <li>✓ <strong>Shooting-Dauer ca. 1,5 Stunden</strong> – ohne Zeitdruck</li>
+                        </ul>
+                        <div style="margin-top: 10px; padding: 10px; background: #fff; border-radius: 5px; color: #c2185b; font-weight: 600;">
+                            ⏱️ Gesamtdauer: Ca. 1,5 Stunden | 📸 2 Outfits | 🎨 2 Hintergründe | 💾 3 digitale Dateien
+                        </div>
+                    </div>
+                </td>
+                <td style="vertical-align: top; font-weight: 600; font-size: 12pt;">119,00 €</td>
+            </tr>
+            <tr>
+                <td style="text-align: right; font-weight: 600;">Zwischensumme (netto)</td>
+                <td style="font-weight: 600;">100,00 €</td>
+            </tr>
+            <tr>
+                <td style="text-align: right;">Mehrwertsteuer (Gemäß § 19 UStG wird keine Umsatzsteuer berechnet) </td>
+                <td>0,00 €</td>
+            </tr>
+            <tr class="total-row">
+                <td style="text-align: right;"><strong>Gesamtbetrag (brutto)</strong></td>
+                <td><strong style="font-size: 14pt;">119,00 €</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="info-box">
+        <strong>💡 Zahlungsbedingungen:</strong><br>
+        Zahlung erfolgt nach Genehmigung durch das Jobcenter / die Agentur für Arbeit.<br>
+        Direktabrechnung mit der Behörde ist problemlos möglich.
+    </div>
+
+    <div style="margin: 15px 0; padding: 12px; background: #f0f7ff; border-left: 4px solid #667eea; border-radius: 5px;">
+        <strong>⏰ Gültigkeit des Angebots:</strong> 4 Wochen ab Ausstellungsdatum<br>
+        <strong>📅 Terminvereinbarung:</strong> Nach Genehmigung des Antrags telefonisch oder per E-Mail – flexible Terminwahl auch abends und am Wochenende möglich
+    </div>
+
+    <h3>🏦 Bankverbindung für Direktüberweisung</h3>
+    
+    <div style="margin: 10px 0; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+        <strong>Kontoinhaber:</strong> PIX Fotostudio – Irene Ilter<br>
+        <strong>IBAN:</strong> <span class="underline" style="display: inline-block; width: 300px;"></span><br>
+        <strong>BIC:</strong> <span class="underline" style="display: inline-block; width: 150px;"></span><br>
+        <strong>Bank:</strong> <span class="underline" style="display: inline-block; width: 200px;"></span>
+    </div>
+
+    <h3>✍️ Erklärung des Antragstellers</h3>
+    
+    <p style="margin: 12px 0;">
+        Ich versichere, dass die vorstehenden Angaben vollständig und richtig sind. Mir ist bekannt, 
+        dass ich Änderungen in meinen Verhältnissen, die für die Bewilligung der Leistung erheblich sind, 
+        unverzüglich mitzuteilen habe.
+    </p>
+    
+    <p style="margin: 12px 0; font-weight: 600;">
+        Ich bin damit einverstanden, dass die Zahlung direkt an PIX Fotostudio erfolgen kann.
+    </p>
+
+    <div class="signature-section">
+        <div class="signature-field">
+            <label style="font-weight: 600;">Ort, Datum:</label>
+            <div class="underline"></div>
+        </div>
+        <div class="signature-field">
+            <label style="font-weight: 600;">Unterschrift Antragsteller/in:</label>
+            <div class="underline"></div>
+        </div>
+    </div>
+
+    <hr style="margin: 40px 0;">
+
+    <div class="admin-section">
+        <h3>🔒 Hinweise für den Sachbearbeiter</h3>
+        
+        <div style="margin: 15px 0;">
+            <strong>Rechtsgrundlage:</strong>
+            <ul style="margin: 8px 0; padding-left: 20px;">
+                <li>§ 44 SGB III (Vermittlungsbudget) für ALG-I-Empfänger</li>
+                <li>§ 16 Abs. 1 SGB II (Vermittlungsbudget) für Bürgergeld-Empfänger</li>
+            </ul>
+        </div>
+        
+        <div style="margin: 15px 0;">
+            <strong>Förderfähigkeit:</strong><br>
+            Bewerbungsfotos sind grundsätzlich aus dem Vermittlungsbudget förderungsfähig, wenn sie zur 
+            Eingliederung in Arbeit erforderlich sind (siehe Fachliche Weisungen § 44 SGB III). Das vorliegende 
+            Angebot umfasst ein umfassendes Leistungspaket, das gezielt auf den beruflichen Wiedereinstieg 
+            zugeschnitten ist und auch digitale Bewerbungswege (Online-Portale, Social Media) berücksichtigt.
+        </div>
+        
+        <div style="margin: 15px 0;">
+            <strong>Angemessenheit der Kosten:</strong><br>
+            Das Vermittlungsbudget ist nicht pauschal begrenzt. Die Förderung muss angemessen und erforderlich sein. 
+            Der angebotene Preis von 119,00 € liegt im üblichen Rahmen für professionelle Bewerbungsfotos 
+            (Richtwert: 50-150 €) und ist durch den umfassenden Leistungsumfang (1,5 Std. Shooting, 90 Aufnahmen, 
+            Beratung, 3 finale Dateien) gerechtfertigt.
+        </div>
+
+        <h4 style="margin-top: 25px; color: #333;">Für interne Bearbeitung</h4>
+        
+        <div style="margin: 10px 0;">
+            <strong>Eingangsdatum:</strong> <span class="underline" style="display: inline-block; width: 150px;"></span>
+        </div>
+        
+        <div style="margin: 10px 0;">
+            <strong>Sachbearbeiter/in:</strong> <span class="underline" style="display: inline-block; width: 250px;"></span>
+        </div>
+        
+        <div style="margin: 10px 0;">
+            <strong>Aktenzeichen:</strong> <span class="underline" style="display: inline-block; width: 200px;"></span>
+        </div>
+        
+        <div class="checkbox-group" style="margin: 15px 0;">
+            <label><input type="checkbox" class="checkbox"> Antrag genehmigt</label>
+            <label><input type="checkbox" class="checkbox"> Antrag abgelehnt</label>
+            <label><input type="checkbox" class="checkbox"> Rückfragen erforderlich</label>
+        </div>
+        
+        <div style="margin: 10px 0;">
+            <strong>Bewilligungsbetrag:</strong> <span class="underline" style="display: inline-block; width: 150px;"></span> €
+        </div>
+        
+        <div style="margin-top: 25px;">
+            <strong>Datum, Unterschrift, Stempel:</strong>
+            <div class="underline" style="margin-top: 35px;"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <strong>PIX Fotostudio – Irene Ilter</strong><br>
+        Odenwaldstraße 19, 72336 Balingen<br>
+        📞 0151 50715629 • ✉️ <a href="mailto:fotostudiopix@gmail.com" style="color: #666;">fotostudiopix@gmail.com</a> • 🌐 www.pix-fotostudio.de
+        <div class="tagline">✨ Professionelle Bewerbungsfotos für Ihren erfolgreichen Karrierestart ✨</div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <button class="btn btn-print" onclick="window.print()">
+            🖨️ Drucken
+        </button>
+        <button class="btn btn-pdf" onclick="savePDF()">
+            📄 Als PDF speichern
+        </button>
+    </div>
+
+    <script>
+        function savePDF() {
+            // Trigger print dialog which allows saving as PDF
+            window.print();
+        }
+        
+        // Optional: Auto-fill current date
+        window.addEventListener('DOMContentLoaded', function() {
+            // You can add auto-fill functionality here if needed
+        });
+    </script>
+</body>
+</html>
