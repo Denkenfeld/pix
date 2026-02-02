@@ -24,6 +24,7 @@
             max-width: 210mm;
             margin: 0 auto;
             padding: 20px;
+            padding-bottom: 120px;
             background: white;
         }
         
@@ -195,6 +196,7 @@
             background: #f8f9fa;
             padding: 20px;
             margin-top: 30px;
+            margin-bottom: 40px;
             border: 2px dashed #adb5bd;
             border-radius: 8px;
         }
@@ -230,6 +232,7 @@
         
         .footer {
             margin-top: 40px;
+            margin-bottom: 20px;
             text-align: center;
             font-size: 9pt;
             color: #666;
@@ -265,6 +268,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            white-space: nowrap;
         }
         
         .btn-print {
@@ -282,29 +286,105 @@
             box-shadow: 0 6px 20px rgba(0,0,0,0.3);
         }
         
+        .btn:active {
+            transform: translateY(0);
+        }
+        
         hr {
             border: none;
             border-top: 2px solid #ddd;
             margin: 25px 0;
         }
         
+        /* Explizite Seitenumbrüche für optimales Drucklayout */
+        .page-break-before {
+            page-break-before: always;
+            break-before: page;
+        }
+        
+        .page-break-after {
+            page-break-after: always;
+            break-after: page;
+        }
+        
+        .avoid-break {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        
+        /* Seite 2: Beginnt bei "Antrag" */
+        .antrag-section {
+            page-break-before: always;
+            break-before: page;
+        }
+        
+        /* Seite 3: Beginnt bei "Spezielles Wiedereinstiegs-Paket" */
+        .package-highlight {
+            page-break-before: always;
+            break-before: page;
+        }
+        
+        /* Seite 4: Beginnt bei "Zahlungsbedingungen" */
+        .payment-section {
+            page-break-before: always;
+            break-before: page;
+        }
+        
+        /* Seite 5: Beginnt bei "Hinweise für den Sachbearbeiter" */
+        .admin-section {
+            page-break-before: always;
+            break-before: page;
+        }
+        
+        /* Seite 6: Beginnt bei Footer */
+        .footer {
+            page-break-before: always;
+            break-before: page;
+        }
+        
         @media print {
             body {
                 padding: 0;
+                padding-bottom: 0;
             }
             
             .action-buttons {
                 display: none !important;
             }
             
+            /* Zusätzliche Print-spezifische Seitenumbrüche */
+            .antrag-section {
+                page-break-before: always;
+            }
+            
+            .package-highlight {
+                page-break-before: always;
+            }
+            
+            .payment-section {
+                page-break-before: always;
+            }
+            
             .admin-section {
                 page-break-before: always;
+            }
+            
+            .footer {
+                page-break-before: always;
+            }
+            
+            /* Vermeide Umbrüche innerhalb dieser Elemente */
+            .contact-box,
+            .info-box,
+            .signature-section {
+                page-break-inside: avoid;
             }
         }
         
         @media (max-width: 768px) {
             body {
                 padding: 15px;
+                padding-bottom: 180px;
                 font-size: 10pt;
             }
             
@@ -342,23 +422,39 @@
             
             .action-buttons {
                 flex-direction: column;
-                bottom: 10px;
-                right: 10px;
+                bottom: 80px;
+                right: 15px;
+                left: 15px;
             }
             
             .btn {
-                padding: 10px 20px;
-                font-size: 10pt;
+                padding: 14px 20px;
+                font-size: 11pt;
+                justify-content: center;
+                width: 100%;
             }
             
             .contact-box {
                 font-size: 9pt;
+            }
+            
+            /* Deaktiviere Seitenumbrüche auf Mobile */
+            .page-break-before,
+            .page-break-after,
+            .antrag-section,
+            .package-highlight,
+            .payment-section,
+            .admin-section,
+            .footer {
+                page-break-before: auto;
+                break-before: auto;
             }
         }
         
         @media (max-width: 480px) {
             body {
                 padding: 10px;
+                padding-bottom: 200px;
                 font-size: 9pt;
             }
             
@@ -382,10 +478,23 @@
             .service-details {
                 font-size: 8pt;
             }
+            
+            .action-buttons {
+                bottom: 60px;
+                right: 10px;
+                left: 10px;
+            }
+            
+            .btn {
+                padding: 12px 16px;
+                font-size: 10pt;
+            }
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
+    <!-- SEITE 1 -->
     <div class="header">
         <h1>Antrag auf Förderung aus dem Vermittlungsbudget</h1>
         <h2>Professionelle Bewerbungsfotos bei PIX Fotostudio</h2>
@@ -432,56 +541,60 @@
         <input type="email">
     </div>
 
-    <h3>📝 Antrag</h3>
-    
-    <p style="margin: 12px 0;">
-        Hiermit beantrage ich die Übernahme der Kosten für professionelle Bewerbungsfotos aus dem 
-        Vermittlungsbudget gemäß <strong>§ 44 SGB III</strong> bzw. <strong>§ 16 Abs. 1 SGB II</strong>.
-    </p>
-    
-    <div style="margin: 15px 0;">
-        <label style="font-weight: 600; color: #555;">Begründung:</label>
-        <p style="margin: 8px 0;">
-            Für meinen beruflichen Wiedereinstieg und meine aktuellen Bewerbungen benötige ich professionelle 
-            Bewerbungsfotos nach modernem Standard. Die Fotos sind erforderlich für:
+    <!-- SEITE 2 BEGINNT HIER -->
+    <div class="antrag-section">
+        <h3>📝 Antrag</h3>
+        
+        <p style="margin: 12px 0;">
+            Hiermit beantrage ich die Übernahme der Kosten für professionelle Bewerbungsfotos aus dem 
+            Vermittlungsbudget gemäß <strong>§ 44 SGB III</strong> bzw. <strong>§ 16 Abs. 1 SGB II</strong>.
         </p>
         
-        <div class="checkbox-group">
-            <label><input type="checkbox" class="checkbox"> Bewerbungsunterlagen (print und digital)</label>
-            <label><input type="checkbox" class="checkbox"> Online-Bewerbungsportale (Indeed, StepStone, etc.)</label>
-            <label><input type="checkbox" class="checkbox"> Business-Netzwerke (LinkedIn, XING)</label>
-            <label><input type="checkbox" class="checkbox"> E-Mail-Signatur und berufliche Kommunikation</label>
-            <label>
-                <input type="checkbox" class="checkbox"> Sonstige: 
-                <span style="border-bottom: 2px solid #ddd; display: inline-block; width: 250px; margin-left: 5px;"></span>
-            </label>
+        <div style="margin: 15px 0;">
+            <label style="font-weight: 600; color: #555;">Begründung:</label>
+            <p style="margin: 8px 0;">
+                Für meinen beruflichen Wiedereinstieg und meine aktuellen Bewerbungen benötige ich professionelle 
+                Bewerbungsfotos nach modernem Standard. Die Fotos sind erforderlich für:
+            </p>
+            
+            <div class="checkbox-group">
+                <label><input type="checkbox" class="checkbox"> Bewerbungsunterlagen (print und digital)</label>
+                <label><input type="checkbox" class="checkbox"> Online-Bewerbungsportale (Indeed, StepStone, etc.)</label>
+                <label><input type="checkbox" class="checkbox"> Business-Netzwerke (LinkedIn, XING)</label>
+                <label><input type="checkbox" class="checkbox"> E-Mail-Signatur und berufliche Kommunikation</label>
+                <label>
+                    <input type="checkbox" class="checkbox"> Sonstige: 
+                    <span style="border-bottom: 2px solid #ddd; display: inline-block; width: 250px; margin-left: 5px;"></span>
+                </label>
+            </div>
+            
+            <div style="margin-top: 12px;">
+                <strong>Anzahl geplanter Bewerbungen:</strong> 
+                <span style="border-bottom: 2px solid #ddd; display: inline-block; width: 100px; margin-left: 5px;"></span>
+            </div>
         </div>
+
+        <h3>💼 Kostenvoranschlag PIX Fotostudio</h3>
         
-        <div style="margin-top: 12px;">
-            <strong>Anzahl geplanter Bewerbungen:</strong> 
-            <span style="border-bottom: 2px solid #ddd; display: inline-block; width: 100px; margin-left: 5px;"></span>
+        <div class="contact-box avoid-break">
+            <strong>Dienstleister:</strong>
+            PIX Fotostudio – Irene Ilter<br>
+            Odenwaldstraße 19, 72336 Balingen<br><br>
+            📞 0151 50715629<br>
+            ✉️ <a href="mailto:fotostudiopix@gmail.com">fotostudiopix@gmail.com</a><br>
+            🌐 www.pix-fotostudio.de
         </div>
     </div>
 
-    <h3>💼 Kostenvoranschlag PIX Fotostudio</h3>
-    
-    <div class="contact-box">
-        <strong>Dienstleister:</strong>
-        PIX Fotostudio – Irene Ilter<br>
-        Odenwaldstraße 19, 72336 Balingen<br><br>
-        📞 0151 50715629<br>
-        ✉️ <a href="mailto:fotostudiopix@gmail.com">fotostudiopix@gmail.com</a><br>
-        🌐 www.pix-fotostudio.de
-    </div>
-
-    <div class="package-highlight">
+    <!-- SEITE 3 BEGINNT HIER -->
+    <div class="package-highlight avoid-break">
         <strong>🎯 Spezielles Wiedereinstiegs-Paket</strong><br>
         Optimal für eine flexible Karriereplanung und professionelle Social-Media-Präsenz
     </div>
 
     <h4 style="margin-top: 20px; margin-bottom: 10px;">Leistungsübersicht:</h4>
 
-    <table>
+    <table class="avoid-break">
         <thead>
             <tr>
                 <th style="width: 70%;">Leistungspaket "Karriere-Start Plus"</th>
@@ -530,51 +643,55 @@
         </tbody>
     </table>
 
-    <div class="info-box">
-        <strong>💡 Zahlungsbedingungen:</strong><br>
-        Zahlung erfolgt nach Genehmigung durch das Jobcenter / die Agentur für Arbeit.<br>
-        Direktabrechnung mit der Behörde ist problemlos möglich.
-    </div>
-
-    <div style="margin: 15px 0; padding: 12px; background: #f0f7ff; border-left: 4px solid #667eea; border-radius: 5px;">
-        <strong>⏰ Gültigkeit des Angebots:</strong> 4 Wochen ab Ausstellungsdatum<br>
-        <strong>📅 Terminvereinbarung:</strong> Nach Genehmigung des Antrags telefonisch oder per E-Mail – flexible Terminwahl auch abends und am Wochenende möglich
-    </div>
-
-    <h3>🏦 Bankverbindung für Direktüberweisung</h3>
-    
-    <div style="margin: 10px 0; padding: 15px; background: #f8f9fa; border-radius: 5px;">
-        <strong>Kontoinhaber:</strong> PIX Fotostudio – Irene Ilter<br>
-        <strong>IBAN:</strong> <span class="underline" style="display: inline-block; width: 300px;"></span><br>
-        <strong>BIC:</strong> <span class="underline" style="display: inline-block; width: 150px;"></span><br>
-        <strong>Bank:</strong> <span class="underline" style="display: inline-block; width: 200px;"></span>
-    </div>
-
-    <h3>✍️ Erklärung des Antragstellers</h3>
-    
-    <p style="margin: 12px 0;">
-        Ich versichere, dass die vorstehenden Angaben vollständig und richtig sind. Mir ist bekannt, 
-        dass ich Änderungen in meinen Verhältnissen, die für die Bewilligung der Leistung erheblich sind, 
-        unverzüglich mitzuteilen habe.
-    </p>
-    
-    <p style="margin: 12px 0; font-weight: 600;">
-        Ich bin damit einverstanden, dass die Zahlung direkt an PIX Fotostudio erfolgen kann.
-    </p>
-
-    <div class="signature-section">
-        <div class="signature-field">
-            <label style="font-weight: 600;">Ort, Datum:</label>
-            <div class="underline"></div>
+    <!-- SEITE 4 BEGINNT HIER -->
+    <div class="payment-section">
+        <div class="info-box avoid-break">
+            <strong>💡 Zahlungsbedingungen:</strong><br>
+            Zahlung erfolgt nach Genehmigung durch das Jobcenter / die Agentur für Arbeit.<br>
+            Direktabrechnung mit der Behörde ist problemlos möglich.
         </div>
-        <div class="signature-field">
-            <label style="font-weight: 600;">Unterschrift Antragsteller/in:</label>
-            <div class="underline"></div>
+
+        <div class="avoid-break" style="margin: 15px 0; padding: 12px; background: #f0f7ff; border-left: 4px solid #667eea; border-radius: 5px;">
+            <strong>⏰ Gültigkeit des Angebots:</strong> 4 Wochen ab Ausstellungsdatum<br>
+            <strong>📅 Terminvereinbarung:</strong> Nach Genehmigung des Antrags telefonisch oder per E-Mail – flexible Terminwahl auch abends und am Wochenende möglich
         </div>
+
+        <h3>🏦 Bankverbindung für Direktüberweisung</h3>
+        
+        <div class="avoid-break" style="margin: 10px 0; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+            <strong>Kontoinhaber:</strong> PIX Fotostudio – Irene Ilter<br>
+            <strong>IBAN:</strong> <span class="underline" style="display: inline-block; width: 300px;"></span><br>
+            <strong>BIC:</strong> <span class="underline" style="display: inline-block; width: 150px;"></span><br>
+            <strong>Bank:</strong> <span class="underline" style="display: inline-block; width: 200px;"></span>
+        </div>
+
+        <h3>✍️ Erklärung des Antragstellers</h3>
+        
+        <p style="margin: 12px 0;">
+            Ich versichere, dass die vorstehenden Angaben vollständig und richtig sind. Mir ist bekannt, 
+            dass ich Änderungen in meinen Verhältnissen, die für die Bewilligung der Leistung erheblich sind, 
+            unverzüglich mitzuteilen habe.
+        </p>
+        
+        <p style="margin: 12px 0; font-weight: 600;">
+            Ich bin damit einverstanden, dass die Zahlung direkt an PIX Fotostudio erfolgen kann.
+        </p>
+
+        <div class="signature-section avoid-break">
+            <div class="signature-field">
+                <label style="font-weight: 600;">Ort, Datum:</label>
+                <div class="underline"></div>
+            </div>
+            <div class="signature-field">
+                <label style="font-weight: 600;">Unterschrift Antragsteller/in:</label>
+                <div class="underline"></div>
+            </div>
+        </div>
+
+        <hr style="margin: 40px 0;">
     </div>
 
-    <hr style="margin: 40px 0;">
-
+    <!-- SEITE 5 BEGINNT HIER -->
     <div class="admin-section">
         <h3>🔒 Hinweise für den Sachbearbeiter</h3>
         
@@ -632,6 +749,7 @@
         </div>
     </div>
 
+    <!-- SEITE 6 BEGINNT HIER -->
     <div class="footer">
         <strong>PIX Fotostudio – Irene Ilter</strong><br>
         Odenwaldstraße 19, 72336 Balingen<br>
@@ -651,14 +769,27 @@
 
     <script>
         function savePDF() {
-            // Trigger print dialog which allows saving as PDF
-            window.print();
+            // Verstecke Buttons vor PDF-Erstellung
+            const buttons = document.querySelector('.action-buttons');
+            buttons.style.display = 'none';
+            
+            const element = document.body;
+            const opt = {
+                margin: 15,
+                filename: 'Antrag-Vermittlungsbudget-PIX-Fotostudio.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['css', 'legacy'] }
+            };
+            
+            // Erstelle PDF und zeige Buttons wieder
+            html2pdf().set(opt).from(element).save().then(() => {
+                buttons.style.display = 'flex';
+            }).catch(() => {
+                buttons.style.display = 'flex';
+            });
         }
-        
-        // Optional: Auto-fill current date
-        window.addEventListener('DOMContentLoaded', function() {
-            // You can add auto-fill functionality here if needed
-        });
     </script>
 </body>
 </html>
