@@ -312,31 +312,26 @@
             break-inside: avoid;
         }
         
-        /* Seite 2: Beginnt bei "Antrag" */
         .antrag-section {
             page-break-before: always;
             break-before: page;
         }
         
-        /* Seite 3: Beginnt bei "Spezielles Wiedereinstiegs-Paket" */
         .package-highlight {
             page-break-before: always;
             break-before: page;
         }
         
-        /* Seite 4: Beginnt bei "Zahlungsbedingungen" */
         .payment-section {
             page-break-before: always;
             break-before: page;
         }
         
-        /* Seite 5: Beginnt bei "Hinweise für den Sachbearbeiter" */
         .admin-section {
             page-break-before: always;
             break-before: page;
         }
         
-        /* Seite 6: Beginnt bei Footer */
         .footer {
             page-break-before: always;
             break-before: page;
@@ -352,7 +347,6 @@
                 display: none !important;
             }
             
-            /* Zusätzliche Print-spezifische Seitenumbrüche */
             .antrag-section {
                 page-break-before: always;
             }
@@ -373,7 +367,6 @@
                 page-break-before: always;
             }
             
-            /* Vermeide Umbrüche innerhalb dieser Elemente */
             .contact-box,
             .info-box,
             .signature-section {
@@ -438,7 +431,6 @@
                 font-size: 9pt;
             }
             
-            /* Deaktiviere Seitenumbrüche auf Mobile */
             .page-break-before,
             .page-break-after,
             .antrag-section,
@@ -491,6 +483,9 @@
             }
         }
     </style>
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <!-- html2pdf.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
@@ -759,36 +754,113 @@
 
     <!-- Action Buttons -->
     <div class="action-buttons">
-        <button class="btn btn-print" onclick="window.print()">
+        <button class="btn btn-print" onclick="handlePrint()">
             🖨️ Drucken
         </button>
-        <button class="btn btn-pdf" onclick="savePDF()">
+        <button class="btn btn-pdf" onclick="handlePDFDownload()">
             📄 Als PDF speichern
         </button>
     </div>
 
     <script>
-        function savePDF() {
-            // Verstecke Buttons vor PDF-Erstellung
-            const buttons = document.querySelector('.action-buttons');
-            buttons.style.display = 'none';
-            
-            const element = document.body;
-            const opt = {
-                margin: 15,
-                filename: 'Antrag-Vermittlungsbudget-PIX-Fotostudio.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['css', 'legacy'] }
-            };
-            
-            // Erstelle PDF und zeige Buttons wieder
-            html2pdf().set(opt).from(element).save().then(() => {
-                buttons.style.display = 'flex';
-            }).catch(() => {
-                buttons.style.display = 'flex';
+        // ⚙️ EMAILJS KONFIGURATION - ERSETZEN SIE DIESE WERTE!
+        const EMAILJS_CONFIG = {
+            publicKey: 'IHR_PUBLIC_KEY',      // z.B. 'abcdef123456'
+            serviceId: 'IHR_SERVICE_ID',       // z.B. 'service_abc123'
+            templateId: 'IHR_TEMPLATE_ID'      // z.B. 'template_xyz789'
+        };
+
+        // EmailJS initialisieren
+        (function() {
+            emailjs.init(EMAILJS_CONFIG.publicKey);
+        })();
+
+        // E-Mail-Benachrichtigung senden
+        function sendNotification(action) {
+            const now = new Date();
+            const timestamp = now.toLocaleString('de-DE', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
             });
+
+            const templateParams = {
+                action: action,
+                timestamp: timestamp,
+                to_email: 'fotostudiopix@gmail.com'
+            };
+
+            emailjs.send(
+                EMAILJS_CONFIG.serviceId,
+                EMAILJS_CONFIG.templateId,
+                templateParams
+            ).then(
+                function(response) {
+                    console.log('✅ Benachrichtigung gesendet:', response.status, response.text);
+                },
+                function(error) {
+                    console.log('❌ Benachrichtigung fehlgeschlagen:', error);
+                }
+            );
+        }
+
+        // Drucken mit Benachrichtigung
+        function handlePrint() {
+            sendNotification('Formular wurde gedruckt');
+            window.print();
+        }
+
+        // PDF Download mit Benachrichtigung
+        function handlePDFDownload() {
+            sendNotification('PDF wurde heruntergeladen');
+            
+            // Aktuelle Scroll-Position speichern
+            const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Nach oben scrollen (sanft)
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+            
+            // Warten bis Scroll abgeschlossen ist, dann PDF erstellen
+            setTimeout(() => {
+                // Verstecke Buttons vor PDF-Erstellung
+                const buttons = document.querySelector('.action-buttons');
+                buttons.style.display = 'none';
+                
+                const element = document.body;
+                const opt = {
+                    margin: 15,
+                    filename: 'Antrag-Vermittlungsbudget-PIX-Fotostudio.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                    pagebreak: { mode: ['css', 'legacy'] }
+                };
+                
+                // Erstelle PDF
+                html2pdf().set(opt).from(element).save().then(() => {
+                    // Buttons wieder anzeigen
+                    buttons.style.display = 'flex';
+                    
+                    // Zurück zur ursprünglichen Scroll-Position
+                    window.scrollTo({
+                        top: currentScrollPosition,
+                        behavior: 'smooth'
+                    });
+                }).catch(() => {
+                    // Bei Fehler auch Buttons wieder anzeigen
+                    buttons.style.display = 'flex';
+                    window.scrollTo({
+                        top: currentScrollPosition,
+                        behavior: 'smooth'
+                    });
+                });
+            }, 500); // 500ms warten für sanftes Scrollen
         }
     </script>
 </body>
