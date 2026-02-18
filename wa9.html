@@ -838,12 +838,8 @@
             width: 58px; height: 58px;
             pointer-events: none;
             transform: rotate(-90deg);
-            opacity: 0;
-            transition: opacity 0.1s;
             z-index: 10;
-            will-change: opacity;
         }
-        .wa-progress-ring.active { opacity: 1; }
         .wa-ring-track {
             fill: none;
             stroke: rgba(255,255,255,0.25);
@@ -854,13 +850,8 @@
             stroke: #ffffff;
             stroke-width: 3;
             stroke-linecap: round;
-            stroke-dasharray: 157.08;   /* 2 * PI * 25 */
+            stroke-dasharray: 157.08;
             stroke-dashoffset: 157.08;
-            transition: stroke-dashoffset 0.82s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: stroke-dashoffset;
-        }
-        .wa-progress-ring.active .wa-ring-fill {
-            stroke-dashoffset: 0;
         }
 
     </style>
@@ -1833,25 +1824,27 @@
         function sendWaMessage() {
           const text = waInput.value.trim();
           if (!text) return;
-          // Progress ring
+
+          // Progress ring – 100% per requestAnimationFrame, kein CSS-Klassen-Trick
           const ring = document.getElementById('waProgressRing');
           const fill = ring && ring.querySelector('.wa-ring-fill');
+          const DURATION = 900;
           if (ring && fill) {
-            // Reset ohne Animation
             fill.style.transition = 'none';
             fill.style.strokeDashoffset = '157.08';
-            void fill.getBoundingClientRect(); // force reflow
-            // Animation starten
-            fill.style.transition = 'stroke-dashoffset 0.82s cubic-bezier(0.4, 0, 0.2, 1)';
-            fill.style.strokeDashoffset = '0';
-            ring.classList.add('active');
-            setTimeout(() => {
-              ring.classList.remove('active');
-              fill.style.transition = 'none';
-              fill.style.strokeDashoffset = '157.08';
-              fill.style.transition = '';
-            }, 1000);
+            const startTime = performance.now();
+            requestAnimationFrame(function animate(now) {
+              const progress = Math.min((now - startTime) / DURATION, 1);
+              fill.style.strokeDashoffset = (157.08 * (1 - progress)).toFixed(3);
+              if (progress < 1) {
+                requestAnimationFrame(animate);
+              } else {
+                fill.style.strokeDashoffset = '157.08';
+              }
+            });
           }
+
+          // Bubble anzeigen
           const now = new Date();
           const t = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
           const bubble = document.createElement('div');
@@ -1861,6 +1854,8 @@
           waBody.scrollTop = waBody.scrollHeight;
           waInput.value = '';
           waInput.style.height = 'auto';
+
+          // WhatsApp nach Animation öffnen – window.open() lässt die Seite stehen
           const encoded = encodeURIComponent(text);
           const waUrl = 'https://wa.me/' + WA_NUMBER + '?text=' + encoded;
           setTimeout(() => {
