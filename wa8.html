@@ -1,0 +1,1882 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PIX Fotostudio Balingen</title>
+
+        <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="alternate icon" href="favicon.ico">
+    
+    <link href="assets/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/flatpickr.min.css">
+
+    <style>
+
+
+
+  /* Der 109 originalpreis   <span style="text-decoration: line-through; color: #D96C4A; font-size: 0.9em; margin-right: 10px;">109 €</span>99 €    */
+  /* Deine CSS Klasse */
+        .schraeg-durchgestrichen {
+            position: relative;
+            display: inline-block;
+            color: #272727; /* Optional: Alte Farbe etwas blasser */
+            font-size: 0.8em; /* Optional: Alter Preis etwas kleiner */
+            margin-right: 10px; /* Abstand zum neuen Preis */
+        }
+
+        .schraeg-durchgestrichen::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: -2%;
+            width: 104%;  /* 104% damit der Strich etwas übersteht */
+            height: 1px;
+            background: #D96C4A; /* Rote Streichfarbe */
+            transform: rotate(-12deg);
+        }
+
+        /* Styling für den neuen Preis zum Vergleich */
+        .neuer-preis {
+            color: #d32f2f;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+
+
+   /* --- Flatpickr Layout & Größe Fix (Responsive) --- */
+
+
+        
+/* 2. Header (Monat/Jahr) reparieren */
+.flatpickr-months .flatpickr-month {
+    height: 50px !important;      /* Deutlich mehr Platz für den Header */
+    overflow: visible !important; /* Verhindert Abschneiden von Oberlängen */
+}
+
+
+        
+
+/* 1. Kalender breiter, aber mobilfreundlich */
+.flatpickr-calendar {
+    width: 100% !important;       /* Nutzt verfügbare Breite */
+    max-width: 360px !important;  /* Aber nicht breiter als 360px */
+    margin-top: 15px !important;  /* Abstand nach oben */
+}
+
+/* Container-Zentrierung (falls er mal kleiner ist als der Bildschirm) */
+.flatpickr-calendar.static {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Damit die Tage die neue Breite auch ausfüllen */
+.flatpickr-days, 
+.dayContainer {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Tage gleichmäßig verteilen (wichtig bei variabler Breite) */
+.flatpickr-day {
+    max-width: initial !important; /* Entfernt die fixe max-width der Tage */
+    flex-basis: 14.28% !important; /* 100% / 7 Tage = 14.28% */
+}
+
+
+
+
+        
+        /* --- LOKALE SCHRIFTEN --- */
+        @font-face {
+            font-family: 'Clash Display';
+            src: url('assets/fonts/ClashDisplay-Medium.woff2') format('woff2');
+            font-weight: 500; font-style: normal; font-display: swap;
+        }
+        @font-face {
+            font-family: 'Clash Display';
+            src: url('assets/fonts/ClashDisplay-Semibold.woff2') format('woff2');
+            font-weight: 600; font-style: normal; font-display: swap;
+        }
+        @font-face {
+            font-family: 'Clash Display';
+            src: url('assets/fonts/ClashDisplay-Bold.woff2') format('woff2');
+            font-weight: 700; font-style: normal; font-display: swap;
+        }
+        @font-face {
+            font-family: 'General Sans';
+            src: url('assets/fonts/GeneralSans-Regular.woff2') format('woff2');
+            font-weight: 400; font-style: normal; font-display: swap;
+        }
+        @font-face {
+            font-family: 'General Sans';
+            src: url('assets/fonts/GeneralSans-Medium.woff2') format('woff2');
+            font-weight: 500; font-style: normal; font-display: swap;
+        }
+        @font-face {
+            font-family: 'General Sans';
+            src: url('assets/fonts/GeneralSans-Semibold.woff2') format('woff2');
+            font-weight: 600; font-style: normal; font-display: swap;
+        }
+
+        :root {
+            --bg-paper: #F4F4F2;
+            --text: #111;
+            --accent-warm: #C6A87C;
+            --radius: 24px;
+            --font-head: 'Clash Display', sans-serif;
+            --font-body: 'General Sans', sans-serif;
+            --invest-bg: #4A4036;
+            --card-bg-start: #FFFCF7;
+            --card-bg-end: #F0EBE0;
+            --rw-bg: rgba(255,255,255,0.55);
+    /* Ambient Background Farben */
+    --bg-creme: #fdfcf8;
+    --accent-sage: #aabfab;
+    --accent-rose: #e6d2d2;
+    --accent-gold: #c5a059;
+            --rw-text: #222;
+            --rw-sub: #666;
+            --rw-star: #fbbc04;
+            --rw-progress: #d4c5a3;
+            --rw-arrow-bg: rgba(255, 255, 255, 0.9);
+            --rw-arrow-hover: #fff;
+        }
+
+        html { scroll-behavior: smooth; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        a, button, [onclick] { touch-action: manipulation; }
+        
+        /* WICHTIG FÜR MODAL FIX: Verhindert Scrollen des Body */
+        body.no-scroll { overflow: hidden; height: 100vh; }
+
+        body {
+            background-color: transparent;
+            color: var(--text); font-family: var(--font-body); overflow-x: hidden;
+            display: flex; justify-content: center;
+        }
+
+        .wrapper {
+            width: 100%; max-width: 1200px; background: transparent; min-height: 100vh;
+            box-shadow: 0 0 100px rgba(0,0,0,0.2); position: relative; padding-bottom: 50px;
+        }
+
+        .reveal { opacity: 0; transform: translateY(60px) scale(0.98); transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.1); }
+        .reveal.active { opacity: 1; transform: translateY(0) scale(1); }
+
+        /* --- HERO --- */
+        .hero { position: relative; height: 85vh; background: black; border-radius: 0 0 40px 40px; overflow: hidden; margin-bottom: 30px; z-index: 1; }
+        .hero img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; will-change: transform; }
+        .hero-overlay { 
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 40%;
+            padding: 0 30px 10px 30px; 
+            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 40%, transparent 100%); 
+            color: white; 
+            display: flex; flex-direction: column; align-items: flex-start;
+            justify-content: flex-end; 
+        }
+        
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 8px 18px; border-radius: 50px;
+            margin-bottom: 20px;
+            font-size: 0.75rem; letter-spacing: 1px; font-weight: 600; text-transform: uppercase;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            text-decoration: none; color: white; transition: 0.3s;
+        }
+        .hero-badge:hover { background: rgba(255, 255, 255, 0.3); transform: translateY(-2px); }
+        .hero-badge i { font-size: 0.9rem; }
+
+        .hero h1 { font-size: clamp(3rem, 8vw, 4.5rem); line-height: 0.95; margin-bottom: 10px; }
+        .scroll-indicator { 
+            margin-top: 20px; font-size: 2rem; color: rgba(255,255,255,0.7); 
+            animation: pulseDown 2s infinite; align-self: flex-start; margin-left: 20px; 
+        }
+        @keyframes pulseDown { 0% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(10px); opacity: 1; } 100% { transform: translateY(0); opacity: 0.5; } }
+
+        /* --- ARTIST STYLE --- */
+        .artist-section { padding: 40px 20px 80px 20px; display: flex; align-items: center; justify-content: center; gap: 50px; flex-wrap: wrap; }
+        .artist-circle-wrapper {
+            position: relative; width: 400px; height: 400px; border-radius: 50%;
+            border: 8px solid white; box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            overflow: hidden; 
+            -webkit-mask-image: -webkit-radial-gradient(white, black);
+            background: #ddd; flex-shrink: 0;
+        }
+        #artistCircle { cursor: pointer; }
+        .artist-avatar { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 2; transition: opacity 0.3s; }
+        .artist-video { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; opacity: 0; transition: opacity 0.1s; }
+        .flash-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 10; pointer-events: none; opacity: 0; transition: opacity 0.1s; }
+        .play-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 3rem; opacity: 0; z-index: 5; text-shadow: 0 5px 15px rgba(0,0,0,0.3); pointer-events: none; transition: 0.3s; }
+        #artistCircle:hover .play-hint { opacity: 0.8; }
+        #artistCircle.playing .play-hint { opacity: 0 !important; }
+        .artist-bubble { background: #EAEAE8; padding: 40px; border-radius: 30px; border-bottom-left-radius: 0; position: relative; max-width: 400px; }
+        .artist-name { font-weight: 700; font-size: 1.2rem; margin-bottom: 10px; color: #D96C4A; }
+
+        /* --- GALLERY (PHYSICS ENABLED) --- */
+        .gallery-wrap { 
+            padding: 40px 0; 
+            overflow: hidden; 
+            background: white; 
+            cursor: grab; 
+            user-select: none;
+            touch-action: pan-y; /* Erlaubt vertikales Scrollen, fängt horizontal ab */
+        }
+        .gallery-wrap.grabbing { cursor: grabbing; }
+        .gallery-track { 
+            display: flex; 
+            gap: 30px; 
+            width: max-content; 
+            will-change: transform; 
+            padding-left: 20px; 
+            padding-right: 20px; 
+        }
+        .gallery-item { 
+            width: 600px; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); flex-shrink: 0; 
+            pointer-events: none; 
+        }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; object-position: top; pointer-events: none; }
+
+        /* --- SOCIAL PROOF --- */
+        .social-proof { 
+            padding: 60px 20px; 
+            display: grid; grid-template-columns: 2fr 1fr; gap: 40px;
+            align-items: center; max-width: 1100px; margin: 0 auto;
+        }
+        .social-left { text-align: center; }
+        .google-box-static { display: inline-flex; align-items: center; gap: 15px; background: white; padding: 15px 30px; border-radius: 50px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 40px; }
+        .stars-static { color: #F4B400; font-size: 1.2rem; }
+        .logo-row { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; opacity: 0.5; font-weight: 700; font-size: 1rem; line-height: 1.8; }
+        .logo-row span { white-space: nowrap; }
+
+        /* --- GOOGLE REVIEW WIDGET --- */
+        .review-widget {
+            width: 100%; max-width: 400px; height: 260px; 
+            background: var(--rw-bg); border-radius: 20px; padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative;
+            overflow: hidden; box-sizing: border-box; user-select: none;
+            margin: 0 auto; border: 1px solid rgba(0,0,0,0.05);
+        }
+        .google-badge {
+            position: absolute; top: 20px; right: 20px;
+            display: flex; align-items: center; gap: 5px;
+            font-size: 13px; font-weight: 500; color: #5f6368; z-index: 10;
+        }
+        .google-badge img, .google-badge svg { width: 18px; height: 18px; }
+        .slides-container { width: 100%; height: 100%; position: relative; touch-action: pan-y; }
+        .review-slide {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; transform: translateX(15px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none; display: flex; flex-direction: column;
+        }
+        .review-slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+        .review-header { margin-top: 5px; margin-bottom: 15px; display: flex; align-items: center; }
+        .avatar {
+            width: 42px; height: 42px; background-color: #f1f3f4; color: #5f6368;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: 18px; margin-right: 12px; flex-shrink: 0;
+        }
+        .user-info { display: flex; flex-direction: column; text-align: left; }
+        .user-name { font-weight: 700; font-size: 16px; color: var(--rw-text); margin-bottom: 2px; }
+        .stars-date { display: flex; align-items: center; font-size: 13px; color: var(--rw-sub); }
+        .stars { color: var(--rw-star); margin-right: 6px; letter-spacing: 0px; font-size: 15px; }
+        .review-text {
+            font-size: 16px; line-height: 1.5; color: #3c4043; text-align: left;
+            display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical;
+            overflow: hidden; text-overflow: ellipsis;
+        }
+        .nav-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 32px; height: 32px; background: var(--rw-arrow-bg);
+            border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; z-index: 20; font-size: 18px; color: #555;
+            transition: all 0.2s; opacity: 0; 
+        }
+        .review-widget:hover .nav-btn { opacity: 1; }
+        .nav-btn:hover { background: var(--rw-arrow-hover); transform: translateY(-50%) scale(1.1); color: #222; }
+        .prev-btn { left: -10px; }
+        .next-btn { right: -10px; }
+        .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 5px; background: #f5f5f5; }
+        .progress-bar { height: 100%; background-color: var(--rw-progress); width: 0%; transition: width 0.1s linear; }
+        .paused .progress-bar { transition: none !important; }
+
+        /* --- INVESTITION --- */
+        .pricing-section {
+            background: var(--invest-bg); color: #FDFBF7;
+            padding: 80px 20px; border-radius: 40px; margin: 40px 20px; position: relative; z-index: 2;
+        }
+        .pkg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .pkg-card {
+            background: linear-gradient(to bottom right, var(--card-bg-start), var(--card-bg-end));
+            border-radius: var(--radius); padding: 28px 40px; color: #111;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; 
+            transition: transform 0.4s; overflow: visible; display: flex; flex-direction: column;
+        }
+        .pkg-shine-wrap {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: var(--radius); overflow: hidden; pointer-events: none;
+        }
+        .pkg-shine-wrap::after { 
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; 
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.8), transparent); 
+            transform: skewX(-25deg); transition: 0.5s; 
+        }
+        .pkg-card:hover .pkg-shine-wrap::after { left: 150%; transition: 0.7s ease-in-out; }
+        .pkg-card:hover { transform: translateY(-8px); }
+        .pkg-card.featured { border: 2px solid var(--accent-warm); transform: scale(1.03); z-index: 2; }
+        .pkg-card.featured::before { 
+            content: 'Empfehlung'; position: absolute; top: -16px; left: 50%; transform: translateX(-50%); 
+            background: var(--accent-warm); color: white; padding: 6px 16px; border-radius: 20px; 
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase; z-index: 10;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .pkg-price { font-size: 2rem; font-weight: 700; font-family: var(--font-head); margin: 10px 0; color: #111; }
+        .pkg-features { margin: 12px 0; list-style: none; flex-grow: 1; }
+        .pkg-features li { padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.08); display: block; color: #444; font-size: 0.95rem; }
+        .pkg-features li strong { color: #111; display: block; margin-bottom: 4px; }
+        .btn-card { display: block; width: 100%; padding: 11px; text-align: center; background: #222; color: white; text-decoration: none; border-radius: 12px; font-weight: 700; margin-top: 14px; cursor: pointer; }
+        .pkg-card.featured .btn-card { background: var(--accent-warm); }
+        .price-note { margin-top: 28px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 20px; font-size: 0.9rem; line-height: 1.6; color: rgba(255,255,255,0.8); }
+
+        /* --- B2B SECTIONS --- */
+        .b2b-section { margin: 80px 20px; background: #F8F7F5; border-radius: var(--radius); overflow: hidden; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+        .b2b-content { padding: 60px 40px; display: flex; flex-direction: column; justify-content: center; }
+        .b2b-img { width: 100%; height: 100%; min-height: 400px; object-fit: cover; }
+        .btn-b2b { display: inline-block; background: #111; color: white; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; align-self: start; cursor: pointer; }
+        
+        /* --- FAQ GRID --- */
+        .faq-wrap { padding: 80px 20px 20px 20px; display: grid; grid-template-columns: 1fr 2fr; gap: 40px; align-items: start; }
+        .faq-img-container { line-height: 0; margin: 0; padding: 0; }
+        .faq-img { width: 100%; border-radius: 20px; height: 100%; min-height: 480px; object-fit: cover; display: block; }
+        .faq-content { padding-top: 0; margin-top: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .faq-item { background: white; border-radius: 12px; border: 1px solid rgba(0,0,0,0.05); width: 100%; }
+        .faq-question { padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+        .faq-icon { transition: transform 0.3s; }
+        .faq-item.active .faq-icon { transform: rotate(180deg); }
+        .faq-answer { max-height: 0; overflow: hidden; transition: 0.3s; padding: 0 20px; color: #555; line-height: 1.6; }
+        .faq-item.active .faq-answer { max-height: 400px; padding-bottom: 20px; }
+
+        /* --- KONTAKT & MAP --- */
+        .contact-wrap { margin: 20px 20px 40px 20px; padding: 60px 40px; background: white; border-radius: var(--radius); }
+        .contact-info-block { display: flex; gap: 50px; align-items: center; margin-bottom: 60px; flex-wrap: wrap; justify-content: center; }
+        .contact-avatar-xxl { width: 450px; height: 450px; border-radius: 50%; object-fit: cover; border: 10px solid #F4F4F2; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+        .contact-text { max-width: 400px; font-size: 1.1rem; line-height: 1.8; }
+        .map-separate { width: 100%; height: 400px; border-radius: 24px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.05); position: relative; }
+        .map-placeholder { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; z-index: 10; background-image: url('https://denkenfeld.github.io/pix/map-placeholder-quer.jpeg'); background-size: cover; background-position: center; background-repeat: no-repeat; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; transition: 0.3s; }
+        .map-placeholder:hover { transform: scale(1.02); }
+        .placeholder-content { width: 100%; text-align: center; padding-bottom: 30px; padding-top: 80px; background: linear-gradient(to top, rgba(210, 195, 178, 0.92) 0%, rgba(232, 224, 214, 0.5) 50%, transparent 100%); }
+        .load-btn { background-color: white; color: #111; border: none; padding: 10px 25px; font-size: 0.9rem; font-weight: 600; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: transform 0.2s; }
+        .load-btn:hover { background-color: var(--accent-warm); color: white; }
+        .privacy-note { display: block; margin-top: 10px; font-size: 11px; color: rgba(255,255,255,0.7); }
+        .privacy-note a { color: white; text-decoration: underline; }
+        .map-iframe-container { width: 100%; height: 100%; }
+        .map-iframe-container iframe { width: 100% !important; height: 100% !important; border: 0; filter: grayscale(100%) sepia(10%); }
+
+        /* --- BOTTOM ABOUT --- */
+        .bottom-about { padding: 40px 20px 80px 20px; display: flex; justify-content: center; }
+        .about-bubble { background: #EAEAE8; padding: 60px; border-radius: 40px; max-width: 700px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: left; display: flex; flex-direction: column; align-items: center; }
+        
+        /* --- FOOTER & UP BTN --- */
+        .footer-container { padding: 40px 20px; text-align: center; color: #999; }
+        .back-to-top { display: inline-flex; width: 50px; height: 50px; border: 1px solid #ccc; border-radius: 50%; align-items: center; justify-content: center; color: #555; text-decoration: none; margin-bottom: 30px; transition: 0.3s; }
+        .back-to-top:hover { background: #111; border-color: #111; color: white; transform: translateY(-5px); }
+        .footer-links { font-size: 0.8rem; line-height: 2; }
+        .footer-links a { color: #777; text-decoration: none; margin: 0 10px; transition: 0.3s; cursor: pointer; }
+        .footer-links a:hover { color: #000; }
+
+        /* --- MODAL (Basis) --- */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: white; width: 100%; max-width: 800px; height: 90vh; border-radius: 20px; padding: 40px; overflow-y: auto; position: relative; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); -webkit-overflow-scrolling: touch; }
+        .close-modal { position: sticky; top: 0; float: right; background: none; border: none; font-size: 2rem; color: #111; cursor: pointer; z-index: 100; }
+        .legal-text { font-size: 0.9rem; line-height: 1.6; color: #333; }
+        .legal-text h2 { margin-top: 30px; margin-bottom: 15px; font-family: var(--font-head); }
+        .legal-text p { margin-bottom: 15px; }
+
+        @media(max-width: 900px) {
+            .faq-wrap { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 3rem; position: relative; top: 15px; }
+            .hero .hero-badge { position: relative; top: 30px; }
+            .hero p { position: relative; top: 15px; }
+            .artist-circle-wrapper, .contact-avatar-xxl { width: 340px; height: 340px; }
+            .gallery-item { width: 500px; }
+            .faq-img { height: 200px; min-height: 200px; }
+            .wrapper { width: 100%; margin: 0; box-shadow: none; }
+            .modal-content { padding: 20px; width: 95%; max-width: 100%; }
+            .social-proof { grid-template-columns: 1fr; gap: 30px; }
+            .social-left { text-align: center; }
+            .review-widget { max-width: 100%; }
+        }
+
+        .call-fab { position: fixed; bottom: 30px; right: 30px; z-index: 1000; background: #111; color: white; height: 60px; border-radius: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-decoration: none; overflow: hidden; padding: 0 25px; width: auto; transition: 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .call-fab.collapsed { width: 60px; padding: 0; }
+        .fab-content { display: flex; align-items: center; white-space: nowrap; }
+        .fab-text { margin-right: 15px; font-weight: 600; font-size: 0.95rem; display: flex; flex-direction: column; width: 110px; transition: 0.4s; }
+        .call-fab.collapsed .fab-text { opacity: 0; width: 0; margin: 0; }
+        .status-dot { width: 8px; height: 8px; background: #4CAF50; border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 8px #4CAF50; }
+        .fab-icon { font-size: 1.2rem; }
+
+        .btn-card, .btn-b2b { transition: all 0.3s ease; }
+        .btn-card:hover, .btn-b2b:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.25); opacity: 0.9; }
+        .faq-question { transition: all 0.3s ease; }
+        .faq-question:hover { background-color: #f9f9f9; color: var(--accent-warm); }
+
+    /* === AMBIENT BACKGROUND – global (fixed) === */
+    .ambient-bg {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        z-index: -1;
+        overflow: hidden;
+        pointer-events: none;
+        background-color: var(--bg-creme);
+    }
+
+    /* === AMBIENT BACKGROUND – content/wrapper (absolute) === */
+    .content-ambient-bg {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
+    }
+    .wrapper > *:not(.content-ambient-bg) {
+        position: relative;
+        z-index: 1;
+    }
+
+    .orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.5;
+        animation: float 20s infinite ease-in-out;
+    }
+    .orb-1 {
+        width: 50vh; height: 50vh;
+        background: var(--accent-sage);
+        top: -10%; left: -10%;
+    }
+    .orb-2 {
+        width: 60vh; height: 60vh;
+        background: var(--accent-rose);
+        bottom: 10%; right: -10%;
+        animation-delay: -5s;
+    }
+    .orb-3 {
+        width: 40vh; height: 40vh;
+        background: var(--accent-gold);
+        top: 40%; left: 30%;
+        opacity: 0.2;
+        animation-delay: -10s;
+    }
+    .content-orb-1 {
+        width: 35vh; height: 35vh;
+        background: var(--accent-sage);
+        top: 5%; left: -5%;
+        animation-delay: -3s;
+    }
+    .content-orb-2 {
+        width: 40vh; height: 40vh;
+        background: var(--accent-rose);
+        top: 50%; right: -5%;
+        animation-delay: -8s;
+    }
+    .content-orb-3 {
+        width: 28vh; height: 28vh;
+        background: var(--accent-gold);
+        top: 25%; left: 40%;
+        opacity: 0.2;
+        animation-delay: -14s;
+    }
+
+    @keyframes float {
+        0%   { transform: translate(0, 0) scale(1); }
+        50%  { transform: translate(40px, 60px) scale(1.1); }
+        100% { transform: translate(0, 0) scale(1); }
+    }
+
+    /* ============================================
+       GLASSMORPHISM OVERRIDES
+       ============================================ */
+
+    /* Artist bubble: "Hi, ich bin Irene..." */
+    .artist-bubble {
+        background: rgba(255, 255, 255, 0.55) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 8px 32px rgba(170, 191, 171, 0.15);
+    }
+
+    /* Google Badge "★★★★★ 5.0 auf Google Reviews" */
+    .google-box-static {
+        background: rgba(255, 255, 255, 0.6) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    /* Google Review Widget (Bewertungen Slider) */
+    .review-widget {
+        background: rgba(255, 255, 255, 0.55) !important;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+    }
+
+    /* Gallery strip */
+    .gallery-wrap {
+        background: rgba(255, 255, 255, 0.35) !important;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+
+    /* FAQ items */
+    .faq-item {
+        background: rgba(255, 255, 255, 0.55) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.5) !important;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    }
+
+    /* Contact section */
+    .contact-wrap {
+        background: rgba(255, 255, 255, 0.55) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+    }
+
+    /* Bottom about bubble */
+    .about-bubble {
+        background: rgba(255, 255, 255, 0.55) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+    }
+
+    /* B2B section */
+    .b2b-section {
+        background: rgba(248, 247, 245, 0.5) !important;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    /* Pricing section (packages) – TINTED/DARK glass */
+    .pricing-section {
+        background: rgba(74, 64, 54, 0.82) !important;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    /* Footer */
+    .footer-container {
+        background: rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+    
+        .mobile-break { display: none; }
+        @media (max-width: 768px) {
+            .mobile-break { display: inline; }
+        }
+
+    
+        /* ---- WhatsApp FAB ---- */
+        .wa-fab {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            z-index: 1000;
+            background: #25D366;
+            color: white;
+            height: 60px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(37,211,102,0.4);
+            overflow: hidden;
+            padding: 0 25px;
+            width: auto;
+            transition: 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+            border: none;
+            cursor: pointer;
+            font-family: var(--font-body);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .wa-fab.collapsed {
+            width: 60px;
+            padding: 0;
+        }
+        .wa-fab .fab-content {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+        .wa-fab .fab-text {
+            margin-right: 15px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            flex-direction: column;
+            width: 110px;
+            transition: 0.4s;
+        }
+        .wa-fab.collapsed .fab-text {
+            opacity: 0;
+            width: 0;
+            margin: 0;
+        }
+        .wa-fab .fab-icon {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        /* ---- WhatsApp Chat Panel ---- */
+        .wa-panel-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1100;
+        }
+        .wa-panel-overlay.open {
+            display: block;
+        }
+        .wa-panel {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: min(420px, 100vw);
+            height: 0;
+            border-radius: 24px 24px 0 0;
+            overflow: hidden;
+            background: #ECE5DD;
+            box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
+            z-index: 1101;
+            transition: height 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            flex-direction: column;
+        }
+        .wa-panel.open {
+            height: min(58vh, 540px);
+        }
+        @media (max-width: 480px) {
+            .wa-panel.open {
+                height: 58vh;
+                width: 100vw;
+                border-radius: 24px 24px 0 0;
+            }
+        }
+        .wa-header {
+            background: #075E54;
+            color: white;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+        .wa-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #25D366;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .wa-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .wa-header-info {
+            flex: 1;
+        }
+        .wa-header-info strong {
+            display: block;
+            font-size: 1rem;
+        }
+        .wa-header-info span {
+            font-size: 0.75rem;
+            opacity: 0.85;
+        }
+        .wa-close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 4px 10px;
+            border-radius: 50%;
+            transition: background 0.2s;
+            line-height: 1;
+            touch-action: manipulation;
+        }
+        .wa-close-btn:hover { background: rgba(255,255,255,0.15); }
+        .wa-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 14px 10px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .wa-bubble {
+            background: white;
+            border-radius: 0px 12px 12px 12px;
+            padding: 10px 14px;
+            max-width: 85%;
+            font-size: 0.9rem;
+            line-height: 1.45;
+            color: #111;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.13);
+            align-self: flex-start;
+        }
+        .wa-bubble-time {
+            font-size: 0.68rem;
+            color: #888;
+            text-align: right;
+            margin-top: 4px;
+        }
+        .wa-sent {
+            background: #DCF8C6;
+            border-radius: 12px 0px 12px 12px;
+            align-self: flex-end;
+        }
+        .wa-sent-status {
+            font-size: 0.68rem;
+            color: #34B7F1;
+            text-align: right;
+            margin-top: 4px;
+        }
+        .wa-footer {
+            background: #F0F0F0;
+            padding: 10px 12px 20px 12px;
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+            flex-shrink: 0;
+        }
+        .wa-textarea {
+            flex: 1;
+            border: none;
+            border-radius: 18px;
+            padding: 12px 16px;
+            font-size: 0.92rem;
+            font-family: var(--font-body);
+            resize: none;
+            outline: none;
+            background: white;
+            min-height: 88px;
+            max-height: 150px;
+            line-height: 1.4;
+            color: #111;
+            overflow-y: auto;
+        }
+        .wa-send-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #25D366;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s, transform 0.15s;
+            touch-action: manipulation;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .wa-send-btn:hover { background: #1ebe57; transform: scale(1.07); }
+        .wa-send-btn:active { transform: scale(0.95); }
+        .wa-send-btn .send-arrow { font-size: 0.9rem; }
+        .wa-send-btn .send-wa   { font-size: 0.65rem; opacity: 0.9; }
+
+    
+        /* ── Progress ring around send button ── */
+        .wa-send-wrap {
+            position: relative;
+            width: 58px;
+            height: 58px;
+            flex-shrink: 0;
+        }
+        .wa-send-btn {
+            position: absolute !important;
+            inset: 5px;
+            width: 48px !important;
+            height: 48px !important;
+        }
+        .wa-progress-ring {
+            position: absolute;
+            top: 0; left: 0;
+            width: 58px; height: 58px;
+            pointer-events: none;
+            transform: rotate(-90deg);
+            opacity: 0;
+            transition: opacity 0.1s;
+            z-index: 10;
+        }
+        .wa-progress-ring.active { opacity: 1; }
+        .wa-ring-track {
+            fill: none;
+            stroke: rgba(255,255,255,0.25);
+            stroke-width: 3;
+        }
+        .wa-ring-fill {
+            fill: none;
+            stroke: #ffffff;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-dasharray: 157.08;   /* 2 * PI * 25 */
+            stroke-dashoffset: 157.08;
+            transition: stroke-dashoffset 0.82s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .wa-progress-ring.active .wa-ring-fill {
+            stroke-dashoffset: 0;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="ambient-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+</div>
+
+<div class="wrapper" id="top">
+    <div class="content-ambient-bg">
+        <div class="orb content-orb-1"></div>
+        <div class="orb content-orb-2"></div>
+        <div class="orb content-orb-3"></div>
+    </div>
+
+    <div class="hero reveal active">
+        <img src="https://denkenfeld.github.io/pix/start1.jpeg" alt="Hero" id="heroImg">
+        <div class="hero-overlay">
+            <a href="#kontakt" class="hero-badge">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>Pix Fotostudio Balingen</span>
+            </a>
+            <h1>Your Image.<br>Your Power.</h1>
+            <p style="opacity: 0.9; margin-bottom: 20px; max-width: 400px;">Professionelle Business- & Corporate Fotografie.</p>
+            <a href="#investition" class="scroll-indicator"><i class="fa-solid fa-chevron-down"></i></a>
+        </div>
+    </div>
+
+    <section class="artist-section reveal">
+        <div class="artist-circle-wrapper" style="cursor: default;">
+            <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-i-ich.jpg" class="artist-avatar" alt="Irene" style="object-position: top;">
+        </div>
+        <div class="artist-bubble">
+            <div class="artist-name">Hi, ich bin Irene.</div>
+            <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Fotografin in Balingen</h3>
+            <p style="color: #444; line-height: 1.6;">Ein Portrait mit Charakter und zeitloser Präsenz beginnt mit dem richtigen Dialog.<br>Ich freue mich, von Ihnen zu hören!</p>
+        </div>
+    </section>
+
+    <div class="gallery-wrap reveal" id="galleryWrap">
+        <h3 style="padding-left: 20px; margin-bottom: 20px; font-family: var(--font-head);">Selected Works: Bewerbungsfotos | Businessportraits | Studio & vor Ort</h3>
+        <div class="gallery-track" id="galleryTrack">
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-bewerbung-1.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-2.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-business-4.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s3.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s1.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s2.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-individuell.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-studio.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/1-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/2-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/3-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/4-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/5-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/6-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/7-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
+            <div class="gallery-item"><img src="https://denkenfeld.github.io/pix/8-Laufband-portrait-Fotograf-Balingen-Pix-Fotostudio.jpg"></div>
+        </div>
+    </div>
+
+    <div class="social-proof reveal">
+        <div class="social-left">
+            <div class="google-box-static">
+                <span class="stars-static">★★★★★</span>
+                <span style="font-weight: 700;">5.0</span>
+                <span style="color: #666; font-size: 0.9rem;">auf Google Reviews</span>
+            </div>
+            <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 15px;">Vertraut von Teams bei</div>
+            <div class="logo-row">
+                <span>EDEKA</span> <span>FOKUS</span> <span>TOOM</span> <span>ALNATURA</span> 
+                <span>ALLIANZ</span> <span>MEY GENERALBAU</span> <span>WELT DER FRAU</span> <span>UNIVERSITÄT TÜBINGEN</span>
+            </div>
+        </div>
+        
+        <div class="review-widget" id="reviewWidget">
+            <div class="google-badge">
+                <svg viewBox="0 0 24 24" width="18" height="18"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                Google
+            </div>
+            <div class="nav-btn prev-btn" onclick="manualChange(-1)">❮</div>
+            <div class="nav-btn next-btn" onclick="manualChange(1)">❯</div>
+            <div class="slides-container" id="slidesContainer"></div>
+            <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+        </div>
+    </div>
+
+    <section class="pricing-section reveal" id="investition">
+        <div style="text-align: center; max-width: 800px; margin: 0 auto 60px auto;">
+            <h2>PIX Studioshooting: Businessstark und alles inklusive</h2>
+            <p style="opacity: 0.8; margin-top: 15px;">Bewerbung, Businessportrait und Social Media stehen hier im Fokus: professionelle Aufnahmen in entspannter Studio-Atmosphäre. Inklusive persönlicher Beratung, gemeinsamer Bildauswahl, Retusche und aller Nutzungsrechte.</p>
+            <p style="margin-top: 15px; color: var(--accent-warm); font-weight: 600;">Drei Fotoshooting-Pakete für einen klaren, überzeugenden Auftritt:</p>
+        </div>
+        
+        <div class="pkg-grid">
+            <div class="pkg-card">
+                <div class="pkg-shine-wrap"></div>
+                <h3>Paket S: Basis</h3>
+                <div class="pkg-price">59 €</div>
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Ideal als Bewerbungsfoto oder professionelles Profil-Update. </p>
+                <ul class="pkg-features">
+                    <li><strong>Beratung:</strong> Kompakt & zielführend</li>
+                    <li><strong>Shooting:</strong> 1 Outfit, 1 Hintergrund</li>
+                    <li><strong>Auswahl:</strong> Bis zu 30 Aufnahmen</li>
+                    <li><strong>Ergebnis:</strong> 1 bearbeitete digitale Datei</li>
+                    <li><strong>Dauer:</strong> Ca. 45 Minuten</li>
+                </ul>
+                <a onclick="openRequestModal('Paket S: Basis')" class="btn-card">Online buchen →</a>
+            </div>
+  
+
+
+            <div class="pkg-card featured">
+                <div class="pkg-shine-wrap"></div>
+                <h3>Paket M: Karriere <span style="color: #D96C4A; font-size: 1rem; text-transform: uppercase; vertical-align: middle; margin-left: 5px;">Aktion</span></h3>
+                
+              <div class="pkg-price">
+    <span class="schraeg-durchgestrichen">109 €</span>
+    <!-- Einfach p zu span ändern -->
+    <span style="color: #D96C4A; margin-left: 5px;">99 €</span> 
+</div>
+                
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;"> Set von mehreren Businessportraits für Bewerbung, Social Media & Webseiten. </p>
+                <ul class="pkg-features">
+                    <li><strong>Beratung:</strong> Ausführliches Vorgespräch</li>
+                    <li><strong>Shooting:</strong> 2 Outfits, 2 Hintergründe</li>
+                    <li><strong>Auswahl:</strong> Bis zu 90 Aufnahmen</li>
+                    <li><strong>Ergebnis:</strong> 3 bearbeitete digitale Dateien</li>
+                    <li><strong>Dauer:</strong> Ca. 1,5 Stunden</li>
+                </ul>
+                <a onclick="openRequestModal('Paket M: Karriere')" class="btn-card">Online buchen →</a>
+            </div>
+
+
+
+            
+            <div class="pkg-card">
+                <div class="pkg-shine-wrap"></div>
+                <h3>Paket L: Executive</h3>
+                <div class="pkg-price">279 €</div>
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Das Maximum an Individualität für für die persönliche Markenbildung.</p>
+                <ul class="pkg-features">
+                    <li><strong>Beratung:</strong> Individuelle Planung</li>
+                    <li><strong>Shooting:</strong> Unbegrenzt Outfits & Hintergründe</li>
+                    <li><strong>Auswahl:</strong> Bis zu 200 Aufnahmen</li>
+                    <li><strong>Ergebnis:</strong> 9 bearbeitete digitale Dateien</li>
+                    <li><strong>Dauer:</strong> Ca. 3 Stunden</li>
+                </ul>
+                <a onclick="openRequestModal('Paket L: Executive')" class="btn-card">Online buchen →</a>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+
+    <!-- Karriere Start Plus Section -->
+    <section class="b2b-section reveal">
+        <div class="b2b-content">
+            <span style="color: #667eea; font-weight: 700; letter-spacing: 1px; margin-bottom: 10px;">KARRIERE START PLUS</span>
+            <h2>Bewerbungsfotos vom Jobcenter finanziert.</h2>
+            <p style="margin-bottom: 20px; color: #555;">Professionelle Bewerbungsfotos aus dem Vermittlungsbudget gemäß § 44 SGB III bzw. § 16 Abs. 1 SGB II.</p>
+            <ul style="list-style: none; margin-bottom: 30px; font-weight: 500; color: #333;">
+                <li style="margin-bottom: 10px;">✓ 1,5 Std. Shooting mit Beratung</li>
+                <li style="margin-bottom: 10px;">✓ 2 Outfits & 2 Hintergründe</li>
+                <li style="margin-bottom: 10px;">✓ Bis zu 90 Aufnahmen zur Auswahl</li>
+                <li style="margin-bottom: 10px;">✓ 3 bearbeitete digitale Dateien</li>
+                <li>✓ Bewerbungstipps & Bildanpassung</li>
+            </ul>
+            <a onclick="openJobcenterModal()" class="btn-b2b">Antragsformular öffnen →</a>
+            <p style="margin-top: 15px; font-size: 0.85rem; color: #888; font-style: italic;">
+                💡 Ab 0 € bei Kostenübernahme durch Jobcenter oder Arbeitsagentur
+            </p>
+        </div>
+        <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s2.jpg" class="b2b-img" alt="Karriere Start Bewerbungsfotos">
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+    <section class="b2b-section reveal">
+        <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-s4.jpg" class="b2b-img" alt="Corporate Team">
+        <div class="b2b-content">
+            <span style="color: #D96C4A; font-weight: 700; letter-spacing: 1px; margin-bottom: 10px;">B2B SPECIAL</span>
+            <h2>Ihr Team als Marke.</h2>
+            <p style="margin-bottom: 20px; color: #555;">Einheitliche Mitarbeiterfotos in Ihrem Corporate Design. Kleine & große Unternehmen.</p>
+            <ul style="list-style: none; margin-bottom: 30px; font-weight: 500; color: #333;">
+                <li style="margin-bottom: 10px;">✓ Mobiles Studio (wir kommen zu Ihnen)</li>
+                <li style="margin-bottom: 10px;">✓ Bildbearbeitung im Firmen-Look</li>
+                <li>✓ Nutzungsrechte inklusive</li>
+            </ul>
+            <a onclick="openRequestModal('B2B / Firmenanfrage')" class="btn-b2b">Firmenangebot anfordern →</a>
+        </div>
+    </section>
+    
+    <section class="b2b-section reveal">
+        <div class="b2b-content">
+            <span style="color: #D96C4A; font-weight: 700; letter-spacing: 1px; margin-bottom: 10px;">KREATIV & INDIVIDUELL</span>
+            <h2>Individuelle Fotoshootings.</h2>
+            <p style="margin-bottom: 20px; color: #555;">Familienfotos, Geschenke, Projekte & kreative Ideen.. hier im Studio ist sehr vieles möglich.</p>
+            <ul style="list-style: none; margin-bottom: 30px; font-weight: 500; color: #333;">
+                <li style="margin-bottom: 10px;">✓ Vorbesprechung & Moodboards</li>
+                <li style="margin-bottom: 10px;">✓ Spezielles Licht-Setup</li>
+                <li>✓ High-End Retusche</li>
+            </ul>
+            <a onclick="openRequestModal('Individuelles Fotoshooting')" class="btn-b2b">Konzept besprechen →</a>
+        </div>
+        <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-individuell-1.jpg" class="b2b-img" alt="Individual Shooting">
+    </section>
+
+    <section class="faq-wrap reveal">
+        <div class="faq-img-container">
+            <h2>Häufige Fragen & Antworten</h2>
+            <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-studio3.jpg" class="faq-img" alt="Studio Detail" style="margin-top: 35px;">
+        </div>
+        <div class="faq-content">
+            <div class="faq-item">
+                <div class="faq-question">Vorbereitung & Outfit <i class="fa-solid fa-chevron-down faq-icon"></i></div>
+                <div class="faq-answer">
+                    <p style="margin-bottom: 12px;"><strong>Was soll ich anziehen?</strong><br>Bringen Sie Outfits mit, in denen Sie sich wohlfühlen. Unifarben und verschiedene Kragenformen funktionieren am besten; vermeiden Sie zu unruhige Muster.</p>
+                    <p style="margin-bottom: 12px;"><strong>Wie sieht es mit Make-up aus?</strong><br>Ein dezentes Basis-Make-up ist empfehlenswert, um Hauttöne auszugleichen. Im Studio sorgen wir mit neutralem Puder dafür, dass keine störenden Glanzstellen entstehen.</p>
+                    <p><strong>Wie erzielen wir die beste Wirkung?</strong><br>Keine Sorge. Während des Shooting-Prozesses finden wir in aller Ruhe gemeinsam genau die Posen, Blicke und Winkel, die Ihre Persönlichkeit optimal unterstreichen.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Ablauf & Zeit <i class="fa-solid fa-chevron-down faq-icon"></i></div>
+                <div class="faq-answer">
+                    <p style="margin-bottom: 12px;"><strong>Wie lange dauert das Shooting?</strong><br>Je nach Fotoshooting zwischen 30 Minuten und mehreren Stunden. Wir haben genug Zeit und arbeiten in entspannter Atmosphäre um die besprochenen Aufnahmen zu machen.</p>
+                    <p style="margin-bottom: 12px;"><strong>Darf ich eine Begleitperson mitbringen?</strong><br>Ja, wenn Sie sich dadurch vor der Kamera sicherer und lockerer fühlen, ist eine Begleitung herzlich willkommen.</p>
+                    <p><strong>Wann sehe ich die Ergebnisse?</strong><br>Sofort. Wir sichten die Bilder laufend auf der Kamera und dann gemeinsam am Bildschirm, um Mimik und Details direkt zu optimieren.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Auswahl & Ergebnisse <i class="fa-solid fa-chevron-down faq-icon"></i></div>
+                <div class="faq-answer">
+                    <p style="margin-bottom: 12px;"><strong>In welcher Form erhalte ich die Bilder?</strong><br>Als hochauflösende Dateien per Download – fix und fertig optimiert für Social Media, Web und Druck.</p>
+                    <p style="margin-bottom: 12px;"><strong>Wie sieht die Retusche aus?</strong><br>Ich optimiere Hauttöne und kleine Makel persönlich. Das Ziel: Ein frischer, professioneller Look, der trotzdem vollkommen authentisch bleibt.</p>
+                    <p><strong>Sind die Nutzungsrechte inklusive?</strong><br>Ja, bei allen Paketen sind alle gewerblichen Nutzungsrechte enthalten.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Business- & Bewerbungsfotos <i class="fa-solid fa-chevron-down faq-icon"></i></div>
+                <div class="faq-answer">
+                    <p style="margin-bottom: 12px;"><strong>Welches Outfit ist für Bewerbungen ideal?</strong><br>Kleiden Sie sich passend zu Ihrer Zielposition. Ein Mix aus „klassisch-konservativ" und „modern-locker" bietet uns die beste Auswahl.</p>
+                    <p style="margin-bottom: 12px;"><strong>Muss ich auf dem Foto lachen?</strong><br>Es muss zu Ihnen passen. Wir erarbeiten verschiedene Nuancen von „kompetent-ernst" bis „sympathisch-offen", damit die Wirkung zur Branche passt.</p>
+                    <p><strong>Wie schnell sind die Bilder fertig?</strong><br>Da Bewerbungen oft eilen, priorisiere ich diese Aufträge. In der Regel haben Sie Ihre Auswahl innerhalb von 24–48 Stunden.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Individuelle Anliegen & Firmen <i class="fa-solid fa-chevron-down faq-icon"></i></div>
+                <div class="faq-answer">
+                    <p style="margin-bottom: 12px;"><strong>Fotografieren Sie auch Mitarbeiter vor Ort?</strong><br>Ja, ich komme für Team-Portraits und Business-Content direkt in Ihre Firma oder fotografiere Einzelpersonen bei mir im Studio.</p>
+                    <p style="margin-bottom: 12px;"><strong>Gibt es Termine am Wochenende?</strong><br>Termine vergebe ich nach individueller Absprache. Fragen Sie Ihren Wunschtermin einfach kurz an.</p>
+                    <p><strong>Sie haben ein spezielles Projekt oder weitere Fragen?</strong><br>Rufen Sie mich am besten direkt an! Ein kurzes Telefonat klärt individuelle Wünsche am schnellsten – ich berate Sie gerne persönlich.</p>
+                </div>
+            </div>
+        </div></section>
+
+    <section class="contact-wrap reveal" id="kontakt">
+        <div class="contact-info-block">
+            <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-i-kontakt.jpg" class="contact-avatar-xxl" alt="Irene">
+            <div class="contact-text">
+                <h3 style="margin-bottom: 15px; font-size: 1.8rem;">Kommen Sie vorbei.</h3>
+                <p><strong>PIX Fotostudio</strong><br>Irene Ilter<br>Odenwaldstraße 19, 72336 Balingen<br><br>📞 0151 50715629<br>✉️ <a href="mailto:fotostudiopix@gmail.com">fotostudiopix@gmail.com</a></p>
+                <p style="margin-top: 20px; color: #888; font-size: 0.9rem;">Parkplätze direkt vor der Tür<br>Fotoshootings sind nur mit Termin möglich</p>
+            </div>
+        </div>
+        <div class="map-separate">
+            <div id="map-placeholder" class="map-placeholder" onclick="loadMap()">
+                <div class="placeholder-content">
+                    <button class="load-btn">Karte aktivieren</button>
+                    <span class="privacy-note">Meldet Daten an Google. <a href="https://policies.google.com/privacy" target="_blank" onclick="event.stopPropagation();">Datenschutz</a></span>
+                </div>
+            </div>
+            <div id="map-target" class="map-iframe-container"></div>
+        </div>
+    </section>
+
+    <div class="bottom-about reveal">
+        <div class="about-bubble">
+            <h3 style="font-size: 1.5rem; margin-bottom: 15px;">Your Image. Your Power.<span class="mobile-break"><br></span></h3>
+            <p style="color: #444; line-height: 1.6; margin-bottom: 40px; text-align: center;">15 Jahre Erfahrung in der Business-Fotografie. Mein Ziel sind professionelle Aufnahmen, die Ihre Persönlichkeit unterstreichen. <br><br><strong>Ihr Erfolg ist mein Maßstab für Qualität.</strong></p>
+            <div class="artist-circle-wrapper" id="artistCircle">
+                <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-i-kreis.png" class="artist-avatar" alt="Irene" id="artistImg">
+                <video class="artist-video" id="artistVideo" muted playsinline>
+                    <source src="https://denkenfeld.github.io/pix/irene-fotoshooting-scene1.MP4" type="video/mp4">
+                </video>
+                <div class="flash-overlay" id="flashOverlay"></div>
+                <i class="fa-solid fa-play play-hint"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-container">
+        <a href="#top" class="back-to-top"><i class="fa-solid fa-chevron-up"></i></a>
+        <div class="footer-links">
+            <p>PIX Fotostudio Balingen © 2026</p>
+            <p><a onclick="openLegalModal()">Impressum</a> • <a onclick="openLegalModal()">Datenschutz</a> • <a onclick="openLegalModal()">AGB</a></p>
+        </div>
+    </div>
+</div>
+
+<div id="legalModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeLegalModal()">×</button>
+        <div class="legal-text" id="legalContainer">
+            <div style="display: flex; justify-content: center; align-items: center; height: 200px;">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #ccc;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="requestModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeRequestModal()">×</button>
+        <div id="requestContainer">
+            <div style="display: flex; justify-content: center; align-items: center; height: 200px;">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #ccc;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a href="tel:015150715629" class="call-fab" id="smartBtn">
+    <div class="fab-content">
+        <div class="fab-text"><span style="font-size: 0.7rem; opacity: 0.7;">Mo-Sa 8-20h</span><span><span class="status-dot"></span>Jetzt anrufen</span></div>
+        <i class="fa-solid fa-phone fab-icon"></i>
+    </div>
+</a>
+
+<script src="assets/js/flatpickr.js"></script>
+<script src="assets/js/de.js"></script>
+
+<script>
+    // --- MAIN SITE LOGIC ---
+    document.querySelectorAll('.faq-question').forEach(item => { item.addEventListener('click', () => { item.parentElement.classList.toggle('active'); }); });
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    
+    const heroImg = document.getElementById('heroImg');
+    window.addEventListener('scroll', () => { if(window.pageYOffset < 1000) heroImg.style.transform = `translateY(${window.pageYOffset * 0.3}px)`; });
+
+    let lastScrollTop = 0; const btn = document.getElementById('smartBtn');
+    window.addEventListener('scroll', function() {
+        let st = window.pageYOffset || document.documentElement.scrollTop;
+        if (Math.abs(st - lastScrollTop) > 50) {
+            if (st > lastScrollTop && st > 100) btn.classList.add('collapsed'); else btn.classList.remove('collapsed');
+            lastScrollTop = st;
+        }
+    });
+
+    // === NEW PHYSICS-BASED CAROUSEL (SAFARI & MOMENTUM) ===
+    const wrap = document.getElementById('galleryWrap');
+    const track = document.getElementById('galleryTrack');
+
+    if (wrap && track) {
+        // 1. Setup Duplicates
+        const originalItems = Array.from(track.children);
+        originalItems.forEach(item => track.appendChild(item.cloneNode(true)));
+
+        // 2. Metrics
+        function getItemWidth() {
+            const first = track.querySelector('.gallery-item');
+            if (!first) return 0;
+            const styles = window.getComputedStyle(track);
+            const gap = parseFloat(styles.columnGap || styles.gap || 0);
+            return first.offsetWidth + gap;
+        }
+
+        let itemWidth = getItemWidth();
+        let totalWidth = itemWidth * originalItems.length;
+
+        // 3. Physics Variables
+        let x = 0;
+        let baseSpeed = 0.8; // Auto-scroll speed
+        let speed = baseSpeed;
+        
+        let isDragging = false;
+        let startX = 0;
+        let lastX = 0;
+        
+        // Momentum & Tap Logic variables
+        let velocity = 0;
+        let lastFrameTime = 0;
+        let isMomentum = false;
+        let friction = 0.95; // 0.95 = smooth slide, lower = stops faster
+        let resumeTimer = null;
+        let totalDragDist = 0;
+
+        function updateTransform() {
+            track.style.transform = `translate3d(${x}px, 0, 0)`;
+        }
+
+        function loop(time) {
+            // Delta time calculation for smoother velocity
+            if (!lastFrameTime) lastFrameTime = time;
+            const dt = time - lastFrameTime;
+            lastFrameTime = time;
+
+            if (isDragging) {
+                // While dragging, we just follow the finger (logic in pointerMove)
+                // but we track velocity here if needed, or in move. 
+                // Currently velocity is tracked in move for simplicity.
+            } else if (isMomentum) {
+                // Momentum Phase: Apply velocity and friction
+                x += velocity;
+                velocity *= friction;
+
+                // Stop momentum when slow enough
+                if (Math.abs(velocity) < 0.1) {
+                    isMomentum = false;
+                    velocity = 0;
+                    startResumeTimer();
+                }
+                
+                // Boundaries
+                if (x > 0) x -= totalWidth;
+                if (Math.abs(x) >= totalWidth) x += totalWidth;
+                updateTransform();
+
+            } else {
+                // Auto-Scroll Phase (only if speed is not 0)
+                if (speed !== 0) {
+                    x -= speed;
+                    if (Math.abs(x) >= totalWidth) x += totalWidth;
+                    updateTransform();
+                }
+            }
+            requestAnimationFrame(loop);
+        }
+
+        function startResumeTimer() {
+            if (resumeTimer) clearTimeout(resumeTimer);
+            resumeTimer = setTimeout(() => {
+                speed = baseSpeed; // Resume auto-scroll
+            }, 1500); // 1.5s Pause
+        }
+
+        // --- POINTER EVENTS (TOUCH & MOUSE) ---
+        function pointerDown(clientX) {
+            isDragging = true;
+            isMomentum = false;
+            startX = clientX;
+            lastX = clientX;
+            totalDragDist = 0;
+            velocity = 0;
+            speed = 0; // Stop auto-scroll
+            if (resumeTimer) clearTimeout(resumeTimer);
+            
+            wrap.classList.add('grabbing');
+        }
+
+        function pointerMove(clientX) {
+            if (!isDragging) return;
+            const delta = clientX - lastX;
+            lastX = clientX;
+            
+            // Track total distance to distinguish Click/Tap from Drag
+            totalDragDist += Math.abs(delta);
+
+            // Move immediate
+            x += delta;
+            
+            // Calculate velocity (pixels per frame roughly)
+            // For very high refresh rates, this might need dt normalization, 
+            // but for this visual effect direct delta is usually fine and "feels" direct.
+            velocity = delta; 
+
+            // Loop boundaries
+            if (x > 0) x -= totalWidth;
+            if (Math.abs(x) >= totalWidth) x += totalWidth;
+            updateTransform();
+        }
+
+        function pointerUp() {
+            if (!isDragging) return;
+            isDragging = false;
+            wrap.classList.remove('grabbing');
+
+            // Check if it was just a TAP (minimal movement)
+            if (totalDragDist < 5) {
+                // It was a tap -> Pause!
+                velocity = 0;
+                isMomentum = false;
+                startResumeTimer();
+            } else {
+                // It was a swipe -> Momentum!
+                isMomentum = true;
+                // Boost velocity slightly for "Schwung" feeling if needed, 
+                // or just keep raw delta. 
+                // velocity = velocity * 1.2; 
+            }
+        }
+
+        // Mouse Listeners
+        wrap.addEventListener('mousedown', e => { e.preventDefault(); pointerDown(e.clientX); });
+        window.addEventListener('mousemove', e => pointerMove(e.clientX));
+        window.addEventListener('mouseup', pointerUp);
+
+        // Touch Listeners
+        wrap.addEventListener('touchstart', e => { pointerDown(e.touches[0].clientX); }, { passive: true });
+        wrap.addEventListener('touchmove', e => { pointerMove(e.touches[0].clientX); }, { passive: true });
+        wrap.addEventListener('touchend', pointerUp);
+        wrap.addEventListener('touchcancel', pointerUp);
+
+        // Resize
+        window.addEventListener('resize', () => {
+            itemWidth = getItemWidth();
+            totalWidth = itemWidth * originalItems.length;
+        });
+
+        // Init
+        if(originalItems.length > 0) {
+            const img = originalItems[0].querySelector('img');
+            if(img && !img.complete) {
+                img.onload = () => { itemWidth = getItemWidth(); totalWidth = itemWidth * originalItems.length; loop(0); }
+            } else { loop(0); }
+        } else { loop(0); }
+    }
+
+    // --- ARTIST CIRCLE ---
+    const artistCircle = document.getElementById('artistCircle');
+    const artistImg = document.getElementById('artistImg');
+    const artistVideo = document.getElementById('artistVideo');
+    const flashOverlay = document.getElementById('flashOverlay');
+    let isPlaying = false;
+    artistCircle.addEventListener('click', () => {
+        if (isPlaying) return;
+        isPlaying = true; artistCircle.classList.add('playing');
+        flashOverlay.style.opacity = '1';
+        setTimeout(() => {
+            flashOverlay.style.opacity = '0';
+            artistImg.style.opacity = '0';
+            artistVideo.style.opacity = '1';
+            artistVideo.play();
+        }, 100);
+        artistVideo.onended = () => {
+            artistVideo.style.opacity = '0';
+            artistImg.style.opacity = '1';
+            isPlaying = false; artistCircle.classList.remove('playing');
+        };
+    });
+
+    // --- REVIEWS ---
+    const reviews = [
+        { name: "Sabine K.", date: "vor 2 Wochen", text: "Ich bin absolut begeistert! Irene hat ein unglaubliches Gespür für den richtigen Moment. Die Bilder wirken so natürlich und professionell zugleich. Vielen Dank!", stars: 5 },
+        { name: "Markus Weber", date: "vor 1 Monat", text: "Top Studio, sehr angenehme Atmosphäre. Die Bewerbungsfotos sind der Hammer geworden – habe die Stelle bekommen! ;)", stars: 5 },
+        { name: "Julia & Tom", date: "vor 3 Monaten", text: "Wir waren für ein Paar-Shooting dort. Irene ist super sympathisch und hat uns die Nervosität sofort genommen. Die Ergebnisse sind traumhaft.", stars: 5 },
+        { name: "Dr. H. Müller", date: "vor 2 Monaten", text: "Exzellente Business-Portraits für unsere Kanzlei. Sehr zügige Bearbeitung und hochprofessionelle Abwicklung. Gerne wieder.", stars: 5 },
+        { name: "Sarah L.", date: "vor 1 Woche", text: "Wunderschönes Studio und eine Fotografin mit Herz. Man merkt, dass sie ihren Job liebt. Preis-Leistung absolut fair.", stars: 5 }
+    ];
+    let currentSlide = 0; let autoSlideInterval; let isPaused = false;
+    const container = document.getElementById('slidesContainer');
+    const pBar = document.getElementById('progressBar');
+    const widget = document.getElementById('reviewWidget');
+
+    function initReviews() {
+        reviews.forEach((rev, i) => {
+            const slide = document.createElement('div');
+            slide.className = `review-slide ${i === 0 ? 'active' : ''}`;
+            slide.innerHTML = `
+                <div class="review-header">
+                    <div class="avatar">${rev.name.charAt(0)}</div>
+                    <div class="user-info">
+                        <div class="user-name">${rev.name}</div>
+                        <div class="stars-date"><span class="stars">${'★'.repeat(rev.stars)}</span> <span>${rev.date}</span></div>
+                    </div>
+                </div>
+                <div class="review-text">"${rev.text}"</div>
+            `;
+            container.appendChild(slide);
+        });
+        startProgress();
+    }
+    function showSlide(index) {
+        const slides = document.querySelectorAll('.review-slide');
+        slides.forEach(s => s.classList.remove('active'));
+        slides[index].classList.add('active');
+        currentSlide = index;
+        startProgress();
+    }
+    function nextSlide() { currentSlide = (currentSlide + 1) % reviews.length; showSlide(currentSlide); }
+    function prevSlide() { currentSlide = (currentSlide - 1 + reviews.length) % reviews.length; showSlide(currentSlide); }
+    function manualChange(dir) { clearInterval(autoSlideInterval); if(dir === 1) nextSlide(); else prevSlide(); }
+    function startProgress() {
+        clearInterval(autoSlideInterval);
+        pBar.style.width = '0%';
+        if(isPaused) return;
+        let width = 0;
+        autoSlideInterval = setInterval(() => {
+            if(!isPaused) { width += 1; pBar.style.width = width + '%'; if (width >= 100) nextSlide(); }
+        }, 50); 
+    }
+    widget.addEventListener('mouseenter', () => { isPaused = true; widget.classList.add('paused'); });
+    widget.addEventListener('mouseleave', () => { isPaused = false; widget.classList.remove('paused'); });
+    initReviews();
+
+    // --- MAP ---
+    function loadMap() {
+        document.getElementById('map-placeholder').style.display = 'none';
+        const iframe = document.createElement('iframe');
+        iframe.src = "https://maps.google.com/maps?q=Odenwaldstra%C3%9Fe+19,+72336+Balingen&t=&z=15&ie=UTF8&iwloc=&output=embed";
+        iframe.allowFullscreen = true; iframe.loading = 'lazy'; iframe.referrerPolicy = 'no-referrer-when-downgrade';
+        iframe.onerror = function() { document.getElementById('map-placeholder').innerHTML = '<div style="padding:40px;text-align:center;">Karte konnte nicht geladen werden.</div>'; document.getElementById('map-placeholder').style.display = 'flex'; };
+        document.getElementById('map-target').appendChild(iframe);
+    }
+
+    // --- MODAL LOGIC (MIT SCROLL FIX & FORMULAR-LOGIK) ---
+    function openLegalModal() {
+        document.body.classList.add('no-scroll'); // Body einfrieren
+        document.getElementById('legalModal').classList.add('active');
+        fetch('pix-rechtstexte.html').then(r => r.text()).then(h => document.getElementById('legalContainer').innerHTML = h).catch(e => document.getElementById('legalContainer').innerHTML = "<p>Fehler beim Laden.</p>");
+    }
+    function closeLegalModal() { 
+        document.body.classList.remove('no-scroll'); // Body freigeben
+        document.getElementById('legalModal').classList.remove('active'); 
+    }
+    
+    function openRequestModal(paketName) {
+        document.body.classList.add('no-scroll'); 
+        document.getElementById('requestModal').classList.add('active');
+        
+        const container = document.getElementById('requestContainer');
+        // Lade-Spinner
+        container.innerHTML = '<div style="display: flex; justify-content: center; align-items: center; height: 200px;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #ccc;"></i></div>';
+
+        fetch('pix-kontaktformular.html')
+        .then(r => r.text())
+        .then(h => {
+            container.innerHTML = h;
+
+            // 1. Paket vorauswählen (Such-Logik)
+            const select = container.querySelector('select[name="Paket"]');
+            if (select && paketName) {
+                for (let i = 0; i < select.options.length; i++) {
+                    // Match auf Value oder Text
+                    if (select.options[i].value === paketName || select.options[i].text.includes(paketName)) {
+                        select.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            // 2. Flatpickr Kalender aktivieren (statisch im Modal)
+            const dateInput = container.querySelector('input[name="Datum"]');
+            if (window.flatpickr && dateInput) {
+                flatpickr(dateInput, {
+                    disableMobile: true,
+                    enableTime: false,
+                    dateFormat: "Y-m-d", // Maschinenlesbar
+                    altInput: true,
+                    altFormat: "d.m.Y",  // Nutzerfreundlich
+                    minDate: "today",
+                    locale: "de",
+                    static: true // Kalender schwebt über Modal
+                });
+            }
+
+            // 3. Formular Sende-Logik
+            const form = container.querySelector('form');
+            const formContent = container.querySelector('#form-content') || container.querySelector('.form-content-area');
+            const successMsg = container.querySelector('#success-message') || container.querySelector('.success-message');
+            
+            if (form) {
+                form.onsubmit = function(e) {
+                    e.preventDefault();
+                    
+                    const btn = form.querySelector('button[type="submit"]');
+                    const originalText = btn.innerHTML;
+                    
+                    btn.disabled = true;
+                    btn.innerHTML = 'Wird gesendet...';
+
+                    const formData = new FormData(form);
+
+                    fetch("https://formsubmit.co/ajax/cb821965b533b1d5bc4b29eae2ce79f6", {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success === "true" || data.success === true) {
+                            // Erfolg: Formular weg, Häkchen her
+                            if(formContent) formContent.style.display = 'none';
+                            else form.style.display = 'none';
+                            
+                            if(successMsg) successMsg.style.display = 'block';
+                            
+                            // Automatisch schließen nach 4 Sekunden
+                            setTimeout(() => closeRequestModal(), 4000);
+                        } else {
+                            throw new Error(data.message || 'Fehler beim Senden');
+                        }
+                    })
+                    .catch(error => {
+                        alert("Hinweis: " + error.message + " (Bitte prüfen Sie Ihre Eingaben)");
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    });
+                };
+            }
+            
+            // Close Button für Success Message
+            const closeSuccess = container.querySelector('.close-success-btn');
+            if(closeSuccess) {
+                closeSuccess.onclick = closeRequestModal;
+            }
+
+        }).catch(e => {
+            console.error(e);
+            container.innerHTML = '<p style="text-align:center; padding:20px;">Fehler beim Laden des Formulars.</p>'; 
+        });
+    }
+
+    function closeRequestModal() { 
+        document.body.classList.remove('no-scroll'); 
+        document.getElementById('requestModal').classList.remove('active'); 
+    }
+
+    // Close Modals on Outside Click
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal-overlay')) {
+            event.target.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+        }
+    }
+</script>
+
+
+
+
+
+
+
+
+
+    <script>
+        // Jobcenter Modal Popup
+        function openJobcenterModal() {
+            // Erstelle Modal Container
+            const modal = document.createElement('div');
+            modal.id = 'jobcenterModal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                padding: 20px;
+                overflow-y: auto;
+            `;
+            
+            // Erstelle Modal Content
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = `
+                background: white;
+                max-width: 900px;
+                width: 100%;
+                max-height: 90vh;
+                overflow-y: auto;
+                border-radius: 10px;
+                position: relative;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            `;
+            
+            // Close Button
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '✕';
+            closeBtn.style.cssText = `
+                position: sticky;
+                top: 10px;
+                right: 10px;
+                float: right;
+                background: #e91e63;
+                color: white;
+                border: none;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                font-size: 24px;
+                cursor: pointer;
+                z-index: 10001;
+                margin: 10px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            `;
+            closeBtn.onclick = () => document.body.removeChild(modal);
+            
+            // iFrame mit Jobcenter Formular
+            const iframe = document.createElement('iframe');
+            iframe.src = 'jobcenter.html'; // Ändern Sie den Pfad zu Ihrer Jobcenter.html Datei
+            iframe.style.cssText = `
+                width: 100%;
+                height: 85vh;
+                border: none;
+                display: block;
+            `;
+            
+            modalContent.appendChild(closeBtn);
+            modalContent.appendChild(iframe);
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+            
+            // Schließen bei Klick außerhalb
+            modal.onclick = (e) => {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            };
+        }
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+    <!-- WhatsApp FAB Button (starts collapsed, expands on scroll-up) -->
+    <button class="wa-fab collapsed" id="waFabBtn">
+      <div class="fab-content">
+        <div class="fab-text">
+          <span style="font-size:0.7rem;opacity:0.85;">Chat mit uns</span>
+          <span>WhatsApp</span>
+        </div>
+        <i class="fa-brands fa-whatsapp fab-icon"></i>
+      </div>
+    </button>
+
+    <!-- Overlay (click outside to close) -->
+    <div class="wa-panel-overlay" id="waPanelOverlay"></div>
+
+    <!-- WhatsApp Chat Panel -->
+    <div class="wa-panel" id="waPanel">
+      <div class="wa-header">
+        <div class="wa-avatar">
+          <img src="https://denkenfeld.github.io/pix/pix-fotostudio-balingen-Businessportrait-bewerbungsfoto-i-kontakt.jpg"
+               alt="Irene" onerror="this.style.display='none'">
+        </div>
+        <div class="wa-header-info">
+          <strong>PIX Fotostudio</strong>
+          <span>Irene · Fotostudio Balingen</span>
+        </div>
+        <button class="wa-close-btn" id="waCloseBtn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="wa-body" id="waBody">
+        <div class="wa-bubble">
+          Hallo! 👋 Wie kann ich Ihnen helfen? Schreiben Sie mir gerne direkt.
+          <div class="wa-bubble-time">PIX Fotostudio</div>
+        </div>
+      </div>
+      <div class="wa-footer">
+        <textarea class="wa-textarea" id="waInput" rows="3"
+          placeholder="Nachricht schreiben...">Hallo, ich hätte gerne ein Termin für ein Fotoshooting...</textarea>
+        <div class="wa-send-wrap">
+          <button class="wa-send-btn" id="waSendBtn" title="Via WhatsApp senden">
+            <i class="fa-solid fa-arrow-up send-arrow"></i>
+            <i class="fa-brands fa-whatsapp send-wa"></i>
+          </button>
+          <svg class="wa-progress-ring" id="waProgressRing" viewBox="0 0 58 58">
+            <circle class="wa-ring-track" cx="29" cy="29" r="25"/>
+            <circle class="wa-ring-fill"  cx="29" cy="29" r="25"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function() {
+        const waFabBtn   = document.getElementById('waFabBtn');
+        const waPanel    = document.getElementById('waPanel');
+        const waOverlay  = document.getElementById('waPanelOverlay');
+        const waCloseBtn = document.getElementById('waCloseBtn');
+        const waInput    = document.getElementById('waInput');
+        const waBody     = document.getElementById('waBody');
+        const waSendBtn  = document.getElementById('waSendBtn');
+        const WA_NUMBER  = '4915150715629';
+
+        // ---- SCROLL LOGIC (identical to smartBtn, but starts collapsed) ----
+        let waLastST = 0;
+        window.addEventListener('scroll', function() {
+          const st = window.pageYOffset || document.documentElement.scrollTop;
+          if (Math.abs(st - waLastST) > 50) {
+            if (st > waLastST && st > 100) {
+              waFabBtn.classList.add('collapsed');    // scrolling DOWN
+            } else {
+              waFabBtn.classList.remove('collapsed'); // scrolling UP
+            }
+            waLastST = st;
+          }
+        }, { passive: true });
+
+        // ---- OPEN / CLOSE ----
+        function openWaPanel() {
+          waPanel.classList.add('open');
+          waOverlay.classList.add('open');
+          document.body.classList.add('no-scroll');
+          setTimeout(() => { waInput.focus(); }, 460);
+        }
+        function closeWaPanel() {
+          waPanel.classList.remove('open');
+          waOverlay.classList.remove('open');
+          document.body.classList.remove('no-scroll');
+        }
+        function toggleWaPanel() {
+          waPanel.classList.contains('open') ? closeWaPanel() : openWaPanel();
+        }
+
+        // ---- FAB BUTTON — fix iOS double-tap ----
+        let waFabTouched = false;
+        waFabBtn.addEventListener('touchstart', function(e) {
+          waFabTouched = true;
+        }, { passive: true });
+        waFabBtn.addEventListener('touchend', function(e) {
+          e.preventDefault();
+          toggleWaPanel();
+        }, { passive: false });
+        waFabBtn.addEventListener('click', function(e) {
+          if (waFabTouched) { waFabTouched = false; return; } // already handled by touchend
+          toggleWaPanel();
+        });
+
+        // ---- CLOSE BUTTON ----
+        waCloseBtn.addEventListener('touchend', function(e) {
+          e.preventDefault(); closeWaPanel();
+        }, { passive: false });
+        waCloseBtn.addEventListener('click', function(e) { closeWaPanel(); });
+
+        // ---- OVERLAY CLICK ----
+        waOverlay.addEventListener('click', closeWaPanel);
+
+        // ---- SEND LOGIC ----
+        function sendWaMessage() {
+          const text = waInput.value.trim();
+          if (!text) return;
+          // Progress ring
+          const ring = document.getElementById('waProgressRing');
+          const fill = ring && ring.querySelector('.wa-ring-fill');
+          if (ring && fill) {
+            fill.style.transition = 'none';
+            fill.style.strokeDashoffset = '157.08';
+            fill.getBoundingClientRect(); // force reflow
+            fill.style.transition = '';
+            ring.classList.add('active');
+            setTimeout(() => { ring.classList.remove('active'); }, 950);
+          }
+          const now = new Date();
+          const t = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+          const bubble = document.createElement('div');
+          bubble.className = 'wa-bubble wa-sent';
+          bubble.innerHTML = text.replace(/\n/g,'<br>') + '<div class="wa-sent-status">✓✓ ' + t + '</div>';
+          waBody.appendChild(bubble);
+          waBody.scrollTop = waBody.scrollHeight;
+          waInput.value = '';
+          waInput.style.height = 'auto';
+          const encoded = encodeURIComponent(text);
+          const waUrl = 'https://wa.me/' + WA_NUMBER + '?text=' + encoded;
+          const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+          setTimeout(() => {
+            if (isMobile) { window.location.href = waUrl; }
+            else { window.open(waUrl, '_blank'); }
+          }, 850);
+        }
+
+        waSendBtn.addEventListener('touchend', function(e) {
+          e.preventDefault(); sendWaMessage();
+        }, { passive: false });
+        waSendBtn.addEventListener('click', function() { sendWaMessage(); });
+
+        // ---- TEXTAREA auto-resize + Enter-to-send ----
+        waInput.addEventListener('input', function() {
+          this.style.height = 'auto';
+          this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+        });
+        waInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); sendWaMessage();
+          }
+        });
+      })();
+    </script>
+
+</body>
+</html>
