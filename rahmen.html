@@ -277,11 +277,14 @@
         /* Mobile: gleiche Abstände rundum */
         @media (max-width: 768px) {
             .portrait-frame {
-                left:   4vw;
-                right:  4vw;
-                top:    4vw;
-                margin: 0;
-                width:  auto;
+                left:         4vw;              /* ← seitlicher Abstand */
+                right:        4vw;              /* ← seitlicher Abstand */
+                top:          4vw;              /* ← Abstand oben (= unten) */
+                margin:       0;
+                width:        auto;
+                height:       calc(85vh - 8vw); /* 85vh = Hero-Höhe, 8vw = oben+unten */
+                max-height:   none;             /* Desktop-Limit hier aufheben */
+                aspect-ratio: auto;             /* Höhe jetzt explizit, kein Ratio-Zwang */
             }
         }
 
